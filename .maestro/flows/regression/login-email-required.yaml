@@ -1,0 +1,26 @@
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-009 Email is required"
+tags:
+  - regression
+  - auth
+  - login
+  - validation
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-009
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/launch-app.yaml
+- runFlow:
+    file: ../../pages/sign-in/enter-password.yaml
+    env:
+      PASSWORD: "WrongPassword123!"
+- runFlow: ../../pages/sign-in/submit.yaml
+- assertVisible: ${output.signIn.errors.emailRequired}
+- assertNotVisible: ${output.signIn.errors.passwordRequired}
+- assertVisible: ${output.signIn.subtitle}
+- takeScreenshot: MLGN-009-email-required

@@ -1,0 +1,28 @@
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-022 Sign out asks for confirmation and Cancel keeps the session"
+tags:
+  - regression
+  - auth
+  - login
+  - session
+  - requires-login
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-022
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/login.yaml
+- runFlow: ../../pages/home/go-to-more.yaml
+- runFlow: ../../pages/more/open-sign-out-dialog.yaml
+- assertVisible: ${output.more.signOutDialog.message}
+- assertVisible: ${output.more.signOutDialog.cancel}
+- takeScreenshot: MLGN-022-confirmation
+- tapOn: ${output.more.signOutDialog.cancel}
+- assertNotVisible: ${output.more.signOutDialog.title}
+- assertVisible: ${output.more.signOut}
+- assertNotVisible: ${output.signIn.subtitle}
+- takeScreenshot: MLGN-022-after-cancel

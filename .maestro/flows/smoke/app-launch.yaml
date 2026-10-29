@@ -2,6 +2,7 @@ appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
 name: "SMK-01 App launches to the sign-in screen"
 tags:
   - smoke
+  - login
   - launch
 onFlowStart:
   - runFlow: ../../pages/load-page-objects.yaml

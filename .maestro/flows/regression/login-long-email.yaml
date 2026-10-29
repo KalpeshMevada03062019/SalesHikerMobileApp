@@ -1,0 +1,29 @@
+# 250-character local part (RFC 5321 allows 64). Observed: no client-side length check;
+# the server rejects it with the generic message. The test checks the app copes safely.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-015 Over-long email is rejected without a crash"
+tags:
+  - regression
+  - auth
+  - login
+  - validation
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-015
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/launch-app.yaml
+- runFlow:
+    file: ../../pages/sign-in/sign-in-with.yaml
+    env:
+      EMAIL: "${new Array(251).join('a')}@example.com"
+      PASSWORD: "Secret123"
+- extendedWaitUntil:
+    visible: ${output.signIn.errors.wrongCredentials}
+    timeout: 20000
+- assertVisible: ${output.signIn.subtitle}
+- takeScreenshot: MLGN-015-rejected

@@ -22,6 +22,8 @@ output.signIn = {
     emailRequired: 'Enter your email',
     passwordRequired: 'Enter your password',
     emailMalformed: 'Enter a full email, like you@company\\.com\\.',
-    wrongCredentials: 'Email or password is wrong\\.',
+    wrongCredentials: 'Email or password is wrong\\.',  // also for unknown accounts (no user enumeration)
+    serverInvalidEmail: 'Invalid email',                // banner returned by the server, see APP-001
+    noConnection: 'Check your connection and try again\\.',
   },
 }

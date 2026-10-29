@@ -1,0 +1,32 @@
+# Turns airplane mode on for the attempt; onFlowComplete always turns it off again.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-024 Sign in without network shows a connection error"
+tags:
+  - regression
+  - auth
+  - login
+  - network
+  - requires-login
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-024
+onFlowComplete:
+  - setAirplaneMode: disabled
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/launch-app.yaml
+- setAirplaneMode: enabled
+- runFlow:
+    file: ../../pages/sign-in/sign-in-with.yaml
+    env:
+      EMAIL: ${MAESTRO_TEST_USERNAME}
+      PASSWORD: ${MAESTRO_TEST_PASSWORD}
+- extendedWaitUntil:
+    visible: ${output.signIn.errors.noConnection}
+    timeout: 30000
+- assertVisible: ${output.signIn.subtitle}
+- takeScreenshot: MLGN-024-no-connection
+- setAirplaneMode: disabled

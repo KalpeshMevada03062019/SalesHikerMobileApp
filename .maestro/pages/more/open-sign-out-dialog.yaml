@@ -1,0 +1,16 @@
+# Page action: on More, scroll to "Sign out", tap it and wait for the confirmation dialog.
+# centerElement keeps the item clear of the floating tab bar, which otherwise takes the tap.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: more.page.js
+- scrollUntilVisible:
+    element:
+      text: ${output.more.signOut}
+    direction: DOWN
+    timeout: 30000
+    centerElement: true
+- tapOn: ${output.more.signOut}
+- extendedWaitUntil:
+    visible: ${output.more.signOutDialog.title}
+    timeout: 8000
+    label: "Sign-out confirmation is shown"

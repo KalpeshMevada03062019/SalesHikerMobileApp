@@ -1,0 +1,26 @@
+# Android Back on the Home root screen sends the app to the background (observed).
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-021 Back on Home leaves the app without signing out"
+tags:
+  - regression
+  - auth
+  - login
+  - session
+  - requires-login
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-021
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/login.yaml
+- back
+- waitForAnimationToEnd
+- assertNotVisible: ${output.home.unreadChats}
+- takeScreenshot: MLGN-021-after-back
+- launchApp
+- runFlow: ../../pages/home/assert-displayed.yaml
+- takeScreenshot: MLGN-021-home-after-relaunch

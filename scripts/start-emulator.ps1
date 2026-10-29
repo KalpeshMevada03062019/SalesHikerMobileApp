@@ -125,5 +125,13 @@ if (-not $KeepAnimations) {
         $null = Invoke-Native $adb @('-s', $serial, 'shell', 'settings', 'put', 'global', $setting, '0')
     }
 }
+# Disable system apps that crash or hog the CPU on emulators and are irrelevant to the app under
+# test (default: the Google app, which raised "Google keeps stopping" over SalesHiker).
+# Reversible: adb shell pm enable <package>
+$noisy = @((Get-ConfigValue $config 'AVD_DISABLE_PACKAGES' 'com.google.android.googlequicksearchbox') -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+foreach ($package in $noisy) {
+    $res = Invoke-Native $adb @('-s', $serial, 'shell', 'pm', 'disable-user', '--user', '0', $package)
+    if ($res.Text -match 'new state: disabled') { Write-Step "Disabled $package on the emulator" }
+}
 $release = (Invoke-Native $adb @('-s', $serial, 'shell', 'getprop', 'ro.build.version.release')).Text.Trim()
 Write-Ok "$AvdName booted as $serial (Android $release)"

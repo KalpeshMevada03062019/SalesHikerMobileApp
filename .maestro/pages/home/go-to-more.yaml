@@ -1,0 +1,13 @@
+# Page action: Home > More tab > More screen.
+# Right after sign-in the first tap can land before the tab bar is interactive, so retry.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: home.page.js
+- runScript: ../more/more.page.js
+- retry:
+    maxRetries: 3
+    commands:
+      - tapOn: ${output.home.moreTab}
+      - extendedWaitUntil:
+          visible: ${output.more.marker}
+          timeout: 8000

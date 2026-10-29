@@ -1,0 +1,24 @@
+# Opens https://accountsbeta.saleshiker.com/... in the external browser (observed: Chrome).
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-019 Create your workspace opens sign-up in the browser"
+tags:
+  - regression
+  - auth
+  - login
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-019
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+  - stopApp: com.android.chrome
+---
+- runFlow: ../common/launch-app.yaml
+- tapOn: ${output.signIn.createWorkspace}
+- extendedWaitUntil:
+    notVisible: ${output.signIn.subtitle}
+    timeout: 15000
+    label: "App hands off to the sign-up page"
+- takeScreenshot: MLGN-019-handoff

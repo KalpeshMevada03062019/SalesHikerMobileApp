@@ -1,0 +1,23 @@
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-008 Empty form cannot be submitted"
+tags:
+  - regression
+  - auth
+  - login
+  - validation
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-008
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/launch-app.yaml
+- runFlow: ../../pages/sign-in/submit.yaml
+- assertVisible: ${output.signIn.errors.emailRequired}
+- assertVisible: ${output.signIn.errors.passwordRequired}
+- assertNotVisible: ${output.signIn.submitting}
+- assertVisible: ${output.signIn.subtitle}
+- takeScreenshot: MLGN-008-required

@@ -1,0 +1,10 @@
+# Page action: More > Sign out > confirm > Sign-in screen.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: more.page.js
+- runFlow: open-sign-out-dialog.yaml
+- tapOn:
+    text: ${output.more.signOutDialog.confirm}
+    below: ${output.more.signOutDialog.message}
+    label: "Confirm sign out"
+- runFlow: ../sign-in/assert-displayed.yaml

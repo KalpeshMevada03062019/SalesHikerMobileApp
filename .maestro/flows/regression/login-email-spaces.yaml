@@ -1,0 +1,24 @@
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-004 Spaces around the email are ignored"
+tags:
+  - regression
+  - auth
+  - login
+  - requires-login
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-004
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/launch-app.yaml
+- runFlow:
+    file: ../../pages/sign-in/sign-in-with.yaml
+    env:
+      EMAIL: "  ${MAESTRO_TEST_USERNAME}  "
+      PASSWORD: ${MAESTRO_TEST_PASSWORD}
+- runFlow: ../../pages/home/assert-displayed.yaml
+- takeScreenshot: MLGN-004-home

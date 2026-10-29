@@ -1,0 +1,25 @@
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-011 Malformed email shows an inline format error"
+tags:
+  - regression
+  - auth
+  - login
+  - validation
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-011
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/launch-app.yaml
+- runFlow:
+    file: ../../pages/sign-in/sign-in-with.yaml
+    env:
+      EMAIL: "not-an-email"
+      PASSWORD: "Secret123"
+- assertVisible: ${output.signIn.errors.emailMalformed}
+- assertVisible: ${output.signIn.subtitle}
+- takeScreenshot: MLGN-011-inline-error

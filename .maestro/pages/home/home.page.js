@@ -4,4 +4,5 @@
 output.home = {
   title: 'Today',
   unreadChats: 'Unread chats',   // label under the unread-chats ring; unique to this screen
+  moreTab: 'More',               // bottom navigation, right-most tab (accessibility label)
 }

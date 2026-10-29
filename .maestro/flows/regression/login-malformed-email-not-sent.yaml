@@ -1,0 +1,36 @@
+# Guards APP-001. Expected to FAIL on build 1.0.0: the request is sent although the
+# client already flagged the email ("Signing in..." then the server banner "Invalid email").
+# Do not relax these assertions to make it pass; close the defect when the app is fixed.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-012 Malformed email is not sent to the server"
+tags:
+  - regression
+  - auth
+  - login
+  - validation
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-012
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/launch-app.yaml
+- runFlow:
+    file: ../../pages/sign-in/sign-in-with.yaml
+    env:
+      EMAIL: "not-an-email"
+      PASSWORD: "Secret123"
+- takeScreenshot: MLGN-012-right-after-submit
+- assertVisible: ${output.signIn.errors.emailMalformed}
+# Give a server response time to arrive, then require that none did.
+- extendedWaitUntil:
+    visible: ${output.signIn.errors.serverInvalidEmail}
+    timeout: 10000
+    optional: true
+- takeScreenshot: MLGN-012-after-10s
+- assertNotVisible:
+    text: ${output.signIn.errors.serverInvalidEmail}
+    label: "No server error banner: the malformed email was never submitted"

@@ -3,7 +3,9 @@
 # (for example from Maestro MCP). Add new *.page.js files here.
 appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
 ---
+- runScript: shared/device.page.js
 - runScript: shared/header.page.js
 - runScript: sign-in/sign-in.page.js
 - runScript: scan-code/scan-code.page.js
 - runScript: home/home.page.js
+- runScript: more/more.page.js

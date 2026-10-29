@@ -1,10 +1,16 @@
 # Page action: type into the (empty) email field. Params: EMAIL
 # Precondition: the field is empty. launch-app.yaml clears state, so it always is at test start.
-# Do not add eraseText: it can close the keyboard, and the hideKeyboard below then sends BACK,
-# which exits the app from this root screen.
+# Right after launch the first tap is sometimes swallowed while the screen settles, so the tap
+# is retried until the field reports focus. Only then is text typed.
 appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
 ---
 - runScript: sign-in.page.js
-- tapOn: ${output.signIn.emailField}
+- retry:
+    maxRetries: 3
+    commands:
+      - tapOn: ${output.signIn.emailField}
+      - assertVisible:
+          text: ${output.signIn.emailField}
+          focused: true
 - inputText: ${EMAIL}
-- hideKeyboard
+- runFlow: ../shared/hide-keyboard.yaml

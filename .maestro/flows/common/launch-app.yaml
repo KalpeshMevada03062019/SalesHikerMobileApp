@@ -6,9 +6,10 @@ appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
 - stopApp
 - launchApp:
     clearState: true
-# On a loaded emulator, system apps (e.g. "Pixel Launcher isn't responding") can raise
-# ANR dialogs over the app. Dismiss those with "Wait". The pattern deliberately excludes
-# Saleshiker, so an ANR in the app under test still fails the test.
+# On a loaded emulator, other apps can raise system dialogs over the app: ANR
+# ("Pixel Launcher isn't responding") or crash ("Google keeps stopping"). Dismiss those.
+# The patterns deliberately exclude Saleshiker, so an ANR or crash of the app under test
+# still fails the test.
 - repeat:
     times: 10
     while:
@@ -19,6 +20,11 @@ appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
             visible: '(?!Saleshiker).* isn.t responding'
           commands:
             - tapOn: "Wait"
+      - runFlow:
+          when:
+            visible: '(?!Saleshiker).* keeps stopping'
+          commands:
+            - tapOn: "Close app"
       - waitForAnimationToEnd:
           timeout: 3000
 - runFlow: ../../pages/sign-in/assert-displayed.yaml

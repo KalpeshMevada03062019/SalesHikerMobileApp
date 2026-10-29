@@ -318,10 +318,13 @@ function Invoke-MaestroRun {
     if ($anr) { $anr | Set-Content (Join-Path $runDir 'anr-events.txt') -Encoding UTF8 }
 
     # Maestro records typed text in commands.json and maestro.log; strip the test password.
+    # MLGN-007 also types the password with its letter case swapped; redact that variant too.
     if ($pass) {
+        $swapped = -join ($pass.ToCharArray() | ForEach-Object { $s = [string]$_; if ($s -ceq $s.ToUpper()) { $s.ToLower() } else { $s.ToUpper() } })
         foreach ($file in Get-ChildItem $runDir -Recurse -File -Include *.json, *.log, *.txt, *.xml) {
             $text = [IO.File]::ReadAllText($file.FullName)
-            if ($text.Contains($pass)) { [IO.File]::WriteAllText($file.FullName, $text.Replace($pass, '***REDACTED***')) }
+            $clean = $text.Replace($pass, '***REDACTED***').Replace($swapped, '***REDACTED***')
+            if ($clean -ne $text) { [IO.File]::WriteAllText($file.FullName, $clean) }
         }
     }
 
@@ -337,6 +340,18 @@ function Invoke-MaestroRun {
             $results[$case.GetAttribute('name')] = [pscustomobject]@{ Status = $status; Time = $case.GetAttribute('time'); Message = $message }
         }
     }
+    # A flow whose Maestro log shows the device dropping out never really ran: report it as
+    # NOT EXECUTED (environment), not as a product failure.
+    $envFailure = 'DeviceServerDiedException|host:transport:[^)]*\): device offline|device .* not found|Maestro Android driver did not start'
+    foreach ($name in @($results.Keys)) {
+        if ($results[$name].Status -ne 'FAILED') { continue }
+        $log = Get-ChildItem $artifacts -Recurse -Filter maestro.log -ErrorAction SilentlyContinue |
+               Where-Object { $_.Directory.Parent.Name -eq $name } | Select-Object -First 1
+        if ($log -and (Select-String -Path $log.FullName -Pattern $envFailure -Quiet)) {
+            $results[$name] = [pscustomobject]@{ Status = 'NOT EXECUTED'; Time = $results[$name].Time; Message = 'environment: device went offline during the run (see logs\maestro.log)' }
+        }
+    }
+
     $rows = foreach ($flow in $expected) {
         $result = $results[$flow.Name]
         if (-not $result) { $result = $results[$flow.File] }

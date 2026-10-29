@@ -1,0 +1,28 @@
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-002 Sign in by pressing Enter on the keyboard"
+tags:
+  - regression
+  - auth
+  - login
+  - requires-login
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-002
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/launch-app.yaml
+- runFlow:
+    file: ../../pages/sign-in/enter-email.yaml
+    env:
+      EMAIL: ${MAESTRO_TEST_USERNAME}
+- runFlow:
+    file: ../../pages/sign-in/enter-password.yaml
+    env:
+      PASSWORD: ${MAESTRO_TEST_PASSWORD}
+      PRESS_ENTER: "true"
+- runFlow: ../../pages/home/assert-displayed.yaml
+- takeScreenshot: MLGN-002-home

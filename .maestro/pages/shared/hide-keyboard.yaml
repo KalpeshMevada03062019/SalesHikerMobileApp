@@ -1,0 +1,12 @@
+# Page action: hide the on-screen keyboard only if one is shown.
+# A bare hideKeyboard on Android sends BACK when no keyboard is open, which closes the app
+# from a root screen such as Sign-in (seen twice on 2026-10-29).
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: device.page.js
+- runFlow:
+    when:
+      visible:
+        id: ${output.device.keyboard}
+    commands:
+      - hideKeyboard

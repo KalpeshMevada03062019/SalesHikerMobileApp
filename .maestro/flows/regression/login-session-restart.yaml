@@ -1,0 +1,23 @@
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-020 Session stays active after the app is restarted"
+tags:
+  - regression
+  - auth
+  - login
+  - session
+  - requires-login
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-020
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/login.yaml
+- stopApp
+- launchApp
+- runFlow: ../../pages/home/assert-displayed.yaml
+- assertNotVisible: ${output.signIn.subtitle}
+- takeScreenshot: MLGN-020-home-after-restart

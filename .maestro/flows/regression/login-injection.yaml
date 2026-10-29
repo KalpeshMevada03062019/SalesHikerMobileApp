@@ -1,0 +1,28 @@
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-013 SQL-injection style input does not sign in"
+tags:
+  - regression
+  - auth
+  - login
+  - security
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-013
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/launch-app.yaml
+- runFlow:
+    file: ../../pages/sign-in/sign-in-with.yaml
+    env:
+      EMAIL: "' OR '1'='1"
+      PASSWORD: "' OR '1'='1"
+- assertVisible: ${output.signIn.errors.emailMalformed}
+- waitForAnimationToEnd:
+    timeout: 8000
+- assertNotVisible: ${output.home.unreadChats}
+- assertVisible: ${output.signIn.subtitle}
+- takeScreenshot: MLGN-013-rejected

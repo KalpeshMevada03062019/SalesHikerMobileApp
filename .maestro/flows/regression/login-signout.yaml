@@ -1,0 +1,26 @@
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "MLGN-023 Sign out returns to sign-in and the session is not restored"
+tags:
+  - regression
+  - auth
+  - login
+  - session
+  - requires-login
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: MLGN-023
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/login.yaml
+- runFlow: ../../pages/home/go-to-more.yaml
+- runFlow: ../../pages/more/sign-out.yaml
+- takeScreenshot: MLGN-023-signed-out
+- stopApp
+- launchApp
+- runFlow: ../../pages/sign-in/assert-displayed.yaml
+- assertNotVisible: ${output.home.unreadChats}
+- takeScreenshot: MLGN-023-relaunch-signed-out

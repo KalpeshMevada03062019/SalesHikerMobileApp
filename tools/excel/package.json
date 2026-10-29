@@ -1,0 +1,1 @@
+{ "name": "saleshiker-mobile-excel", "private": true, "description": "Builds the mobile test-case and defect workbooks", "dependencies": { "exceljs": "4.4.0" } }
