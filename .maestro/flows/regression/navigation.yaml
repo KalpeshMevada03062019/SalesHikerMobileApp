@@ -1,0 +1,51 @@
+# Navigation available before sign-in. "Forgot password?" and "Create your workspace"
+# open https://accountsbeta.saleshiker.com/... in the external browser (observed: Chrome),
+# so the check is that the app hands off and leaves the sign-in screen.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "REG-NAV-01 Pre-login navigation, theme toggle and browser hand-off"
+tags:
+  - regression
+  - navigation
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: REG-NAV-01-navigation
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+  - stopApp: com.android.chrome
+---
+# 1. Scan-a-code screen and back
+- runFlow: ../common/launch-app.yaml
+- runFlow: ../../pages/sign-in/go-to-scan-code.yaml
+- assertVisible: ${output.scanCode.instructions}
+- assertNotVisible: ${output.signIn.subtitle}
+- takeScreenshot: REG-NAV-01-scan-screen
+- runFlow: ../../pages/scan-code/go-back.yaml
+
+# 2. Dark / light theme toggle
+- tapOn: ${output.header.darkModeToggle}
+- assertVisible: ${output.header.lightModeToggle}
+- assertNotVisible: ${output.header.darkModeToggle}
+- takeScreenshot: REG-NAV-01-dark-mode
+- tapOn: ${output.header.lightModeToggle}
+- assertVisible: ${output.header.darkModeToggle}
+
+# 3. Forgot password hands off to the browser
+- tapOn: ${output.signIn.forgotPassword}
+- extendedWaitUntil:
+    notVisible: ${output.signIn.subtitle}
+    timeout: 15000
+    label: "App opens the password-reset page outside the app"
+- takeScreenshot: REG-NAV-01-forgot-password-handoff
+- stopApp: com.android.chrome
+
+# 4. Create workspace hands off to the browser
+- runFlow: ../common/launch-app.yaml
+- tapOn: ${output.signIn.createWorkspace}
+- extendedWaitUntil:
+    notVisible: ${output.signIn.subtitle}
+    timeout: 15000
+    label: "App opens the sign-up page outside the app"
+- takeScreenshot: REG-NAV-01-create-workspace-handoff

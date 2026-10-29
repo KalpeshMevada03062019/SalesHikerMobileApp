@@ -1,0 +1,8 @@
+# Page action: wait until the Sign-in screen is shown.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: sign-in.page.js
+- extendedWaitUntil:
+    visible: ${output.signIn.subtitle}
+    timeout: 15000
+    label: "Sign-in screen is shown"

@@ -1,0 +1,6 @@
+# Page action: Scan-a-code > Back > Sign-in screen.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: ../shared/header.page.js
+- tapOn: ${output.header.back}
+- runFlow: ../sign-in/assert-displayed.yaml

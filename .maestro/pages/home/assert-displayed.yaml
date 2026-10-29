@@ -1,0 +1,9 @@
+# Page action: wait until the Home ("Today") dashboard is shown.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: home.page.js
+- extendedWaitUntil:
+    visible: ${output.home.unreadChats}
+    timeout: 30000
+    label: "Home dashboard is shown"
+- assertVisible: ${output.home.title}

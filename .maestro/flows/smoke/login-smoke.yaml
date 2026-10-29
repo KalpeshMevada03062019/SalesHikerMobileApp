@@ -1,0 +1,19 @@
+# Needs TEST_USERNAME / TEST_PASSWORD in config\.env. The run scripts skip it
+# (reported as SKIPPED) when they are not configured.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "SMK-02 Valid user can sign in"
+tags:
+  - smoke
+  - auth
+  - requires-login
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: SMK-02-login
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/login.yaml
+- takeScreenshot: SMK-02-after-sign-in

@@ -1,0 +1,9 @@
+# Loads every page object into `output` (output.header, output.signIn, output.scanCode, output.home).
+# Tests run it in onFlowStart. Page actions load only their own page, so they also work standalone
+# (for example from Maestro MCP). Add new *.page.js files here.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: shared/header.page.js
+- runScript: sign-in/sign-in.page.js
+- runScript: scan-code/scan-code.page.js
+- runScript: home/home.page.js

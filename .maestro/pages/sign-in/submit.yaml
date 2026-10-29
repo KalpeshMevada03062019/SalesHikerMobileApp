@@ -1,0 +1,8 @@
+# Page action: tap the Sign in button (not the "Sign in" title above the form).
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: sign-in.page.js
+- tapOn:
+    text: ${output.signIn.submitButton}
+    below: ${output.signIn.passwordField}
+    label: "Tap the Sign in button"

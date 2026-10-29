@@ -1,0 +1,48 @@
+# Sign-in error handling. Messages live in pages/sign-in/sign-in.page.js (read from build 1.0.0).
+# The unknown-account case sends one request to the beta backend with an example.com address.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "REG-AUTH-01 Sign-in rejects missing, malformed and unknown credentials"
+tags:
+  - regression
+  - auth
+  - validation
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: REG-AUTH-01-login-validation
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+# 1. Both fields empty
+- runFlow: ../common/launch-app.yaml
+- runFlow: ../../pages/sign-in/submit.yaml
+- assertVisible: ${output.signIn.errors.emailRequired}
+- assertVisible: ${output.signIn.errors.passwordRequired}
+- assertVisible: ${output.signIn.subtitle}
+- takeScreenshot: REG-AUTH-01-empty-fields
+
+# 2. Malformed email address
+- runFlow: ../common/launch-app.yaml
+- runFlow:
+    file: ../../pages/sign-in/sign-in-with.yaml
+    env:
+      EMAIL: "not-an-email"
+      PASSWORD: "Secret123"
+- assertVisible: ${output.signIn.errors.emailMalformed}
+- assertVisible: ${output.signIn.subtitle}
+- takeScreenshot: REG-AUTH-01-malformed-email
+
+# 3. Well-formed but unknown account
+- runFlow: ../common/launch-app.yaml
+- runFlow:
+    file: ../../pages/sign-in/sign-in-with.yaml
+    env:
+      EMAIL: "qa.nonexistent.user@example.com"
+      PASSWORD: "WrongPassword123"
+- extendedWaitUntil:
+    visible: ${output.signIn.errors.wrongCredentials}
+    timeout: 20000
+- assertVisible: ${output.signIn.subtitle}
+- takeScreenshot: REG-AUTH-01-unknown-account

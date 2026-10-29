@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "maestro": {
+      "type": "stdio",
+      "command": "cmd",
+      "args": [
+        "/c",
+        "scripts\\maestro-mcp.cmd"
+      ],
+      "env": {}
+    }
+  }
+}

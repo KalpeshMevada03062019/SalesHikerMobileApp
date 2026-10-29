@@ -1,0 +1,25 @@
+# Local configuration and secrets
+config/.env
+*.env.local
+
+# Test evidence (may contain personal data from the app)
+reports/*
+!reports/.gitkeep
+screenshots/*
+!screenshots/.gitkeep
+
+# Maestro local output
+.maestro/tests/
+*.mp4
+
+# Build/binary artefacts
+*.apk
+*.aab
+
+# Claude Code per-user settings
+.claude/settings.local.json
+
+# OS / editor
+Thumbs.db
+.DS_Store
+.vscode/

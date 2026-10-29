@@ -1,0 +1,24 @@
+# Subflow: start the app from a clean state and wait for the sign-in screen.
+# clearState wipes app data (session, theme choice), so every test starts signed out.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: ../../pages/sign-in/sign-in.page.js
+- stopApp
+- launchApp:
+    clearState: true
+# On a loaded emulator, system apps (e.g. "Pixel Launcher isn't responding") can raise
+# ANR dialogs over the app. Dismiss those with "Wait". The pattern deliberately excludes
+# Saleshiker, so an ANR in the app under test still fails the test.
+- repeat:
+    times: 10
+    while:
+      notVisible: ${output.signIn.subtitle}
+    commands:
+      - runFlow:
+          when:
+            visible: '(?!Saleshiker).* isn.t responding'
+          commands:
+            - tapOn: "Wait"
+      - waitForAnimationToEnd:
+          timeout: 3000
+- runFlow: ../../pages/sign-in/assert-displayed.yaml

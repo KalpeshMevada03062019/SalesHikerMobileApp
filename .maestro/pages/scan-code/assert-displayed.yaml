@@ -1,0 +1,8 @@
+# Page action: wait until the Scan-a-code screen is shown.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: scan-code.page.js
+- extendedWaitUntil:
+    visible: ${output.scanCode.title}
+    timeout: 10000
+    label: "Scan-a-code screen is shown"

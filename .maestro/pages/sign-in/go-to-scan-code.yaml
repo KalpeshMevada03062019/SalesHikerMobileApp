@@ -1,0 +1,6 @@
+# Page action: Sign-in > "Scan a code from the web app" > Scan-a-code screen.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runScript: sign-in.page.js
+- tapOn: ${output.signIn.scanCode}
+- runFlow: ../scan-code/assert-displayed.yaml

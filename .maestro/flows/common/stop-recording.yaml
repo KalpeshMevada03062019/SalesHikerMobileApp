@@ -1,0 +1,8 @@
+# Hook subflow: stop the recording started by start-recording.yaml.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runFlow:
+    when:
+      true: ${MAESTRO_RECORD == 'true'}
+    commands:
+      - stopRecording

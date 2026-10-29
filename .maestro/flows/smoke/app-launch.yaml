@@ -1,0 +1,28 @@
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+name: "SMK-01 App launches to the sign-in screen"
+tags:
+  - smoke
+  - launch
+onFlowStart:
+  - runFlow: ../../pages/load-page-objects.yaml
+  - runFlow:
+      file: ../common/start-recording.yaml
+      env:
+        RECORDING_NAME: SMK-01-app-launch
+onFlowComplete:
+  - runFlow: ../common/stop-recording.yaml
+---
+- runFlow: ../common/launch-app.yaml
+- assertVisible: ${output.signIn.logo}
+- assertVisible: ${output.signIn.subtitle}
+- assertVisible: ${output.signIn.emailField}
+- assertVisible: ${output.signIn.passwordField}
+- assertVisible: ${output.signIn.showPassword}
+- assertVisible:
+    text: ${output.signIn.submitButton}
+    below: ${output.signIn.passwordField}
+- assertVisible: ${output.signIn.forgotPassword}
+- assertVisible: ${output.signIn.scanCode}
+- assertVisible: ${output.signIn.createWorkspace}
+- assertVisible: ${output.header.darkModeToggle}
+- takeScreenshot: SMK-01-sign-in-screen

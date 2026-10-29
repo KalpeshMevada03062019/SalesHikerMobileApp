@@ -1,0 +1,15 @@
+# Subflow: sign in with the account from config\.env (TEST_USERNAME / TEST_PASSWORD).
+# The run scripts expose them to Maestro as MAESTRO_TEST_USERNAME / MAESTRO_TEST_PASSWORD.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- assertTrue:
+    condition: ${typeof MAESTRO_TEST_USERNAME !== 'undefined' && typeof MAESTRO_TEST_PASSWORD !== 'undefined'}
+    label: "Test credentials are configured (TEST_USERNAME / TEST_PASSWORD in config\\.env)"
+- runFlow: launch-app.yaml
+- runFlow:
+    file: ../../pages/sign-in/sign-in-with.yaml
+    env:
+      EMAIL: ${MAESTRO_TEST_USERNAME}
+      PASSWORD: ${MAESTRO_TEST_PASSWORD}
+- runFlow: ../../pages/home/assert-displayed.yaml
+- assertNotVisible: ${output.signIn.subtitle}

@@ -1,0 +1,9 @@
+# Hook subflow: start a screen recording when the run was started with -Record
+# (MAESTRO_RECORD=true). The video lands in the run's startRecording/ folder.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runFlow:
+    when:
+      true: ${MAESTRO_RECORD == 'true'}
+    commands:
+      - startRecording: ${RECORDING_NAME || 'flow'}

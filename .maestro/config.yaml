@@ -1,0 +1,6 @@
+# Maestro workspace configuration.
+# `maestro test .maestro` runs the flows matched below; subflows in flows/common are
+# only executed through runFlow. Select suites with --include-tags (smoke, regression).
+flows:
+  - "flows/smoke/*"
+  - "flows/regression/*"

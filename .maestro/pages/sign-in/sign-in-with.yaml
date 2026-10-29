@@ -1,0 +1,13 @@
+# Page action: fill both fields and submit. Params: EMAIL, PASSWORD
+# Asserts nothing about the outcome; the caller decides what success or failure looks like.
+appId: ${MAESTRO_APP_ID || 'com.saleshiker.app'}
+---
+- runFlow:
+    file: enter-email.yaml
+    env:
+      EMAIL: ${EMAIL}
+- runFlow:
+    file: enter-password.yaml
+    env:
+      PASSWORD: ${PASSWORD}
+- runFlow: submit.yaml
