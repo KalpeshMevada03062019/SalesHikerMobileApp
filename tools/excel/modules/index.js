@@ -5,4 +5,6 @@ module.exports = [
     cases: require('./login.cases'), defects: require('./login.defects') },
   { sheet: 'Campaigns', label: 'Campaigns (WhatsApp)', role: 'Signed-in workspace user (mobile app)',
     cases: require('./campaigns.cases'), defects: require('./campaigns.defects') },
+  { sheet: 'Broadcasts', label: 'Broadcasts (WhatsApp)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./broadcasts.cases'), defects: require('./broadcasts.defects') },
 ];

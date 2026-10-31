@@ -69,8 +69,10 @@ export const config: WebdriverIO.Config = {
     ['allure', { outputDir: path.join(runDir, 'allure-results'), disableWebdriverStepsReporting: true, disableWebdriverScreenshotsReporting: true }],
   ],
 
-  before: () => {
+  before: async () => {
     clearLogcat(serial);
+    // The default XPath 2 engine fails on axes like following:: ("ArrayList$ListItr cannot be cast ...").
+    await driver.updateSettings({ enforceXPath1: true });
   },
 
   afterTest: async (test, _context, result) => {

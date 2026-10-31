@@ -4,7 +4,9 @@
     "20261030-170119-full",
     "20261030-171502-full",
     "20261030-173130-single-MCMP-012",
-    "20261030-173959-single-MCMP-012"
+    "20261030-173959-single-MCMP-012",
+    "20261031-133943-full",
+    "20261031-135021-full"
   ],
   "tests": {
     "MCMP-001": {
@@ -497,6 +499,316 @@
         ]
       },
       "iterations": 4
+    },
+    "MBRD-020": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "waitUntil condition failed with the following reason: strict mode violation: `$(\"//android.view.View[@text=\\\"Send from\\\"]/following::android.widget.Button[@content-desc!=\\\"Close\\\"]\")` resolved to 2 elements, expected 1.",
+        "evidence": [
+          "reports/20261031-135021-full/failures/MBRD-020_Create_and_send_a_broadcast_to_the_allowlisted_tag_then_check_its_recip/screenshot.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MBRD-002": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Send from options not shown within 10000 ms",
+        "evidence": [
+          "reports/20261031-135021-full/failures/MBRD-002_Step_1_starts_with_no_audience_chosen_and_the_first_connected_number_as/screenshot.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MBRD-003": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "tag error: expected false to equal true",
+        "evidence": [
+          "reports/20261031-135021-full/failures/MBRD-003_Step_1_blocks_Next_without_a_name_or_an_audience/screenshot.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MBRD-004": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": []
+      },
+      "iterations": 2
+    },
+    "MBRD-005": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "waitUntil condition failed with the following reason: strict mode violation: `$(\"//android.view.View[@text=\\\"Saved list\\\"]/following::android.widget.Button[@content-desc!=\\\"Close\\\"]\")` resolved to 2 elements, expected 1.",
+        "evidence": [
+          "reports/20261031-135021-full/failures/MBRD-005_Saved_list_and_Segment_pickers_offer_named_audiences_with_their_sizes/screenshot.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MBRD-006": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Test skipped due to failure in hook \"\"before each\" hook: wrappedHook for \"MBRD-006 Step 2 requires a template\"\": Loaded broadcast list (\"N broadcasts\") not shown within 30000 ms",
+        "evidence": []
+      },
+      "iterations": 2
+    },
+    "MBRD-007": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Test skipped due to failure in hook \"\"before each\" hook: wrappedHook for \"MBRD-006 Step 2 requires a template\"\": Loaded broadcast list (\"N broadcasts\") not shown within 30000 ms",
+        "evidence": []
+      },
+      "iterations": 2
+    },
+    "MBRD-008": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Test skipped due to failure in hook \"\"before each\" hook: wrappedHook for \"MBRD-006 Step 2 requires a template\"\": Loaded broadcast list (\"N broadcasts\") not shown within 30000 ms",
+        "evidence": []
+      },
+      "iterations": 2
+    },
+    "MBRD-009": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Test skipped due to failure in hook \"\"before each\" hook: wrappedHook for \"MBRD-006 Step 2 requires a template\"\": Loaded broadcast list (\"N broadcasts\") not shown within 30000 ms",
+        "evidence": []
+      },
+      "iterations": 2
+    },
+    "MBRD-010": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Test skipped due to failure in hook \"\"before each\" hook: wrappedHook for \"MBRD-006 Step 2 requires a template\"\": Loaded broadcast list (\"N broadcasts\") not shown within 30000 ms",
+        "evidence": []
+      },
+      "iterations": 2
+    },
+    "MBRD-011": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Test skipped due to failure in hook \"\"before each\" hook: wrappedHook for \"MBRD-006 Step 2 requires a template\"\": Loaded broadcast list (\"N broadcasts\") not shown within 30000 ms",
+        "evidence": []
+      },
+      "iterations": 2
+    },
+    "MBRD-012": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Test skipped due to failure in hook \"\"before each\" hook: wrappedHook for \"MBRD-006 Step 2 requires a template\"\": Loaded broadcast list (\"N broadcasts\") not shown within 30000 ms",
+        "evidence": []
+      },
+      "iterations": 2
+    },
+    "MBRD-001": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-10-31T13:50:21.7000684+05:30",
+          "run": "20261031-135021-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-10-31T13:39:44.1522232+05:30",
+          "run": "20261031-133943-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-10-31T13:50:21.7000684+05:30",
+        "run": "20261031-135021-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261031-135021-full/screenshots/MBRD-001_broadcast_list.png",
+          "reports/20261031-135021-full/screenshots/MBRD-001_new_broadcast.png"
+        ]
+      },
+      "iterations": 2
     }
   },
   "defects": {
@@ -505,6 +817,9 @@
     },
     "MCMP-D02": {
       "checkedRun": "20261030-173959-single-MCMP-012"
+    },
+    "MBRD-D01": {
+      "checkedRun": "20261031-133943-full"
     }
   }
 }

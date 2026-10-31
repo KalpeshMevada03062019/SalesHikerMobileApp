@@ -12,6 +12,8 @@ export const by = {
   textMatches: (regex: string) => `android=new UiSelector().textMatches(${JSON.stringify(regex)})`,
   descClass: (label: string, className: string) =>
     `android=new UiSelector().description(${JSON.stringify(label)}).className(${JSON.stringify(className)})`,
+  descStartsWith: (prefix: string) => `android=new UiSelector().descriptionStartsWith(${JSON.stringify(prefix)})`,
+  textStartsWith: (prefix: string) => `android=new UiSelector().textStartsWith(${JSON.stringify(prefix)})`,
 };
 
 export abstract class BasePage {

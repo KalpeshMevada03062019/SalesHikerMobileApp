@@ -31,6 +31,13 @@ export const settings = {
   deviceSerial: value('DEVICE_SERIAL') || value('ANDROID_SERIAL'),
   testUser: { email: value('TEST_USERNAME'), password: value('TEST_PASSWORD') },
   appiumPort: Number(value('APPIUM_PORT', '4723')),
+  /** Broadcast send test (MBRD-020): real WhatsApp messages, only to the allowlist, only when send is true. */
+  broadcast: {
+    send: value('BROADCAST_SEND').toLowerCase() === 'true',
+    allowlist: value('BROADCAST_ALLOWLIST').split(',').map((p) => p.trim()).filter(Boolean),
+    tag: value('BROADCAST_TAG'),
+    template: value('BROADCAST_TEMPLATE', 'call_phone_message'),
+  },
   /** Reuse the UiAutomator2 server on the device (phones that block adb installs behind a prompt). */
   skipServerInstall: value('SKIP_SERVER_INSTALL') === '1',
   /** Folder for this run's reports. Set by the PowerShell runners; generated otherwise. */
