@@ -1,26 +1,28 @@
 <#
 .SYNOPSIS
-  Runs one flow by path or by (partial) file name.
+  Runs one test by its ID (e.g. MLGN-005), or one spec file by path or partial name.
 .EXAMPLE
-  .\scripts\run-single-test.ps1 app-launch
-  .\scripts\run-single-test.ps1 .maestro\flows\regression\navigation.yaml -Record
+  .\scripts\run-single-test.ps1 MLGN-005
+  .\scripts\run-single-test.ps1 login-validation
+  .\scripts\run-single-test.ps1 test\specs\smoke\login.spec.ts
 #>
-param(
-    [Parameter(Mandatory, Position = 0)][string]$Test,
-    [switch]$Record
-)
+param([Parameter(Mandatory, Position = 0)][string]$Test, [switch]$SkipWorkbooks)
 . "$PSScriptRoot\_common.ps1"
 
-if (Test-Path $Test -PathType Leaf) {
-    $flow = (Resolve-Path $Test).Path
+$specDir = Join-Path $ProjectRoot 'test\specs'
+if ($Test -match '^[A-Z]+(-[A-Z]+)?-\d+$') {
+    # A test ID: find the spec that contains it and run only that test.
+    $hit = Select-String -Path (Join-Path $specDir '*\*.spec.ts') -Pattern "it\(\s*'$([regex]::Escape($Test))\b" | Select-Object -First 1
+    if (-not $hit) { Stop-WithError "No test titled '$Test ...' in test\specs" }
+    $code = Invoke-WdioRun -Label "single-$Test" -Spec $hit.Path -Grep $Test -SkipWorkbooks:$SkipWorkbooks
 } else {
-    $matches2 = @(Get-ChildItem (Join-Path $MaestroDir 'flows\smoke'), (Join-Path $MaestroDir 'flows\regression') -Filter *.yaml |
-                  Where-Object { $_.BaseName -like "*$Test*" })
-    if ($matches2.Count -eq 0) { Stop-WithError "No flow matches '$Test'. Available: $((Get-ChildItem $MaestroDir\flows\smoke, $MaestroDir\flows\regression -Filter *.yaml).BaseName -join ', ')" }
-    if ($matches2.Count -gt 1) { Stop-WithError "'$Test' matches several flows: $($matches2.BaseName -join ', ')" }
-    $flow = $matches2[0].FullName
+    $spec = if (Test-Path $Test -PathType Leaf) { (Resolve-Path $Test).Path }
+            else { @(Get-ChildItem $specDir -Recurse -Filter *.spec.ts | Where-Object { $_.BaseName -like "*$Test*" }) }
+    if ($spec -is [array]) {
+        if ($spec.Count -eq 0) { Stop-WithError "No spec matches '$Test'. Available: $((Get-ChildItem $specDir -Recurse -Filter *.spec.ts).BaseName -join ', ')" }
+        if ($spec.Count -gt 1) { Stop-WithError "'$Test' matches several specs: $($spec.BaseName -join ', ')" }
+        $spec = $spec[0].FullName
+    }
+    $code = Invoke-WdioRun -Label ("single-" + [IO.Path]::GetFileNameWithoutExtension($spec)) -Spec $spec -SkipWorkbooks:$SkipWorkbooks
 }
-if ($flow -like '*\flows\common\*' -or $flow -like '*\.maestro\pages\*') { Stop-WithError "$flow is a subflow or page action; run a test that uses it instead." }
-
-$code = Invoke-MaestroRun -Label ("single-" + [IO.Path]::GetFileNameWithoutExtension($flow)) -Targets @($flow) -Record:$Record
 exit $code

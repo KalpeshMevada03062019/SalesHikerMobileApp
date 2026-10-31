@@ -138,18 +138,21 @@ function Test-DeviceBooted([string]$Serial) {
     ($boot -eq '1') -and ($anim -ne 'running') -and ($pm -match 'package:')
 }
 
-# Picks the device to test on: $env:ANDROID_SERIAL if set, else the only online device.
+# Picks the device to test on: $env:ANDROID_SERIAL, else DEVICE_SERIAL from config\.env,
+# else the only online device (emulator or phone).
 function Get-TargetDevice {
     $online = @(Get-OnlineDevices)
-    if ($env:ANDROID_SERIAL) {
-        if ($online -notcontains $env:ANDROID_SERIAL) {
-            Stop-WithError "ANDROID_SERIAL=$env:ANDROID_SERIAL is not connected. Connected: $($online -join ', ')"
+    $wanted = $env:ANDROID_SERIAL
+    if (-not $wanted) { $wanted = Get-ConfigValue (Get-FrameworkConfig) 'DEVICE_SERIAL' }
+    if ($wanted) {
+        if ($online -notcontains $wanted) {
+            Stop-WithError "Device $wanted (ANDROID_SERIAL / DEVICE_SERIAL) is not connected. Connected: $($online -join ', ')"
         }
-        $serial = $env:ANDROID_SERIAL
+        $serial = $wanted
     } elseif ($online.Count -eq 0) {
-        Stop-WithError "No Android device is connected. Start one with: .\scripts\start-emulator.ps1"
+        Stop-WithError "No Android device is connected. Start one with .\scripts\start-emulator.ps1 or connect a phone with USB debugging."
     } elseif ($online.Count -gt 1) {
-        Stop-WithError "Several devices are connected ($($online -join ', ')). Set `$env:ANDROID_SERIAL to choose one."
+        Stop-WithError "Several devices are connected ($($online -join ', ')). Set DEVICE_SERIAL in config\.env to choose one."
     } else {
         $serial = $online[0]
     }
@@ -399,5 +402,168 @@ function Invoke-MaestroRun {
     Write-Host "Report: $(Join-Path $runDir 'summary.md')"
 
     if ($failed -or $notRun -or ($exitCode -ne 0 -and $toRun.Count -gt 0)) { return 1 }
+    0
+}
+
+# ---------------------------------------------------------------- WebdriverIO (Appium) runs
+
+# IDs of the tests a run should execute, read from the `it('<ID> ...')` titles of the selected specs.
+function Get-ExpectedTests([string[]]$SpecFiles, [string]$Grep) {
+    foreach ($file in $SpecFiles) {
+        foreach ($m in [regex]::Matches((Get-Content $file -Raw), "\bit\(\s*'([^']+)'")) {
+            $title = $m.Groups[1].Value
+            # Same rule as --mochaOpts.grep, which WebdriverIO applies as a regular expression.
+            if ($Grep -and $title -notmatch $Grep) { continue }
+            [pscustomobject]@{ Title = $title; File = $file.Replace($ProjectRoot + '\', '') }
+        }
+    }
+}
+
+# Runs WebdriverIO + Appium on the target device, then writes the Allure HTML report and summary.md.
+# Returns the exit code: 0 only when every expected test ran and passed (skips are allowed).
+function Invoke-WdioRun {
+    param(
+        [Parameter(Mandatory)][string]$Label,
+        [ValidateSet('', 'smoke', 'regression')][string]$Suite = '',
+        [string]$Spec = '',
+        [string]$Grep = '',
+        [switch]$SkipWorkbooks
+    )
+    $config = Get-FrameworkConfig
+    $appId  = Get-ConfigValue $config 'APP_ID'
+    $adb    = Get-ToolPath adb
+    if (-not (Get-Command npx -ErrorAction SilentlyContinue)) { Stop-WithError 'Node.js/npx not found. Install Node.js 22.19+ (docs\SETUP.md).' }
+    if (-not (Get-Command appium -ErrorAction SilentlyContinue)) { Stop-WithError 'Appium not found. Run: npm install -g appium; appium driver install uiautomator2' }
+    if (-not (Test-Path (Join-Path $ProjectRoot 'node_modules\@wdio\cli'))) { Stop-WithError 'Project dependencies missing. Run: npm install' }
+
+    Write-Step 'Checking device and app'
+    $serial = Get-TargetDevice
+    if (-not (Test-AppInstalled $serial $appId)) { Stop-WithError "$appId is not installed on $serial. Run: .\scripts\install-apk.ps1" }
+    $version = Get-AppVersion $serial $appId
+    if (-not $version) { Stop-WithError "The package manager on $serial is not answering. Restart the device (emulator: .\scripts\start-emulator.ps1 -ColdBoot)." }
+    Write-Ok "$serial ready, $appId $version installed"
+
+    $runDir = New-RunDirectory $Label
+    $env:RUN_DIR = $runDir
+    $env:DEVICE_SERIAL = $serial
+    $console = Join-Path $runDir 'wdio-console.txt'
+
+    $specDir = Join-Path $ProjectRoot 'test\specs'
+    $specFiles = if ($Spec) { @((Resolve-Path $Spec).Path) }
+                 elseif ($Suite) { @(Get-ChildItem (Join-Path $specDir $Suite) -Filter *.spec.ts | ForEach-Object FullName) }
+                 else { @(Get-ChildItem $specDir -Recurse -Filter *.spec.ts | ForEach-Object FullName) }
+    $expected = @(Get-ExpectedTests $specFiles $Grep)
+
+    $wdioArgs = @('wdio', 'run', './config/wdio.android.conf.ts')
+    if ($Suite) { $wdioArgs += @('--suite', $Suite) }
+    if ($Spec) { $wdioArgs += @('--spec', (Resolve-Path $Spec).Path) }
+    if ($Grep) { $wdioArgs += @('--mochaOpts.grep', $Grep) }
+
+    $null = Invoke-Native $adb @('-s', $serial, 'logcat', '-c')
+    $started = Get-Date
+    Write-Step "Running $($expected.Count) test(s): npx $($wdioArgs -join ' ')"
+    Push-Location $ProjectRoot
+    $previous = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+    & npx @wdioArgs 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $console | Out-Host
+    $exitCode = $LASTEXITCODE
+    $ErrorActionPreference = $previous
+    Pop-Location
+    $duration = [math]::Round(((Get-Date) - $started).TotalSeconds)
+
+    # Reports can contain the typed password; strip it (and its case-swapped variant, MLGN-007).
+    $pass = Get-ConfigValue $config 'TEST_PASSWORD'
+    if ($pass) {
+        $swapped = -join ($pass.ToCharArray() | ForEach-Object { $s = [string]$_; if ($s -ceq $s.ToUpper()) { $s.ToLower() } else { $s.ToUpper() } })
+        foreach ($file in Get-ChildItem $runDir -Recurse -File -Include *.json, *.log, *.txt, *.xml) {
+            $text = [IO.File]::ReadAllText($file.FullName)
+            $clean = $text.Replace($pass, '***REDACTED***').Replace($swapped, '***REDACTED***')
+            if ($clean -ne $text) { [IO.File]::WriteAllText($file.FullName, $clean) }
+        }
+    }
+
+    # ---- HTML report (Allure, single self-contained file)
+    $allureResults = Join-Path $runDir 'allure-results'
+    $allureReport = Join-Path $runDir 'allure-report'
+    if (Test-Path $allureResults) {
+        $gen = Invoke-Native 'npx' @('allure', 'generate', $allureResults, '--clean', '--single-file', '-o', $allureReport)
+        if ($gen.ExitCode -ne 0) { Write-Warn "Allure report not generated: $($gen.Text)" }
+    }
+
+    # ---- Results
+    $results = @{}
+    $junit = Join-Path $runDir 'junit-*.xml'   # one file per spec worker
+    foreach ($junitFile in @(Get-ChildItem $junit -ErrorAction SilentlyContinue)) {
+        [xml]$xml = Get-Content $junitFile.FullName -Raw
+        foreach ($case in $xml.SelectNodes('//testcase')) {
+            $failure = $case.SelectSingleNode('failure'); if (-not $failure) { $failure = $case.SelectSingleNode('error') }
+            $message = if ($failure) { (($failure.GetAttribute('message'), $failure.InnerText) | Where-Object { $_ } | Select-Object -First 1) } else { '' }
+            $status = if ($failure) { 'FAILED' } elseif ($case.SelectSingleNode('skipped')) { 'SKIPPED' } else { 'PASSED' }
+            # A lost device or Appium session means the test never really ran.
+            if ($status -eq 'FAILED' -and $message -match 'Could not start a new session|socket hang up|ECONNREFUSED|device offline|instrumentation process is not running|session is either terminated') {
+                $status = 'NOT EXECUTED'; $message = "environment: $($message.Split("`n")[0])"
+            }
+            $results[$case.GetAttribute('name')] = [pscustomobject]@{ Status = $status; Time = $case.GetAttribute('time'); Message = $message }
+        }
+    }
+    $rows = foreach ($test in $expected) {
+        $key = @($results.Keys | Where-Object { $_ -eq $test.Title -or $_.EndsWith(" $($test.Title)") }) | Select-Object -First 1
+        if ($key) {
+            $r = $results[$key]
+            [pscustomobject]@{ Test = $test.Title; Status = $r.Status; Seconds = $r.Time; Detail = (($r.Message -split "`n")[0]) }
+        } else {
+            [pscustomobject]@{ Test = $test.Title; Status = 'NOT EXECUTED'; Seconds = ''; Detail = 'no result in junit (session failed or run aborted)' }
+        }
+    }
+    $rows = @($rows)
+    $count = { param($s) @($rows | Where-Object { $_.Status -eq $s }).Count }
+    $passed = & $count 'PASSED'; $failed = & $count 'FAILED'; $skipped = & $count 'SKIPPED'; $notRun = & $count 'NOT EXECUTED'
+
+    $null = Save-DeviceScreenshot $serial (Join-Path $runDir 'final-screen.png')
+    $relative = { param($p) $p.Replace($ProjectRoot + '\', '') }
+    $device = "$serial ($((Invoke-Native $adb @('-s', $serial, 'shell', 'getprop', 'ro.product.model')).Text.Trim()), Android $((Invoke-Native $adb @('-s', $serial, 'shell', 'getprop', 'ro.build.version.release')).Text.Trim()))"
+    # Machine-readable results for tools\excel\update-workbooks.js (same classification as summary.md).
+    [pscustomobject]@{
+        meta  = [pscustomobject]@{ label = $Label; started = $started.ToString('o'); durationSeconds = $duration; device = $device; app = "$appId $version" }
+        tests = @($rows)
+    } | ConvertTo-Json -Depth 4 | Set-Content (Join-Path $runDir 'results.json') -Encoding UTF8
+    $md = @(
+        "# Execution summary: $Label", '',
+        '| | |', '|---|---|',
+        "| Started | $($started.ToString('yyyy-MM-dd HH:mm:ss')) |",
+        "| Duration | $duration s |",
+        "| Device | $device |",
+        "| App | $appId $version |",
+        "| WebdriverIO exit code | $exitCode |", '',
+        "**Passed: $passed | Failed: $failed | Skipped: $skipped | Not executed: $notRun**", '',
+        '| Test | Status | Time (s) | Detail |', '|---|---|---|---|'
+    )
+    $md += $rows | ForEach-Object { "| $($_.Test) | $($_.Status) | $($_.Seconds) | $(($_.Detail -replace '\|', '/')) |" }
+    $md += @('', '## Evidence', '',
+        "- HTML report: ``$(& $relative (Join-Path $allureReport 'index.html'))``",
+        "- JUnit: ``$(& $relative $junit)``",
+        "- Console: ``$(& $relative $console)``",
+        "- Appium server log: ``$(& $relative (Join-Path $runDir 'appium.log'))``",
+        "- Checkpoint screenshots: ``$(& $relative (Join-Path $runDir 'screenshots'))``",
+        "- Failure diagnostics (screenshot, UI hierarchy, foreground app, logcat): ``$(& $relative (Join-Path $runDir 'failures'))``",
+        "- Device log for the run: ``$(& $relative (Join-Path $runDir 'logcat.txt'))``")
+    if (Test-Path (Join-Path $runDir 'anr-events.txt')) { $md += "- **ANR events for $appId recorded**: ``$(& $relative (Join-Path $runDir 'anr-events.txt'))``" }
+    $md | Set-Content (Join-Path $runDir 'summary.md') -Encoding UTF8
+
+    Write-Host ''
+    $rows | Format-Table Test, Status, Seconds, Detail -AutoSize -Wrap | Out-String -Width 220 | Write-Host
+    $color = if ($failed -or $notRun) { 'Red' } else { 'Green' }
+    Write-Host "Passed: $passed  Failed: $failed  Skipped: $skipped  Not executed: $notRun" -ForegroundColor $color
+    Write-Host "Summary: $(Join-Path $runDir 'summary.md')"
+    if (Test-Path (Join-Path $allureReport 'index.html')) { Write-Host "HTML report: $(Join-Path $allureReport 'index.html')" }
+
+    # ---- Test-case and defect workbooks (docs\*.xlsx), only when some test produced a result
+    if (-not $SkipWorkbooks -and ($passed + $failed + $skipped) -gt 0) {
+        Write-Step 'Updating test-case and defect workbooks'
+        $wbOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\excel\update-workbooks.js'), $runDir)
+        $wbOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
+        if ($wbOut.ExitCode -ne 0) { Write-Warn 'Workbooks not updated (see above). The run itself is unaffected.' }
+    }
+
+    if ($failed -or $notRun) { return 1 }
     0
 }

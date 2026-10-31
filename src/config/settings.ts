@@ -31,6 +31,8 @@ export const settings = {
   deviceSerial: value('DEVICE_SERIAL') || value('ANDROID_SERIAL'),
   testUser: { email: value('TEST_USERNAME'), password: value('TEST_PASSWORD') },
   appiumPort: Number(value('APPIUM_PORT', '4723')),
+  /** Reuse the UiAutomator2 server on the device (phones that block adb installs behind a prompt). */
+  skipServerInstall: value('SKIP_SERVER_INSTALL') === '1',
   /** Folder for this run's reports. Set by the PowerShell runners; generated otherwise. */
   runDir: value('RUN_DIR') || path.join(PROJECT_ROOT, 'reports', `${new Date().toISOString().replace(/[-:]/g, '').replace('T', '-').slice(0, 15)}-wdio`),
 };

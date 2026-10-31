@@ -10,7 +10,7 @@
     "test:smoke": "wdio run ./config/wdio.android.conf.ts --suite smoke",
     "test:regression": "wdio run ./config/wdio.android.conf.ts --suite regression",
     "report": "allure generate reports/allure-results --clean --single-file -o reports/allure-report",
-    "excel": "node tools/excel/build-login-workbooks.js"
+    "excel": "node tools/excel/update-workbooks.js"
   },
   "engines": {
     "node": ">=22.19.0"

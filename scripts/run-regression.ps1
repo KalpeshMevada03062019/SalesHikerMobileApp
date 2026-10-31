@@ -1,18 +1,18 @@
 <#
 .SYNOPSIS
-  Runs every flow tagged "regression" (optionally narrowed by extra tags).
+  Runs the regression suite (test\specs\regression), or everything with -IncludeSmoke.
 .EXAMPLE
   .\scripts\run-regression.ps1
-  .\scripts\run-regression.ps1 -Tags validation
-  .\scripts\run-regression.ps1 -IncludeSmoke   # full run: smoke + regression
+  .\scripts\run-regression.ps1 -IncludeSmoke    # smoke + regression
+  .\scripts\run-regression.ps1 -Grep MLGN-0     # only tests whose title contains "MLGN-0"
 #>
 param(
-    [string[]]$Tags = @(),
     [switch]$IncludeSmoke,
-    [switch]$Record
+    [string]$Grep = '',
+    [switch]$SkipWorkbooks
 )
 . "$PSScriptRoot\_common.ps1"
 
-$include = if ($Tags.Count -gt 0) { $Tags } elseif ($IncludeSmoke) { @('smoke', 'regression') } else { @('regression') }
-$code = Invoke-MaestroRun -Label 'regression' -Targets @($MaestroDir) -IncludeTags $include -Record:$Record
+$suite = if ($IncludeSmoke) { '' } else { 'regression' }
+$code = Invoke-WdioRun -Label ($(if ($IncludeSmoke) { 'full' } else { 'regression' })) -Suite $suite -Grep $Grep -SkipWorkbooks:$SkipWorkbooks
 exit $code

@@ -37,6 +37,9 @@ export const config: WebdriverIO.Config = {
     'appium:newCommandTimeout': 300,
     // Slow hosts: the UiAutomator2 server needs time to install and start.
     'appium:uiautomator2ServerInstallTimeout': 180_000,
+    // SKIP_SERVER_INSTALL=1 uses the UiAutomator2 server already on the device. For phones (ColorOS)
+    // that hold every adb install behind a "risky app" prompt; the installed server must still work.
+    'appium:skipServerInstallation': settings.skipServerInstall,
     'appium:uiautomator2ServerLaunchTimeout': 180_000,
     'appium:adbExecTimeout': 120_000,
   }],
@@ -59,7 +62,10 @@ export const config: WebdriverIO.Config = {
 
   reporters: [
     'spec',
-    ['junit', { outputDir: runDir, outputFileFormat: () => 'junit.xml' }],
+    // suiteNameFormat: keep titles verbatim ("MCMP-001 ...") so results match test IDs; the default
+    // strips punctuation ("MCMP 001 ...").
+    // One file per worker (spec): a shared name lets the last spec overwrite the others.
+    ['junit', { outputDir: runDir, outputFileFormat: (o: { cid: string }) => `junit-${o.cid}.xml`, suiteNameFormat: /[\r\n]+/ }],
     ['allure', { outputDir: path.join(runDir, 'allure-results'), disableWebdriverStepsReporting: true, disableWebdriverScreenshotsReporting: true }],
   ],
 
@@ -68,7 +74,10 @@ export const config: WebdriverIO.Config = {
   },
 
   afterTest: async (test, _context, result) => {
-    if (!result.passed) await captureFailure(test.title, serial, runDir);
+    // this.skip() also ends with passed=false; only real failures carry an error other than Pending.
+    if (!result.passed && result.error && !/pending|skip/i.test(`${result.error.name} ${result.error.message}`)) {
+      await captureFailure(test.title, serial, runDir);
+    }
   },
 
   after: () => {

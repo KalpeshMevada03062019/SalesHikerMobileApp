@@ -1,16 +1,16 @@
 # SalesHiker mobile QA automation
 
-Native Android UI tests for the SalesHiker app (`com.saleshiker.app`), built on **Maestro** YAML flows. They run on an Android emulator managed from PowerShell, with no Android Studio. Claude Code can inspect the live app through **Maestro MCP**.
+Native Android UI tests for the SalesHiker app (`com.saleshiker.app`), written in **TypeScript** with **WebdriverIO + Appium (UiAutomator2)**, **Mocha** and **Chai**, using class-based page objects. They run on a real phone over USB or on an emulator, driven from PowerShell, with no Android Studio. After every run, the test-case and defect workbooks in `docs\` are updated automatically.
 
 ## Quick start
 
 ```powershell
-.\scripts\doctor.ps1                                        # check setup
-.\scripts\start-emulator.ps1                                # boot the emulator (creates the AVD if needed)
-.\scripts\install-apk.ps1 -ApkPath "C:\Apps\your-app.apk"   # install or update the APK (default: APK_PATH in config\.env)
-.\scripts\run-smoke.ps1                                     # smoke suite
-.\scripts\run-regression.ps1                                # regression suite
-.\scripts\stop-emulator.ps1                                 # shut the emulator down
+npm install                                   # once: project dependencies
+npm install -g appium; appium driver install uiautomator2    # once: Appium server and driver
+adb devices                                   # phone or emulator must show "device"
+npm run typecheck                             # TypeScript check
+.\scripts\run-smoke.ps1                       # smoke suite
+.\scripts\run-regression.ps1                  # regression suite
 ```
 
 If scripts are blocked by the execution policy, use `powershell -ExecutionPolicy Bypass -File .\scripts\<script>.ps1`.
@@ -19,68 +19,100 @@ If scripts are blocked by the execution policy, use `powershell -ExecutionPolicy
 
 | Action | Command |
 |---|---|
-| Check setup, device and app | `.\scripts\doctor.ps1` |
-| List connected devices | `adb devices -l` or `maestro list-devices` |
-| Start emulator (visible window) | `.\scripts\start-emulator.ps1` (options: `-Headless`, `-ColdBoot`, `-WipeData`) |
-| Stop emulator | `.\scripts\stop-emulator.ps1` |
-| Install / update APK | `.\scripts\install-apk.ps1 [-ApkPath <apk>] [-Clean] [-Launch]` |
-| Launch the app | `.\scripts\install-apk.ps1 -Launch`, or `adb shell monkey -p com.saleshiker.app 1` |
-| Smoke suite | `.\scripts\run-smoke.ps1 [-Record]` |
-| Regression suite | `.\scripts\run-regression.ps1 [-Tags auth] [-IncludeSmoke] [-Record]` |
-| One test | `.\scripts\run-single-test.ps1 navigation [-Record]` |
-| Screenshot + logs + hierarchy | `.\scripts\capture-evidence.ps1 -Label <name> [-RecordSeconds 30]` |
-| Raw Maestro (no wrapper) | `maestro test .maestro/flows/smoke/app-launch.yaml` |
-| Inspect the current screen | `maestro hierarchy --compact` (or Maestro MCP `inspect_screen`) |
+| Smoke suite | `.\scripts\run-smoke.ps1` |
+| Regression suite | `.\scripts\run-regression.ps1` |
+| Everything | `.\scripts\run-regression.ps1 -IncludeSmoke` |
+| One module (by ID prefix) | `.\scripts\run-regression.ps1 -IncludeSmoke -Grep MCMP` (Campaigns) or `-Grep MLGN` (Login) |
+| One test | `.\scripts\run-single-test.ps1 MCMP-012` |
+| One spec file | `.\scripts\run-single-test.ps1 campaigns-search` |
+| Run without updating the workbooks | add `-SkipWorkbooks` to any run script |
+| Rebuild the workbooks from recorded results | `npm run excel` |
+| Add one run folder to the workbooks by hand | `npm run excel -- reports\<run folder>` |
+| Plain WebdriverIO (no summary or workbooks) | `npx wdio run ./config/wdio.android.conf.ts --spec ./test/specs/smoke/campaigns.spec.ts` |
+| Start / stop emulator | `.\scripts\start-emulator.ps1` / `.\scripts\stop-emulator.ps1` |
+| Install / update the APK | `.\scripts\install-apk.ps1 [-ApkPath <apk>]` |
 
-Each run writes `reports\<timestamp>-<suite>\summary.md` (passed / failed / skipped / not executed), `junit.xml`, screenshots, logs and optional videos. See `docs\FRAMEWORK_OVERVIEW.md#evidence-locations`.
+**Phones that block adb installs (ColorOS / Realme, MIUI):** Appium normally installs its UiAutomator2 server on the device, and those phones hold the install behind a "risky app" prompt. Either approve it on the phone (**View details > Install anyway**, for `io.appium.uiautomator2.server` and `.server.test`), or reuse the server that is already installed:
+
+```powershell
+$env:SKIP_SERVER_INSTALL = '1'; .\scripts\run-smoke.ps1
+```
 
 ## Configuration
 
 Copy `config\.env.example` to `config\.env` (git-ignored) and set:
 
-- `APK_PATH`: the APK to install
-- `TEST_USERNAME`, `TEST_PASSWORD`: a **beta** test account. Without them, login tests are reported as SKIPPED
-- `AVD_*`: emulator image and hardware
+- `TEST_USERNAME`, `TEST_PASSWORD`: a **beta** test account. Without them, tests that need a sign-in are reported as SKIPPED.
+- `DEVICE_SERIAL`: the adb serial to use when several devices are connected.
+- `APK_PATH`, `AVD_*`: APK and emulator settings.
+
+## Project layout
+
+```
+config/wdio.android.conf.ts   WebdriverIO + Appium config, reporters, failure hooks
+src/config/settings.ts        reads config\.env
+src/pages/                    page objects: BasePage, LoginPage, HomePage, MorePage, ScanCodePage,
+                              CampaignsPage, CampaignDetailPage (selectors and texts live only here)
+src/utils/                    adb, app lifecycle (launchFresh, launchSignedIn), evidence capture
+src/data/testData.ts          test inputs (no real data; the account comes from config\.env)
+test/specs/smoke|regression   Mocha specs; every test title starts with its ID (MLGN-nnn, MCMP-nnn)
+scripts/                      PowerShell runners (summary.md, Allure HTML report, workbook update)
+tools/excel/                  workbook generator; test cases and defects per module in modules/
+docs/                         workbooks, results ledger, setup and strategy documents
+```
+
+## Results and evidence
+
+Each run writes `reports\<timestamp>-<name>\`:
+
+- `summary.md`: passed / failed / skipped / not executed. Environment aborts (lost device or Appium session) count as **not executed**, never as failed.
+- `allure-report\index.html`: HTML report with screenshots.
+- `junit-*.xml` (one per spec), `results.json`, `wdio-console.txt`, `appium.log`, `logcat.txt`.
+- `screenshots\`: checkpoint screenshots, named after the test ID.
+- `failures\<test>\`: screenshot, UI hierarchy, foreground app and logcat for each failed test.
+
+`reports\` can contain personal data from the app and is git-ignored.
+
+## Test-case and defect workbooks (automatic)
+
+After each run, `tools\excel\update-workbooks.js` updates:
+
+- `docs\SalesHiker_Mobile_Test_Cases.xlsx`: one sheet per module (Login, Campaigns) with Actual Result, evidence link, Status, iteration, date and history, plus a Summary sheet built from formulas.
+- `docs\SalesHiker_Mobile_Defect_Tracker.xlsx`: one sheet per module, plus **Failures to triage** and a Summary sheet.
+
+How the update works:
+
+- Results go into `docs\test-execution-ledger.json`, keyed by test ID. Running one test updates only that row; other results stay. A run folder is never counted twice.
+- PASS and FAIL replace a test's last result. SKIPPED and NOT EXECUTED do not: they are added to Comments.
+- Defects keep their Status and manual columns (Assigned To, Developer Comment, ...) between updates. A defect linked to a guard test moves automatically when that test has a new result:
+  - guard fails and the defect is Closed or Ready for Retest → **Reopened**;
+  - guard passes and the defect is Open, Reopened or In Progress → **Ready for Retest**.
+
+  "Needs Decision" and "Won't Fix" are never changed, and closing a defect is always manual.
+- A failed test with no linked defect is listed under **Failures to triage**, where a person classifies it as a test-side issue, environment issue or application defect. The tool never creates defects on its own.
+- To change the wording of a test case or defect, edit `tools\excel\modules\<module>.cases.js` / `.defects.js`, not the workbook. To add a module, add those two files and list them in `modules\index.js`.
+- If a workbook is open in Excel, the results are still saved in the ledger. Close Excel and run `npm run excel`.
 
 ## Test coverage
 
-| ID | Test | Suite |
+| Module | IDs | Specs |
 |---|---|---|
-| SMK-01 | App launches to the sign-in screen with all controls | smoke |
-| SMK-02 | Valid user can sign in (needs credentials) | smoke |
-| REG-AUTH-01 | Empty, malformed and unknown credentials are rejected with the right messages | regression |
-| REG-FORM-01 | Per-field validation and Show/Hide password | regression |
-| REG-NAV-01 | Scan-a-code screen and Back, dark/light toggle, browser hand-off for Forgot password and Create workspace | regression |
+| Login (sign-in, validation, session, sign-out, offline) | MLGN-001 … MLGN-024 | `smoke/app-launch`, `smoke/login`, `regression/login-*`, `session`, `network` |
+| Navigation before sign-in | REG-NAV-01, REG-NAV-02 | `regression/navigation` |
+| Campaigns: list, filters, search | MCMP-001 … MCMP-012 | `smoke/campaigns`, `regression/campaigns-list`, `regression/campaigns-search` |
+| Campaigns: detail screen | MCMP-013 … MCMP-019 | `regression/campaign-detail` |
 
-Post-login workflows are not covered yet: they need a test account and live inspection of those screens. See `docs\TEST_STRATEGY.md`.
+Campaign tests only read data: they never create, pause or edit campaigns. Campaign names come from the live list at run time, so the tests keep working when beta data changes.
 
-## Latest verified execution (2026-10-29)
-
-Device: `SalesHiker_API35` (Android 15, Google APIs x86_64, emulator-5554). App: `com.saleshiker.app` 1.0.0 from `saleshiker-beta-2026-10-28.apk`.
-
-| Suite | Passed | Failed | Skipped | Not executed | Report |
-|---|---|---|---|---|---|
-| Smoke | 1 (SMK-01) | 0 | 1 (SMK-02, no credentials) | 0 | `reports\20261029-142258-smoke\summary.md` |
-| Regression | 3 (REG-AUTH-01, REG-FORM-01, REG-NAV-01) | 0 | 0 | 0 | `reports\20261029-142408-regression\summary.md` |
-| **Total (5 tests)** | **4** | **0** | **1** | **0** | |
-
-There were no ANR events and no crashes for any process during these runs. Earlier runs on the API 37 Play image hit environment problems (system-app ANRs, a SystemUI crash loop); they are documented as ENV-001 to ENV-003 in `docs\DEFECT_TRACKER.md`.
-
-Defects: **APP-001 (Low)**: the sign-in request is sent although client-side email validation has failed. Details and evidence are in `docs\DEFECT_TRACKER.md`.
+Some tests are **expected to fail** until their defect is fixed, because they assert the correct behaviour: MLGN-012 (MLGN-D01), MCMP-012 (MCMP-D02) and MCMP-019 (MCMP-D01).
 
 ## Using Claude Code
 
-`.mcp.json` registers the Maestro MCP server, and `.claude/rules/mobile-testing.md` tells Claude how to work: inspect before writing locators, run every test, never claim a pass without evidence, and keep test, environment and app issues apart. Start Claude Code in this folder, approve the `maestro` server, and ask, for example:
-
-- "Inspect the current screen and list stable selectors."
-- "Write a regression test for <workflow> using the live app, run it and fix test-side issues."
-- "Investigate the last failed run and draft a defect entry."
+`.claude/rules/mobile-testing.md` tells Claude how to work here: inspect the live app before writing selectors, run every test, never claim a pass without evidence, and keep test, environment and app issues apart.
 
 ## Documentation
 
+- `docs\SETUP.md`: setup from scratch and troubleshooting
+- `docs\FRAMEWORK_OVERVIEW.md`, `docs\TEST_STRATEGY.md`: architecture and scope
+- `docs\DEFECT_TRACKER.md`: environment issues and observations, with evidence
 - `docs\ENVIRONMENT_AUDIT.md`: what was found and installed on this PC
-- `docs\SETUP.md`: setup from scratch, plus troubleshooting
-- `docs\FRAMEWORK_OVERVIEW.md`: architecture, folders, scripts, evidence, conventions
-- `docs\TEST_STRATEGY.md`: scope, coverage, triage
-- `docs\DEFECT_TRACKER.md`: observations and environment issues, with evidence
-- `test-data\README.md`: test data and secret handling
