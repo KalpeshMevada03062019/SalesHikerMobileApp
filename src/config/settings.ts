@@ -38,6 +38,11 @@ export const settings = {
     tag: value('BROADCAST_TAG'),
     template: value('BROADCAST_TEMPLATE', 'call_phone_message'),
   },
+  /** Inbox send tests (MINB-01x): real WhatsApp template messages to one allowlisted number. */
+  inbox: {
+    send: value('INBOX_SEND').toLowerCase() === 'true',
+    recipient: value('INBOX_RECIPIENT'),
+  },
   /** Reuse the UiAutomator2 server on the device (phones that block adb installs behind a prompt). */
   skipServerInstall: value('SKIP_SERVER_INSTALL') === '1',
   /** Folder for this run's reports. Set by the PowerShell runners; generated otherwise. */

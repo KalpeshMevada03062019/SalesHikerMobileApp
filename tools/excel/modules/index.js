@@ -7,4 +7,8 @@ module.exports = [
     cases: require('./campaigns.cases'), defects: require('./campaigns.defects') },
   { sheet: 'Broadcasts', label: 'Broadcasts (WhatsApp)', role: 'Signed-in workspace user (mobile app)',
     cases: require('./broadcasts.cases'), defects: require('./broadcasts.defects') },
+  { sheet: 'Inbox', label: 'Inbox (WhatsApp chats)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./inbox.cases'), defects: require('./inbox.defects') },
+  { sheet: 'Pipeline', label: 'Pipeline (Deals)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./pipeline.cases'), defects: require('./pipeline.defects') },
 ];

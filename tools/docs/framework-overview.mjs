@@ -18,7 +18,7 @@
  * Rebuilt automatically after every run (scripts\_common.ps1) and by npm run excel.
  */
 import { execFileSync, spawn } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync, readdirSync, statSync, mkdtempSync, rmSync, watch } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, readdirSync, mkdtempSync, rmSync, watch } from 'node:fs';
 import { createRequire } from 'node:module';
 import { tmpdir, homedir } from 'node:os';
 import { join, dirname, relative, sep } from 'node:path';
@@ -44,7 +44,8 @@ const right = (t) => `<span style="float:right">${t}</span>`;
 const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 const fmtDay = (iso) => (iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Not available');
 const table = (head, rows, cls = '') => `<table class="${cls}">${head.length ? `<thead><tr>${head.map((h) => `<th>${h}</th>`).join('')}</tr></thead>` : ''}<tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
-const run = (cmd, args) => { try { return execFileSync(cmd, args, { cwd: ROOT, encoding: 'utf8', shell: process.platform === 'win32' }).trim(); } catch { return ''; } };
+// Windows .cmd shims (appium) need cmd /c; plain executables (git, adb) run directly.
+const run = (cmd, args) => { try { return execFileSync(process.platform === 'win32' && cmd === 'appium' ? 'cmd' : cmd, process.platform === 'win32' && cmd === 'appium' ? ['/c', cmd, ...args] : args, { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch { return ''; } };
 const git = (...args) => run('git', args);
 const readJson = (file) => { try { return JSON.parse(readFileSync(file, 'utf8').replace(/^﻿/, '')); } catch { return null; } };
 const rel = (p) => relative(ROOT, p).split(sep).join('/');
@@ -90,7 +91,7 @@ function defectStatuses() {
   }, () => statuses);
 }
 
-function recentRuns(limit = 8) {
+function recentRuns(limit = 6) {
   const dir = join(ROOT, 'reports');
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
@@ -157,9 +158,10 @@ async function collect() {
 // ---------------------------------------------------------------- render
 function css() {
   return `
-  @page { size: A4; margin: 0; }
+  /* Page margins live here: Chrome lets @page override the margins passed to printToPDF. */
+  @page { size: A4; margin: 16mm 20mm 18mm 20mm; }
   * { box-sizing: border-box; }
-  body { font-family: "Segoe UI", "Noto Sans", Arial, sans-serif; color: #1f2937; font-size: 10pt; line-height: 1.4; margin: 0; }
+  body { font-family: "Segoe UI", "Noto Sans", Arial, sans-serif; color: #1f2937; font-size: 9.5pt; line-height: 1.35; margin: 0; }
   h1 { font-size: 20pt; color: #1e3a5f; border-bottom: 3px solid #1e3a5f; padding-bottom: 6px; margin: 0 0 12px; }
   h2 { font-size: 13pt; color: #1e3a5f; margin: 18px 0 8px; }
   h3 { font-size: 11pt; color: #1e3a5f; margin: 14px 0 6px; }
@@ -173,9 +175,10 @@ function css() {
   .hero p { color: #dbe5f1; font-size: 12pt; }
   .meta td { border: 0; padding: 4px 0; } .meta td:first-child { color: #6b7280; width: 32%; }
   .note { color: #6b7280; font-size: 9pt; }
-  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.5pt; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9pt; }
+  tr, .box, .card, .layers, .flow, .alert, li { break-inside: avoid; }
   th { background: #f1f4f8; color: #1e3a5f; text-align: left; padding: 6px 8px; }
-  td { padding: 5px 8px; border-bottom: 1px solid #e3e8ef; vertical-align: top; }
+  td { padding: 4px 8px; border-bottom: 1px solid #e3e8ef; vertical-align: top; }
   .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 12px 0; }
   .card { border: 1px solid #d6dde7; border-radius: 8px; padding: 10px 12px; }
   .card b { display: block; font-size: 22pt; color: #1e3a5f; line-height: 1.1; }
@@ -250,7 +253,7 @@ function render(x, meta) {
 
   const stack = `<section class="page"><h1>2. What the framework is built with</h1>${table(['Purpose', 'Tool', 'Why'], [
     ['Mobile automation', `<b>Appium</b> ${esc(v.appium)} with the <b>UiAutomator2</b> driver ${esc(v.uia2)}`, 'Drives the native Android app through the accessibility tree; no changes to the app are needed.'],
-    ['Test runner', `<b>WebdriverIO</b> ${esc(v.wdio)}, <b>Mocha</b> ${esc(v.mocha)}, <b>Chai</b> ${esc(v.chai)}`, 'Starts Appium, runs one spec per session, waits for elements, readable assertions.'],
+    ['Test runner', `<b>WebdriverIO</b> ${esc(v.wdio)} with <b>Mocha</b> (@wdio/mocha-framework ${esc(v.mocha)}) and <b>Chai</b> ${esc(v.chai)}`, 'Starts Appium, runs one spec per session, waits for elements, readable assertions.'],
     ['Language', `<b>TypeScript</b> ${esc(v.typescript)}, Node.js ${esc(v.node)}`, 'Class-based page objects and typed helpers; errors caught before a run.'],
     ['Device access', `Android SDK platform-tools (adb ${esc(v.adb)}), no Android Studio`, 'Installs the APK, reads device logs and ANR events, captures screenshots.'],
     ['Reports', `Allure ${esc(v.allure)} (single-file HTML), JUnit, ${code('summary.md')}`, 'Readable results with screenshots per run; machine-readable results for the workbooks.'],
@@ -336,7 +339,7 @@ function render(x, meta) {
     <div class="two"><div><h3>Defects by severity</h3>${table(['Severity', right('Defects'), ''], [...sevRows, ['<b>Total</b>', right(`<b>${defects.length}</b>`), '']])}</div>
     <div><h3>Defects by status</h3>${table(['Status', right('Defects')], statusNames.map((s) => [esc(s), right(defects.filter((d) => d.status === s).length)]))}
     <p class="note">Last recorded test results: <b>${total.pass} PASS · ${total.fail} FAIL · ${total.none} no result</b> of ${total.tests}.</p></div></div>
-    <h3>Most important open findings</h3>${findings.length ? table(['ID', 'Finding', 'Module', 'Severity', 'Status'], findings) : '<p>No open defects.</p>'}
+    <h3>Most important open findings</h3>${findings.length ? table(['ID', 'Finding', 'Module', 'Severity', 'Status'], findings, 'compact') : '<p>No open defects.</p>'}
     <h3>Latest runs</h3>${runRows.length ? table(['Run (reports/)', 'Started', right('Passed'), right('Failed'), right('Skipped'), right('Not executed')], runRows, 'compact') : '<p>No run reports kept on this machine.</p>'}
     <p class="note">Each run folder keeps one run, which can be a single test rather than a module regression.</p>
     <h3>Risks and next steps</h3><ul>
@@ -404,9 +407,14 @@ async function printPdf(htmlFile, pdfFile, footer) {
   const profile = mkdtempSync(join(tmpdir(), 'qa-doc-'));
   const proc = spawn(browserPath(), ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', `--user-data-dir=${profile}`, '--remote-debugging-port=0', 'about:blank'], { stdio: 'ignore' });
   try {
+    // Chrome writes the port file while starting: retry until it holds a port number.
     const portFile = join(profile, 'DevToolsActivePort');
-    for (let i = 0; i < 150 && !existsSync(portFile); i++) await sleep(100);
-    const port = readFileSync(portFile, 'utf8').split('\n')[0];
+    let port = '';
+    for (let i = 0; i < 200 && !/^\d+$/.test(port); i++) {
+      try { port = readFileSync(portFile, 'utf8').split('\n')[0].trim(); } catch { /* not written yet */ }
+      if (!/^\d+$/.test(port)) await sleep(100);
+    }
+    if (!/^\d+$/.test(port)) throw new Error('The browser did not open its DevTools port within 20 s');
     const page = (await (await fetch(`http://127.0.0.1:${port}/json/list`)).json()).find((t) => t.type === 'page');
     const ws = new WebSocket(page.webSocketDebuggerUrl);
     await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject; });
@@ -426,9 +434,9 @@ async function printPdf(htmlFile, pdfFile, footer) {
     const mm = (n) => n / 25.4;
     const { data } = await send('Page.printToPDF', {
       printBackground: true, displayHeaderFooter: true, paperWidth: mm(210), paperHeight: mm(297),
-      marginTop: mm(14), marginBottom: mm(16), marginLeft: mm(14), marginRight: mm(14),
+      marginTop: mm(16), marginBottom: mm(18), marginLeft: mm(20), marginRight: mm(20),   // same as @page
       headerTemplate: '<span></span>',
-      footerTemplate: `<div style="font-size:7pt;color:#6b7280;width:100%;padding:0 14mm;display:flex;justify-content:space-between;font-family:Segoe UI,Arial,sans-serif"><span>${esc(footer)}</span><span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span></div>`,
+      footerTemplate: `<div style="font-size:7pt;color:#6b7280;width:100%;padding:0 20mm;display:flex;justify-content:space-between;font-family:Segoe UI,Arial,sans-serif"><span>${esc(footer)}</span><span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span></div>`,
     });
     writeFileSync(pdfFile, Buffer.from(data, 'base64'));
     ws.close();
@@ -450,13 +458,19 @@ async function build({ check = false } = {}) {
   const before = existsSync(HTML_FILE) ? readFileSync(HTML_FILE, 'utf8') : '';
   const changed = !existsSync(PDF_FILE) || comparable(before) !== comparable(html);
   if (!changed || check) return changed;
-  writeFileSync(HTML_FILE, html);
+  // Print from a temporary copy and write the HTML last, so a failed print never leaves an up-to-date
+  // looking HTML next to an old PDF.
+  const draft = join(tmpdir(), `qa-framework-${process.pid}.html`);
+  writeFileSync(draft, html);
   try {
-    await printPdf(HTML_FILE, PDF_FILE, footer);
+    await printPdf(draft, PDF_FILE, footer);
   } catch (e) {
-    if (e.code === 'EBUSY' || e.code === 'EPERM') throw new Error(`${rel(PDF_FILE)} is open in another program; close it and run npm run docs:framework`);
+    if ((e.code === 'EBUSY' || e.code === 'EPERM') && e.path === PDF_FILE) throw new Error(`${rel(PDF_FILE)} is open in another program; close it and run npm run docs:framework`);
     throw e;
+  } finally {
+    rmSync(draft, { force: true });
   }
+  writeFileSync(HTML_FILE, html);
   return changed;
 }
 

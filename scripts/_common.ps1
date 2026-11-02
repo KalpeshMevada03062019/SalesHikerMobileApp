@@ -562,6 +562,10 @@ function Invoke-WdioRun {
         $wbOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\excel\update-workbooks.js'), $runDir)
         $wbOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
         if ($wbOut.ExitCode -ne 0) { Write-Warn 'Workbooks not updated (see above). The run itself is unaffected.' }
+        # Framework overview (docs\SalesHiker_Mobile_QA_Automation_Framework.html/.pdf) from the new results
+        $docOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\docs\framework-overview.mjs'))
+        $docOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
+        if ($docOut.ExitCode -ne 0) { Write-Warn 'Framework overview not rebuilt (see above). Run: npm run docs:framework' }
     }
 
     if ($failed -or $notRun) { return 1 }

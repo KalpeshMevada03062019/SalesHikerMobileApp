@@ -14,6 +14,7 @@ export const by = {
     `android=new UiSelector().description(${JSON.stringify(label)}).className(${JSON.stringify(className)})`,
   descStartsWith: (prefix: string) => `android=new UiSelector().descriptionStartsWith(${JSON.stringify(prefix)})`,
   textStartsWith: (prefix: string) => `android=new UiSelector().textStartsWith(${JSON.stringify(prefix)})`,
+  textContains: (part: string) => `android=new UiSelector().textContains(${JSON.stringify(part)})`,
 };
 
 export abstract class BasePage {

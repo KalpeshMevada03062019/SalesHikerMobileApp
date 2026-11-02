@@ -93,6 +93,15 @@ How the update works:
 - To change the wording of a test case or defect, edit `tools\excel\modules\<module>.cases.js` / `.defects.js`, not the workbook. To add a module, add those two files and list them in `modules\index.js`.
 - If a workbook is open in Excel, the results are still saved in the ledger. Close Excel and run `npm run excel`.
 
+## Framework overview document (automatic)
+
+`docs\SalesHiker_Mobile_QA_Automation_Framework.pdf` (and `.html`) is the team-facing overview: summary, tool stack, how it works, kinds of tests and safety rules, scope, results snapshot and an appendix. It follows the same layout as the web project's `SalesHiker_QA_Automation_Framework.pdf`.
+
+- Every number is read from the repository when the document is built: tests in `test\specs`, results in the ledger, test cases and defects in `tools\excel\modules`, defect status from the tracker workbook, recent runs from `reports\`, and versions from `package.json` and Appium.
+- The document is rebuilt automatically after every run, and by `npm run excel`. It is only rewritten when its content changed.
+- `npm run docs:framework` rebuilds it by hand. `npm run docs:watch` rebuilds it whenever specs, page classes, modules or results change. `npm run docs:framework:check` exits 1 when the document is out of date.
+- The PDF is printed with the installed Chrome or Edge (set `DOCS_BROWSER` to use another one), so no extra package is needed. The document never contains credentials, phone numbers or contact names.
+
 ## Test coverage
 
 | Module | IDs | Specs |
