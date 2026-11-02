@@ -33,7 +33,9 @@ export const config: WebdriverIO.Config = {
     // Tests reset app data themselves (AppActions.launchFresh) so a session never reinstalls the APK.
     'appium:noReset': true,
     'appium:autoGrantPermissions': true,
-    'appium:disableWindowAnimation': true,
+    // Keep animations on: with them off, the app's bottom sheets (Send from, Saved list, Template)
+    // often stop at the dimmed backdrop and never slide up (runs 20261031-133943, -140658).
+    'appium:disableWindowAnimation': false,
     'appium:newCommandTimeout': 300,
     // Slow hosts: the UiAutomator2 server needs time to install and start.
     'appium:uiautomator2ServerInstallTimeout': 180_000,

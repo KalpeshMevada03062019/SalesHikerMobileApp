@@ -67,11 +67,14 @@ describe('Broadcasts: create and send to the allowlist', () => {
     expect(await broadcastDetailPage.isTitled(name), 'detail of the new broadcast').to.equal(true);
     await checkpoint('MBRD-020 sent');
 
-    // 4. Recipients must be exactly the allowlist; then the list shows the broadcast.
+    // 4. Summary lines first (top of the screen), then the recipients (scrolls to the end): they must be
+    //    exactly the allowlist. Then the list shows the broadcast.
+    const audienceLine = await broadcastDetailPage.audienceLine();
+    const templateName = await broadcastDetailPage.templateName();
     const recipients = await broadcastDetailPage.recipients();
     expect(recipients.map((r) => r.phone).sort(), 'recipients').to.deep.equal([...allowlist].sort());
-    expect(await broadcastDetailPage.audienceLine(), 'audience line').to.equal(`Tags: ${tag}. ${allowlist.length} contacts`);
-    expect(await broadcastDetailPage.templateName(), 'template').to.equal(template);
+    expect(audienceLine, 'audience line').to.equal(`Tags: ${tag}. ${allowlist.length} contacts`);
+    expect(templateName, 'template').to.equal(template);
     await broadcastDetailPage.goBack();
     const row = await broadcastsPage.rowLabel(name);
     await checkpoint('MBRD-020 list');

@@ -38,7 +38,8 @@ export class NewBroadcastPage extends BasePage {
     allContactsCount: by.textStartsWith('Everyone opted in: '),
     listPicker: by.descStartsWith('List: '),
     segmentPicker: by.descStartsWith('Segment: '),
-    matchCount: by.textMatches('[0-9,]+ contacts? match\\.'),
+    // "3 contacts match." / "1 contact matches." ([.] because UiSelector strings do not unescape "\\.")
+    matchCount: by.textMatches('[0-9,]+ contacts? match(es)?[.]'),
     addTag: by.a11y('Add tag'),
     removeTag: (tag: string) => by.a11y(`Remove tag ${tag}`),
     next: by.a11y('Next'),
@@ -151,10 +152,21 @@ export class NewBroadcastPage extends BasePage {
     await this.tap(this.selectors.sheetClose);
   }
 
+  /** "N contacts match." under the chosen list/segment; it sits behind the Next bar until scrolled. */
   async matchCount(): Promise<number | null> {
     const el = this.el(this.selectors.matchCount);
+    for (let i = 0; i < 4 && !(await el.isExisting()); i++) {
+      const { width, height } = await driver.getWindowSize();
+      await driver.execute('mobile: swipeGesture', { left: width * 0.1, top: height * 0.3, width: width * 0.8, height: height * 0.4, direction: 'up', percent: 0.8 });
+    }
     if (!(await el.isExisting())) return null;
     return Number((await el.getText()).replace(/[^\d]/g, ''));
+  }
+
+  /** Current name; scrolls back to the top of step 1 first. */
+  async nameValue(): Promise<string> {
+    await this.scrollTo(this.selectors.name);
+    return this.el(this.selectors.name).getText();
   }
 
   async addTag(tag: string): Promise<void> {
@@ -188,16 +200,18 @@ export class NewBroadcastPage extends BasePage {
 
   // ---- step 2: template
   /**
-   * Opens the template sheet. Sometimes only its dimmed backdrop appears and the sheet never slides up
-   * (seen in run 20261031-133943); then the backdrop is tapped away and the picker opened once more.
+   * Opens the template sheet. Sometimes only its dimmed backdrop appears at first (run 20261031-133943).
+   * Never tap the backdrop to recover: the sheet can slide up meanwhile and the tap then picks a template
+   * (run 20261031-135758 selected the wrong one that way). Close the sheet only with its own Close button.
    */
   private async openTemplatePicker(): Promise<void> {
+    const opened = () => this.el(this.selectors.templateSearch).waitForExist({ timeout: 12_000 }).then(() => true, () => false);
     for (let attempt = 1; attempt <= 2; attempt++) {
       await this.hideKeyboard();
       await this.tap(this.selectors.templatePicker);
-      if (await this.el(this.selectors.templateSearch).waitForDisplayed({ timeout: 8_000 }).then(() => true, () => false)) return;
-      const backdrop = this.el('//android.view.ViewGroup[@content-desc="Close"]');
-      if (await backdrop.isExisting()) await backdrop.click();
+      if (await opened()) return;
+      const sheetTitle = this.el('//android.view.View[@text="Template"]');
+      if (await sheetTitle.isExisting()) await this.tap(this.selectors.sheetClose);
       await driver.pause(1_000);
     }
     await this.waitForVisible(this.selectors.templateSearch, 1_000, 'Template picker');

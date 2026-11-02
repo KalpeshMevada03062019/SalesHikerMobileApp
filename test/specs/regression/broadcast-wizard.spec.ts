@@ -139,7 +139,7 @@ describe('Broadcasts: New Broadcast wizard (nothing is sent)', () => {
     expect(await $(`~Template: ${template}`).isExisting(), 'template kept').to.equal(true);
     await newBroadcastPage.backToPreviousStep();
     await newBroadcastPage.waitForStep('Audience');
-    expect(await $(newBroadcastPage.selectors.name).getText(), 'name kept').to.equal(name);
+    expect(await newBroadcastPage.nameValue(), 'name kept').to.equal(name);
     expect(await newBroadcastPage.isAudienceChecked('Tags'), 'audience kept').to.equal(true);
   });
 
