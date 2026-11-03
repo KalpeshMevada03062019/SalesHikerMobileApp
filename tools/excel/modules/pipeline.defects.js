@@ -2,18 +2,6 @@
 // RMX3997, Android 16; web Deals page as the reference). No contact names or numbers here.
 module.exports = [
   {
-    id: 'MPIP-D01',
-    category: 'Filter',
-    title: '"Mine" shows no deals although deals are assigned to the signed-in user',
-    steps: '1. Deals tab.\n2. Search DL-100002 (web: "Assigned To" = the signed-in user; the phone card also shows that owner).\n3. Tap Mine.',
-    expected: 'Mine lists the deals assigned to the signed-in user, including DL-100002.',
-    actual: 'With Mine on, the list is empty ("No deals match") and every stage shows 0 deals, with or without a search.',
-    issueType: 'Bug', severity: 'Medium', priority: 'P3 - Medium', status: 'Open',
-    tests: ['MPIP-006'], guardTest: 'MPIP-006',
-    evidence: 'reports/explore-pipeline/62-mine.png; web deal DL-100002 "Assigned To" (2026-11-02)',
-    qaComment: 'Checked against the web deal record. Automated test MPIP-006 (test/specs/regression/pipeline-view.spec.ts) fails while this persists.',
-  },
-  {
     id: 'MPIP-D02',
     category: 'Consistency with web',
     title: 'Stage "Value Proposition" is called "Value Proposal" on mobile',

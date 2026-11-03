@@ -55,3 +55,12 @@ export const pipelineData = {
   myDeal: { number: 'DL-100002', owner: 'Yash' },
   noMatch: 'qa-no-such-deal-zz',
 };
+
+/** Templates (read only): an approved template with three buttons, and invalid input for the form. */
+export const templateData = {
+  approved: { name: 'call_phone_message', category: 'Marketing', language: 'English', header: 'Text', buttons: ['Quick Reply', 'Stop Promotions', 'Call Phone Number'] },
+  invalidName: 'Bad Name!',
+  normalisedInvalidName: 'bad_name!',   // the app lower-cases and replaces spaces as you type, but keeps "!"
+  previewBody: 'QA preview check',
+  noMatch: 'qa_no_such_template_zz',
+};

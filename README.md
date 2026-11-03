@@ -32,11 +32,16 @@ If scripts are blocked by the execution policy, use `powershell -ExecutionPolicy
 | Start / stop emulator | `.\scripts\start-emulator.ps1` / `.\scripts\stop-emulator.ps1` |
 | Install / update the APK | `.\scripts\install-apk.ps1 [-ApkPath <apk>]` |
 
-**Phones that block adb installs (ColorOS / Realme, MIUI):** Appium normally installs its UiAutomator2 server on the device, and those phones hold the install behind a "risky app" prompt. Either approve it on the phone (**View details > Install anyway**, for `io.appium.uiautomator2.server` and `.server.test`), or reuse the server that is already installed:
+**Phones that block adb installs (ColorOS / Realme, MIUI):** Appium normally installs its UiAutomator2 server on the device, and those phones hold the install behind a "risky app" prompt. `SKIP_SERVER_INSTALL=1` in `config\.env` (already set for the Realme phone) reuses the server that is already installed. To install a new server instead, approve the prompt on the phone (**View details > Install anyway**, for `io.appium.uiautomator2.server` and `.server.test`).
+
+**Tests that send real WhatsApp messages** are switched off by default; without the switch they run every check and stop before sending (reported as skipped):
 
 ```powershell
-$env:SKIP_SERVER_INSTALL = '1'; .\scripts\run-smoke.ps1
+$env:BROADCAST_SEND='true'; .\scripts\run-single-test.ps1 MBRD-020; Remove-Item Env:BROADCAST_SEND   # one broadcast to the allowlisted tag
+$env:INBOX_SEND='true'; .\scripts\run-regression.ps1 -Grep MINB-01; Remove-Item Env:INBOX_SEND       # one template of each type to INBOX_RECIPIENT
 ```
+
+Only one test command at a time: all runs share the same phone, and two runs end each other's sessions.
 
 ## Configuration
 
@@ -45,6 +50,9 @@ Copy `config\.env.example` to `config\.env` (git-ignored) and set:
 - `TEST_USERNAME`, `TEST_PASSWORD`: a **beta** test account. Without them, tests that need a sign-in are reported as SKIPPED.
 - `DEVICE_SERIAL`: the adb serial to use when several devices are connected.
 - `APK_PATH`, `AVD_*`: APK and emulator settings.
+- `SKIP_SERVER_INSTALL`: `1` to reuse the UiAutomator2 server on the phone (see above).
+- `BROADCAST_SEND`, `BROADCAST_ALLOWLIST`, `BROADCAST_TAG`, `BROADCAST_TEMPLATE`: the broadcast send test (MBRD-020). The tag must be carried only by the allowlisted contacts.
+- `INBOX_SEND`, `INBOX_RECIPIENT`: the Inbox send tests (MINB-010 … 018). The chat header must show exactly this number before every send.
 
 ## Project layout
 
@@ -110,10 +118,19 @@ How the update works:
 | Navigation before sign-in | REG-NAV-01, REG-NAV-02 | `regression/navigation` |
 | Campaigns: list, filters, search | MCMP-001 … MCMP-012 | `smoke/campaigns`, `regression/campaigns-list`, `regression/campaigns-search` |
 | Campaigns: detail screen | MCMP-013 … MCMP-019 | `regression/campaign-detail` |
+| Broadcasts: list, New Broadcast wizard, send | MBRD-001 … MBRD-012, MBRD-020 | `smoke/broadcasts`, `regression/broadcast-wizard`, `regression/broadcast-send` |
+| Inbox: chat, Send Template sheet, one template per message type | MINB-001 … MINB-006, MINB-010 … MINB-018 | `smoke/inbox`, `regression/inbox-chat`, `regression/inbox-send-templates` |
+| Pipeline (Deals): stages, search, Mine, deal detail, stage moves | MPIP-001 … MPIP-009, MPIP-020 … MPIP-022 | `smoke/pipeline`, `regression/pipeline-view`, `regression/pipeline-move` |
 
-Campaign tests only read data: they never create, pause or edit campaigns. Campaign names come from the live list at run time, so the tests keep working when beta data changes.
+What the tests change:
+- **Campaigns:** nothing. Campaign names are read from the live list at run time.
+- **Broadcasts:** the wizard tests always Cancel or Discard. MBRD-020 sends one broadcast, only with `BROADCAST_SEND=true`.
+- **Inbox:** MINB-010 … 018 send messages, only with `INBOX_SEND=true`, and only to `INBOX_RECIPIENT`.
+- **Pipeline:** only the QA deal DL-100005, which is put back to Qualification after every test.
 
-Some tests are **expected to fail** until their defect is fixed, because they assert the correct behaviour: MLGN-012 (MLGN-D01), MCMP-012 (MCMP-D02) and MCMP-019 (MCMP-D01).
+Some tests are **expected to fail** until their defect is fixed, because they assert the correct behaviour (current list: the "expected to fail" count in the framework PDF, or the guard tests in the defect tracker).
+
+Free-form WhatsApp messages (text, attachments) and receiving are **not covered yet**: they need the recipient to message the business number first, so that the 24-hour window is open.
 
 ## Using Claude Code
 

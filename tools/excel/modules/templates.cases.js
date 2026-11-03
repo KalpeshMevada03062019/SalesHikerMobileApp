@@ -1,0 +1,61 @@
+// Mobile Templates test cases (More > WhatsApp > Templates), SalesHiker Android 1.0.0. Expected results
+// come from the live app on the Realme RMX3997 (2026-11-02/03), with the web project's template
+// scenarios (TPL-001 ... TPL-006, TPL-020) as the reference. Read only: no template is created, edited or
+// deleted; the New template form is only filled with invalid or partial input and discarded.
+
+const PRE = 'Registered beta test account (config\\.env).\nApp restarted signed in; More > Templates open.';
+const FORM_PRE = `${PRE}\nNew template form opened (never saved; Cancel > Discard at the end).`;
+const tc = (fields) => ({ req: 'REQ-MTPL-01', input: 'Test account from config\\.env. Live beta templates.', pre: PRE, ...fields });
+
+module.exports = [
+  tc({ ts: 'TS-MTPL-01', scenario: 'Template list', id: 'MTPL-001', title: 'Templates opens with the count, search, filters, Sync from Meta and templates',
+    steps: '1. More > Templates.', type: 'Smoke', design: 'Positive',
+    expected: '"N templates", Search templates, filters All (selected) / Approved / Pending / Rejected / Marketing / Utility / Authentication, "Get new and changed templates." with Sync from Meta, and template rows (name, language, category, status, buttons). Web: TPL-001.',
+    observed: 'List shown with count, filters, sync and rows.' }),
+  tc({ ts: 'TS-MTPL-01', scenario: 'Template list', id: 'MTPL-002', title: 'Status filters show only templates with that status',
+    steps: '1. Tap Approved, Pending, Rejected in turn.', type: 'Functional', design: 'Equivalence Partitioning',
+    expected: 'Each filter lists only templates with that status; with none, "0 templates" and "No templates found".', observed: 'Only matching statuses listed.' }),
+  tc({ ts: 'TS-MTPL-01', scenario: 'Template list', id: 'MTPL-003', title: 'Category filters show only templates of that category',
+    steps: '1. Tap Marketing, Utility, Authentication in turn.', type: 'Functional', design: 'Equivalence Partitioning',
+    expected: 'Each filter lists only templates of that category. Web: TPL-004.', observed: 'Only matching categories listed.' }),
+  tc({ ts: 'TS-MTPL-01', scenario: 'Template list', id: 'MTPL-004', title: 'Rejected templates show the reason from Meta',
+    steps: '1. Tap Rejected.', type: 'Functional', design: 'Error Handling',
+    expected: 'Each rejected template shows Meta\'s reason code (e.g. INVALID_FORMAT, INCORRECT_CATEGORY); the count matches the rows.', observed: 'Reasons shown for every rejected template.' }),
+  tc({ ts: 'TS-MTPL-01', scenario: 'Template list', id: 'MTPL-005', title: 'Search by part of a name is case-insensitive and an unknown name finds none',
+    steps: '1. Search "CALL_PHONE".\n2. Search qa_no_such_template_zz.\n3. Clear the search.', input: 'Search: CALL_PHONE, then qa_no_such_template_zz',
+    type: 'Functional', design: 'Negative', expected: 'call_phone_message found; unknown name shows "0 templates" and "No templates found"; clearing restores the full count.',
+    observed: 'Search case-insensitive; empty state; count restored.' }),
+  tc({ ts: 'TS-MTPL-01', scenario: 'Template list', id: 'MTPL-006', title: 'Sync from Meta reports that it ran and keeps the list',
+    steps: '1. Tap Sync from Meta.\n2. Wait for it to finish.', type: 'Functional', design: 'Positive',
+    expected: '"Syncing…" while it runs, then "Synced from Meta today, HH:MM"; the list still shows its templates. Only pulls from Meta. Web: TPL-002.',
+    observed: 'Syncing shown, then the synced time.' }),
+  tc({ ts: 'TS-MTPL-02', scenario: 'Template detail', id: 'MTPL-007', title: 'Detail shows the preview, status, category, language, header and buttons',
+    steps: '1. Open call_phone_message.\n2. Scroll the details.', type: 'Functional', design: 'Positive',
+    expected: 'WhatsApp preview with the body and three buttons; details Status Approved, Category Marketing, Language English, Header Text, and each button with its type.',
+    observed: 'Preview and details shown.' }),
+  tc({ ts: 'TS-MTPL-02', scenario: 'Template detail', id: 'MTPL-008', title: 'Detail offers Use in Broadcast, Send Template and Edit or Delete',
+    steps: '1. Open call_phone_message.\n2. Open Template actions, then close it.', type: 'Functional', design: 'Positive',
+    expected: '"Use in Broadcast" and "Send Template" buttons; Template actions offers Edit ("Save, or save and send for review") and Delete. Nothing is chosen.',
+    observed: 'Actions offered; menu closed without choosing.' }),
+  tc({ ts: 'TS-MTPL-03', scenario: 'New template form', id: 'MTPL-010', title: 'New template starts as a Meta-approved Marketing template in en_US', pre: FORM_PRE,
+    steps: '1. Tap New template.', type: 'Functional', design: 'Positive',
+    expected: 'Tabs Basics / Header / Body / Buttons; type Meta-approved selected; category Marketing selected; language code en_US. Web: TPL-003.', observed: 'Defaults as expected.' }),
+  tc({ ts: 'TS-MTPL-03', scenario: 'New template form', id: 'MTPL-011', title: 'A name and the message text are required', pre: FORM_PRE,
+    steps: '1. Tap Save and send for review with an empty form.\n2. Open Body.', type: 'Functional', design: 'Validation',
+    expected: '"Enter a name" on Basics and "Enter the message text" on Body; nothing saved. Web: TPL-005.', observed: 'Both required messages shown.' }),
+  tc({ ts: 'TS-MTPL-03', scenario: 'New template form', id: 'MTPL-012', title: 'The name is lower-cased as typed and invalid characters are rejected', pre: FORM_PRE,
+    steps: '1. Type "Bad Name!".\n2. Tap Save and send for review.', input: 'Name: Bad Name!', type: 'Functional', design: 'Validation',
+    expected: 'Typed as "bad_name!" (lower case, space replaced); on save "Use only lowercase letters, digits and underscores"; nothing saved.', observed: 'Normalised and rejected.' }),
+  tc({ ts: 'TS-MTPL-03', scenario: 'New template form', id: 'MTPL-013', title: 'Header offers the same types as the web, including Location', pre: FORM_PRE,
+    steps: '1. Open Header.', type: 'Functional', design: 'Validation',
+    expected: 'None, Text, Image, Video, Document and Location (as on the web, scenario TPL-020).', observed: 'All header types offered.', defect: 'MTPL-D01' }),
+  tc({ ts: 'TS-MTPL-03', scenario: 'New template form', id: 'MTPL-014', title: 'Body text appears in the WhatsApp preview as it is typed', pre: FORM_PRE,
+    steps: '1. Open Body.\n2. Type "QA preview check".', input: 'Message: QA preview check', type: 'Functional', design: 'Positive',
+    expected: 'The preview shows the text. Web: TPL-006.', observed: 'Preview updated.' }),
+  tc({ ts: 'TS-MTPL-03', scenario: 'New template form', id: 'MTPL-015', title: 'Buttons can be added with a type and text, and removed', pre: FORM_PRE,
+    steps: '1. Open Buttons.\n2. Add button.\n3. Remove it.', type: 'Functional', design: 'Positive',
+    expected: '"No buttons. Up to 10."; Add button offers Quick reply / Website / Call and a Button text field; removing it shows "No buttons" again.', observed: 'Button added and removed.' }),
+  tc({ ts: 'TS-MTPL-03', scenario: 'New template form', id: 'MTPL-016', title: 'Cancel with changes asks to discard and nothing is saved', pre: FORM_PRE,
+    steps: '1. Type a name.\n2. Cancel > Discard.', input: 'Name: Bad Name!', type: 'Functional', design: 'Positive',
+    expected: '"Discard changes? Your changes are not saved."; after Discard the template count is unchanged.', observed: 'Discard prompt; count unchanged.' }),
+];

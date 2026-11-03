@@ -72,3 +72,26 @@ export async function closeApp(packageName: string): Promise<void> {
 export async function setAirplaneMode(enabled: boolean): Promise<void> {
   await driver.execute('mobile: setConnectivity', { airplaneMode: enabled });
 }
+
+export interface Connectivity { wifi: boolean; data: boolean; airplaneMode: boolean }
+
+/**
+ * Takes the device fully offline and returns the previous state for restoreConnectivity(). Airplane mode
+ * alone is not enough: Android 13+ keeps Wi-Fi on in airplane mode when it was on before (run
+ * 20261102-173406 signed in "offline"), so Wi-Fi and mobile data are switched off too.
+ */
+export async function goOffline(): Promise<Connectivity> {
+  const before = (await driver.execute('mobile: getConnectivity', {})) as unknown as Connectivity;
+  await driver.execute('mobile: setConnectivity', { wifi: false, data: false, airplaneMode: true });
+  await driver.waitUntil(async () => {
+    const now = (await driver.execute('mobile: getConnectivity', {})) as unknown as Connectivity;
+    return !now.wifi && !now.data;
+  }, { timeout: 15_000, timeoutMsg: 'Device did not go offline (Wi-Fi or mobile data still on)' });
+  return before;
+}
+
+/** Puts Wi-Fi, mobile data and airplane mode back exactly as they were. */
+export async function restoreConnectivity(state: Connectivity): Promise<void> {
+  await driver.execute('mobile: setConnectivity', { airplaneMode: state.airplaneMode });
+  await driver.execute('mobile: setConnectivity', { wifi: state.wifi, data: state.data });
+}

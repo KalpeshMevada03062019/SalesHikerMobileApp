@@ -19,7 +19,7 @@ $os = Get-CimInstance Win32_OperatingSystem
 Add-Check 'Windows' 'OK' "$($os.Caption) $($os.Version) $($os.OSArchitecture)"
 $drive = (Get-Item $env:USERPROFILE).PSDrive
 $freeGb = [math]::Round($drive.Free / 1GB, 1)
-Add-Check "Free space $($drive.Name):" $(if ($freeGb -ge 10) { 'OK' } else { 'WARN' }) "$freeGb GB (emulator data and Maestro need ~10 GB)"
+Add-Check "Free space $($drive.Name):" $(if ($freeGb -ge 10) { 'OK' } else { 'WARN' }) "$freeGb GB (emulator data and reports need ~10 GB)"
 $ramGb = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 1)
 Add-Check 'Host RAM' $(if ($ramGb -ge 12) { 'OK' } else { 'WARN' }) "$ramGb GB (AVD_RAM_MB=$(Get-ConfigValue $config 'AVD_RAM_MB' '4096'))"
 
@@ -64,19 +64,29 @@ if ($sdk) {
     Add-Check 'Android SDK' 'FAIL' 'Not found. Install command-line tools (docs\SETUP.md) and set ANDROID_HOME.'
 }
 
-# ---- Maestro and Claude Code
-$maestro = Get-ToolPath maestro -Optional
-if ($maestro) {
-    $mv = ((Invoke-Native $maestro @('--version')).Output | Where-Object { $_ -match '^\d+\.\d+\.\d+' } | Select-Object -Last 1)
-    Add-Check 'Maestro CLI' 'OK' "$mv ($maestro)"
+# ---- Node, Appium and the test framework
+$node = Get-Command node -ErrorAction SilentlyContinue
+if ($node) {
+    $nv = (Invoke-Native $node.Source @('--version')).Text.Trim()
+    $major = [int]($nv.TrimStart('v').Split('.')[0])
+    Add-Check 'Node.js' $(if ($major -ge 22) { 'OK' } else { 'FAIL' }) "$nv (22.19 or newer)"
 } else {
-    Add-Check 'Maestro CLI' 'FAIL' 'Not installed - see docs\SETUP.md'
+    Add-Check 'Node.js' 'FAIL' 'Not installed - Node.js 22.19+ is required'
 }
+$appium = Get-Command appium -ErrorAction SilentlyContinue
+if ($appium) {
+    $av = ((Invoke-Native 'cmd' @('/c', 'appium', '--version')).Output | Select-Object -Last 1)
+    Add-Check 'Appium' 'OK' "$av ($($appium.Source))"
+    $drivers = (Invoke-Native 'cmd' @('/c', 'appium', 'driver', 'list', '--installed')).Text
+    $uia2 = [regex]::Match($drivers, 'uiautomator2@([\d.]+)').Groups[1].Value
+    Add-Check 'UiAutomator2 driver' $(if ($uia2) { 'OK' } else { 'FAIL' }) $(if ($uia2) { $uia2 } else { 'not installed: appium driver install uiautomator2' })
+} else {
+    Add-Check 'Appium' 'FAIL' 'Not installed: npm install -g appium; appium driver install uiautomator2'
+}
+$deps = Test-Path (Join-Path $ProjectRoot 'node_modules\@wdio\cli')
+Add-Check 'Project dependencies' $(if ($deps) { 'OK' } else { 'FAIL' }) $(if ($deps) { 'node_modules present (WebdriverIO, Mocha, Chai, Allure, exceljs)' } else { 'missing: npm install' })
 $claude = Get-Command claude -ErrorAction SilentlyContinue
 Add-Check 'Claude Code CLI' $(if ($claude) { 'OK' } else { 'WARN' }) $(if ($claude) { ((Invoke-Native $claude.Source @('--version')).Output | Select-Object -First 1) } else { 'not on PATH (only needed for AI-assisted authoring)' })
-$mcpFile = Join-Path $ProjectRoot '.mcp.json'
-$mcpOk = (Test-Path $mcpFile) -and ((Get-Content $mcpFile -Raw) -match '"maestro"')
-Add-Check 'Maestro MCP config' $(if ($mcpOk) { 'OK' } else { 'WARN' }) $(if ($mcpOk) { '.mcp.json registers the "maestro" server' } else { 'not configured - see docs\SETUP.md, step "Maestro MCP"' })
 
 # ---- Project configuration
 Add-Check 'config\.env' $(if (Test-Path (Join-Path $ConfigDir '.env')) { 'OK' } else { 'WARN' }) $(if (Test-Path (Join-Path $ConfigDir '.env')) { 'present' } else { 'missing: copy config\.env.example to config\.env' })
@@ -85,7 +95,7 @@ Add-Check 'APP_ID' $(if ($appId) { 'OK' } else { 'FAIL' }) $(if ($appId) { $appI
 $apk = Get-ConfigValue $config 'APK_PATH'
 Add-Check 'APK_PATH' $(if ($apk -and (Test-Path $apk)) { 'OK' } else { 'WARN' }) $(if ($apk) { $apk } else { 'not set (install-apk.ps1 -ApkPath ...)' })
 $hasCreds = (Get-ConfigValue $config 'TEST_USERNAME') -and (Get-ConfigValue $config 'TEST_PASSWORD')
-Add-Check 'Test credentials' $(if ($hasCreds) { 'OK' } else { 'WARN' }) $(if ($hasCreds) { 'configured (value hidden)' } else { "not set: 'requires-login' flows will be skipped" })
+Add-Check 'Test credentials' $(if ($hasCreds) { 'OK' } else { 'WARN' }) $(if ($hasCreds) { 'configured (value hidden)' } else { "not set: tests that need a sign-in will be skipped" })
 
 # ---- Device and app
 if ($sdk -and (Get-ToolPath adb -Optional)) {

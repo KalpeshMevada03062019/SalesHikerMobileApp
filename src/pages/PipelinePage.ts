@@ -58,19 +58,37 @@ export class PipelinePage extends BasePage {
     return num(await this.el(this.selectors.total).getText());
   }
 
-  /** Brings a stage card into view (the strip scrolls sideways) and returns it. */
-  private async stageInView(name: StageName): Promise<WebdriverIO.Element> {
-    await $(`android=new UiScrollable(new UiSelector().description("Deal stages")).setAsHorizontalList().scrollIntoView(${this.selectors.stageCard(name).replace('android=', '')})`).isExisting().catch(() => false);
-    const card = await this.el(this.selectors.stageCard(name)).getElement();
-    await card.waitForExist({ timeout: 10_000, timeoutMsg: `Stage card "${name}" not found` });
-    // A card cut off at the screen edge cannot be tapped reliably: centre it with a short swipe.
+  /** Short swipe on the stage strip; "left" moves towards the later stages. */
+  private async swipeStrip(direction: 'left' | 'right', percent = 0.4): Promise<void> {
+    const strip = await this.el('//android.view.View[@content-desc="Deal stages"]').getElement();
+    const { y } = await strip.getLocation();
+    const { height } = await strip.getSize();
     const { width } = await driver.getWindowSize();
-    const { x, y } = await card.getLocation();
-    const { width: w, height: h } = await card.getSize();
-    if (x <= 2 || x + w >= width - 2) {
-      await driver.execute('mobile: swipeGesture', { left: width * 0.1, top: y, width: width * 0.8, height: h, direction: x <= 2 ? 'right' : 'left', percent: 0.4 });
+    await driver.execute('mobile: swipeGesture', { left: width * 0.1, top: y + 10, width: width * 0.8, height: height - 20, direction, percent });
+  }
+
+  /**
+   * Brings a stage card fully into view and returns it. The strip scrolls sideways and only on-screen
+   * cards exist for UiAutomator, so it swipes towards the card's position in the pipeline order.
+   */
+  private async stageInView(name: StageName): Promise<WebdriverIO.Element> {
+    const order = PIPELINE_STAGES.map((s) => s.mobile as string);
+    const { width } = await driver.getWindowSize();
+    for (let i = 0; i < 20; i++) {
+      const card = this.el(this.selectors.stageCard(name));
+      if (await card.isExisting()) {
+        const { x } = await card.getLocation();
+        const { width: w } = await card.getSize();   // bounds are clipped to the screen
+        if (x > 2 && x + w < width - 2) return card.getElement();
+        await this.swipeStrip(x <= 2 ? 'right' : 'left', 0.25);
+        continue;
+      }
+      // Not on screen: go towards it, judged from every card that is visible.
+      const visible: number[] = [];
+      for (const el of await $$(this.selectors.stageCards)) visible.push(order.indexOf(((await el.getAttribute('content-desc')) ?? '').split(', ')[0]!));
+      await this.swipeStrip(order.indexOf(name) > Math.max(...visible) ? 'left' : 'right', 0.35);
     }
-    return card;
+    throw new Error(`Stage card "${name}" not brought into view`);
   }
 
   async stageCard(name: StageName): Promise<StageCard> {
@@ -89,14 +107,14 @@ export class PipelinePage extends BasePage {
 
   /** Stage names in strip order, read from the strip itself (not from PIPELINE_STAGES). */
   async stageNamesOnScreen(): Promise<string[]> {
+    for (let i = 0; i < 4; i++) await this.swipeStrip('right', 0.9);   // back to the first stage
     const names: string[] = [];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 10; i++) {
       for (const el of await $$(this.selectors.stageCards)) {
         const name = ((await el.getAttribute('content-desc')) ?? '').split(', ')[0]!;
         if (name && !names.includes(name)) names.push(name);
       }
-      const { width } = await driver.getWindowSize();
-      await driver.execute('mobile: swipeGesture', { left: width * 0.1, top: 488, width: width * 0.8, height: 150, direction: 'left', percent: 0.8 });
+      await this.swipeStrip('left', 0.3);   // small steps, so no card is skipped
     }
     return names;
   }
@@ -117,9 +135,10 @@ export class PipelinePage extends BasePage {
     return deals;
   }
 
-  async firstProgress(): Promise<number | null> {
+  /** Progress of the first deal listed; waits for the list to load (null only when it stays empty). */
+  async firstProgress(timeout = 15_000): Promise<number | null> {
     const el = this.el(`(${this.selectors.progress})[1]`);
-    if (!(await el.isExisting())) return null;
+    if (!(await el.waitForExist({ timeout }).then(() => true, () => false))) return null;
     return Number(((await el.getAttribute('content-desc')) ?? '').replace(/[^\d]/g, ''));
   }
 
@@ -177,9 +196,11 @@ export class DealPage extends BasePage {
 
   readonly selectors = {
     back: by.descClass('Back', 'android.widget.Button'),
-    number: (n: string) => by.text(n),
+    number: (n: string) => `(//*[@text=${JSON.stringify(n)}])[1]`,   // shown twice: header and under the name
     changeStage: by.descStartsWith('Change Stage, '),
-    stageLabel: by.textMatches('(Stage [0-9] of [0-9] · .+|Won|Lost)'),
+    // The line under the progress bar ("Stage 2 of 5 · Needs Analysis", "Won", "Lost"); the stage name
+    // alone also appears in the chip and in the Change Stage row.
+    stageLabel: '//android.view.View[starts-with(@content-desc, "Deal progress ")]/following-sibling::android.widget.TextView[1]',
     progress: '//android.view.View[starts-with(@content-desc, "Deal progress ")]',
     probability: by.descStartsWith('Probability '),
     markWon: by.a11y('Mark Won'),
@@ -235,8 +256,13 @@ export class DealPage extends BasePage {
   async openMoveStage(): Promise<string[]> {
     await this.tap(this.selectors.changeStage);
     await this.waitForVisible(this.selectors.moveSheet, 10_000, 'Move Stage sheet');
+    // The deal screen's own buttons follow the sheet in the hierarchy: keep only stage options.
+    const stages = PIPELINE_STAGES.map((s) => s.mobile as string);
     const options: string[] = [];
-    for (const el of await $$(this.selectors.moveOptions)) options.push((await el.getAttribute('content-desc')) ?? '');
+    for (const el of await $$(this.selectors.moveOptions)) {
+      const label = (await el.getAttribute('content-desc')) ?? '';
+      if (stages.includes(label.replace(/ \(Current\)$/, '')) && !options.includes(label)) options.push(label);
+    }
     return options;
   }
 

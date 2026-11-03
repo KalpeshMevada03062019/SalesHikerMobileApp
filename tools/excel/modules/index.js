@@ -11,4 +11,6 @@ module.exports = [
     cases: require('./inbox.cases'), defects: require('./inbox.defects') },
   { sheet: 'Pipeline', label: 'Pipeline (Deals)', role: 'Signed-in workspace user (mobile app)',
     cases: require('./pipeline.cases'), defects: require('./pipeline.defects') },
+  { sheet: 'Templates', label: 'Templates (WhatsApp)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./templates.cases'), defects: require('./templates.defects') },
 ];

@@ -28,7 +28,7 @@ module.exports = [
     expected: 'The number finds "QA-TEST-MGR Deal"; the unknown text shows "0 deals", all stage counts 0 and "No deals match".', observed: 'Deal found; empty state shown.' }),
   tc({ ts: 'TS-MPIP-03', scenario: 'Search and Mine', id: 'MPIP-006', title: 'Mine lists the deals assigned to the signed-in user',
     steps: '1. Search DL-100002 (assigned to the signed-in user on the web).\n2. Tap Mine.', input: 'Search: DL-100002', type: 'Functional', design: 'Positive',
-    expected: 'With Mine on, the deal assigned to the signed-in user is still listed.', observed: 'Assigned deal listed under Mine.', defect: 'MPIP-D01' }),
+    expected: 'Mine lists DL-100002 and only deals owned by the signed-in user.', observed: 'Assigned deal listed under Mine.' }),
   tc({ ts: 'TS-MPIP-04', scenario: 'Deal detail', id: 'MPIP-007', title: 'Deal detail shows the card details, stage and progress', pre: DEAL_PRE,
     steps: '1. Open DL-100005.', type: 'Functional', design: 'Positive',
     expected: 'Stage Qualification, "Stage 1 of 5 · Qualification", progress 17%, Mark Won and Mark Lost buttons. (Web: same deal, stage and empty amount, contact, organization.)',

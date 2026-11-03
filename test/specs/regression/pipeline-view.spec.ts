@@ -42,6 +42,7 @@ describe('Pipeline: view, filter and deal detail (nothing is changed)', () => {
     await pipelinePage.selectStage('Lost');
     const progress = await pipelinePage.firstProgress();
     await checkpoint('MPIP-004 lost');
+    expect(progress, 'a lost deal with a progress bar is listed').to.be.a('number');
     expect(progress, 'progress of a lost deal').to.not.equal(100);
   });
 
@@ -55,17 +56,16 @@ describe('Pipeline: view, filter and deal detail (nothing is changed)', () => {
     await checkpoint('MPIP-005 no match');
   });
 
-  // The web shows deal DL-100002 "Assigned To: Yash" (the signed-in user); on the phone "Mine" shows
-  // "No deals match": MPIP-D01.
+  // The web shows deal DL-100002 "Assigned To" the signed-in user.
   it('MPIP-006 Mine lists the deals assigned to the signed-in user', async () => {
     await openPipeline();
-    const card = await pipelinePage.findDeal(pipelineData.myDeal.number);
-    expect(card?.label, 'deal shows its owner').to.contain(pipelineData.myDeal.owner);
     expect(await pipelinePage.toggleMine(), 'Mine selected').to.equal(true);
+    await $(pipelinePage.selectors.dealCard(pipelineData.myDeal.number)).waitForExist({ timeout: 20_000 }).catch(() => undefined);
+    const mine = await pipelinePage.visibleDeals();
     await checkpoint('MPIP-006 mine');
-    const listed = (await pipelinePage.visibleDeals()).map((d) => d.number);
     await pipelinePage.toggleMine();
-    expect(listed, `Mine with the search "${pipelineData.myDeal.number}"`).to.include(pipelineData.myDeal.number);
+    expect(mine.map((d) => d.number), 'deals under Mine').to.include(pipelineData.myDeal.number);
+    expect(mine.filter((d) => !d.label.includes(pipelineData.myDeal.owner)).map((d) => d.label), 'deals of other owners under Mine').to.deep.equal([]);
   });
 
   it('MPIP-007 Deal detail shows the card details, stage and progress', async () => {

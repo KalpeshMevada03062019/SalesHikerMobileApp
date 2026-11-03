@@ -51,8 +51,25 @@ export abstract class BasePage {
     const element = this.el(selector);
     await element.waitForDisplayed({ timeout: DEFAULT_TIMEOUT });
     await element.click();
+    if (await this.dismissPasswordManagerPrompt()) {
+      await element.waitForDisplayed({ timeout: DEFAULT_TIMEOUT });
+      await element.click();
+    }
     await element.setValue(value);
     await this.hideKeyboard();
+  }
+
+  /**
+   * The phone's password manager can cover sign-in fields with "Use your saved password for <app>?"
+   * (seen on the Realme phone, run 20261102-172222). Declines it with "No, thanks"; never "Continue".
+   * Returns true when a prompt was dismissed.
+   */
+  async dismissPasswordManagerPrompt(timeout = 1_500): Promise<boolean> {
+    const prompt = this.el(by.textStartsWith('Use your saved password'));
+    if (!(await prompt.waitForExist({ timeout }).then(() => true, () => false))) return false;
+    await this.el(by.text('No, thanks')).click();
+    await prompt.waitForExist({ timeout: 5_000, reverse: true }).catch(() => undefined);
+    return true;
   }
 
   async hideKeyboard(): Promise<void> {

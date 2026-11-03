@@ -14,7 +14,13 @@
     "20261102-123000-single-MBRD-020",
     "20261102-123224-single-MBRD-020",
     "20261102-145931-full",
-    "20261102-151134-single-MINB-016"
+    "20261102-151134-single-MINB-016",
+    "20261102-162122-full",
+    "20261102-163153-full",
+    "20261102-172222-full",
+    "20261102-173406-full",
+    "20261102-174601-single-MLGN-024",
+    "20261103-104944-full"
   ],
   "tests": {
     "MCMP-001": {
@@ -1315,6 +1321,1225 @@
         ]
       },
       "iterations": 1
+    },
+    "MPIP-020": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T16:21:23.0426464+05:30",
+        "run": "20261102-162122-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-162122-full/screenshots/MPIP-020_moved.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MPIP-021": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T16:31:53.8809297+05:30",
+          "run": "20261102-163153-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T16:31:53.8809297+05:30",
+        "run": "20261102-163153-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-163153-full/screenshots/MPIP-021_won.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MPIP-022": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T16:31:53.8809297+05:30",
+          "run": "20261102-163153-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T16:31:53.8809297+05:30",
+        "run": "20261102-163153-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-163153-full/screenshots/MPIP-022_lost.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MPIP-002": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-11-02T16:21:23.0426464+05:30",
+        "run": "20261102-162122-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "stage names that are not the web name or its start: expected [ Array(1) ] to deeply equal []",
+        "evidence": [
+          "reports/20261102-162122-full/failures/MPIP-002_Stage_names_match_the_web_pipeline_shortened_at_most_/screenshot.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MPIP-003": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T16:21:23.0426464+05:30",
+        "run": "20261102-162122-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-162122-full/screenshots/MPIP-003_won.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MPIP-004": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-11-02T16:21:23.0426464+05:30",
+        "run": "20261102-162122-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "progress of a lost deal: expected 100 to not equal 100",
+        "evidence": [
+          "reports/20261102-162122-full/failures/MPIP-004_Lost_deals_do_not_show_a_full_progress_bar/screenshot.png",
+          "reports/20261102-162122-full/screenshots/MPIP-004_lost.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MPIP-005": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T16:21:23.0426464+05:30",
+        "run": "20261102-162122-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-162122-full/screenshots/MPIP-005_no_match.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MPIP-006": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T16:21:23.0426464+05:30",
+        "run": "20261102-162122-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-162122-full/screenshots/MPIP-006_mine.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MPIP-007": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T16:21:23.0426464+05:30",
+        "run": "20261102-162122-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-162122-full/screenshots/MPIP-007_detail.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MPIP-008": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T16:31:53.8809297+05:30",
+          "run": "20261102-163153-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T16:31:53.8809297+05:30",
+        "run": "20261102-163153-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-163153-full/screenshots/MPIP-008_move_stage.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MPIP-009": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T16:21:23.0426464+05:30",
+        "run": "20261102-162122-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-162122-full/screenshots/MPIP-009_errors.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MPIP-001": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T16:31:53.8809297+05:30",
+          "run": "20261102-163153-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T16:21:23.0426464+05:30",
+          "run": "20261102-162122-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T16:31:53.8809297+05:30",
+        "run": "20261102-163153-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-163153-full/screenshots/MPIP-001_pipeline.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-005": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-005_rejected.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-006": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-006_rejected.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-007": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-007_rejected.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-017": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-017_shown.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-018": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-018_hand-off.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-019": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-019_hand-off.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-013": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-013_rejected.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-015": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-015_rejected.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-002": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-002_home.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-003": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-003_home.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-004": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-004_home.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-008": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-008_required.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-009": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-009_email_required.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-010": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-010_password_required.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-011": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-011_inline_error.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-012": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "server banner \"Invalid email\" (the malformed email was submitted): expected true to equal false",
+        "evidence": [
+          "reports/20261102-173406-full/failures/MLGN-012_Malformed_email_is_not_sent_to_the_server/screenshot.png",
+          "reports/20261102-173406-full/screenshots/MLGN-012_after_10_s.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-014": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-014_password_required.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "REG-NAV-01": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/REG-NAV-01_scan_screen.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "REG-NAV-02": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/REG-NAV-02_dark.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-024": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:46:02.0301038+05:30",
+          "run": "20261102-174601-single-MLGN-024"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:46:02.0301038+05:30",
+        "run": "20261102-174601-single-MLGN-024",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-174601-single-MLGN-024/screenshots/MLGN-024_no_connection.png"
+        ]
+      },
+      "iterations": 3
+    },
+    "MLGN-020": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-020_home_after_restart.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-021": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-021_home_after_relaunch.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-022": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-022_confirmation.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-023": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-023_signed_out_after_relaunch.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-016": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-016_sign-in_screen.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MLGN-001": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-02T17:34:06.5653848+05:30",
+          "run": "20261102-173406-full"
+        },
+        {
+          "status": "FAIL",
+          "date": "2026-11-02T17:22:23.2321574+05:30",
+          "run": "20261102-172222-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-02T17:34:06.5653848+05:30",
+        "run": "20261102-173406-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261102-173406-full/screenshots/MLGN-001_home_after_sign-in.png"
+        ]
+      },
+      "iterations": 2
+    },
+    "MTPL-007": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-007_details.png",
+          "reports/20261103-104944-full/screenshots/MTPL-007_preview.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-008": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-008_actions_closed.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-010": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-010_basics.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-011": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-011_required.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-012": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-012_name_format.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-013": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "header types: expected [ 'None', 'Text', 'Image', …(2) ] to include 'Location'",
+        "evidence": [
+          "reports/20261103-104944-full/failures/MTPL-013_Header_offers_the_same_types_as_the_web_including_Location/screenshot.png",
+          "reports/20261103-104944-full/screenshots/MTPL-013_header_types.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-014": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-014_preview.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-015": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-015_button.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-016": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": []
+      },
+      "iterations": 1
+    },
+    "MTPL-002": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-002_Approved.png",
+          "reports/20261103-104944-full/screenshots/MTPL-002_Pending.png",
+          "reports/20261103-104944-full/screenshots/MTPL-002_Rejected.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-003": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-003_authentication.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-004": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-004_rejected.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-005": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-005_no_match.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-006": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-006_synced.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MTPL-001": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-03T10:49:44.3467353+05:30",
+          "run": "20261103-104944-full"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-03T10:49:44.3467353+05:30",
+        "run": "20261103-104944-full",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261103-104944-full/screenshots/MTPL-001_templates.png"
+        ]
+      },
+      "iterations": 1
     }
   },
   "defects": {
@@ -1335,6 +2560,18 @@
     },
     "MINB-D03": {
       "checkedRun": "20261102-145931-full"
+    },
+    "MPIP-D02": {
+      "checkedRun": "20261102-162122-full"
+    },
+    "MPIP-D03": {
+      "checkedRun": "20261102-162122-full"
+    },
+    "MLGN-D01": {
+      "checkedRun": "20261102-173406-full"
+    },
+    "MTPL-D01": {
+      "checkedRun": "20261103-104944-full"
     }
   }
 }
