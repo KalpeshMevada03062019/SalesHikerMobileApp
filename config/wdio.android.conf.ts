@@ -2,6 +2,7 @@
 // Run through scripts\run-*.ps1, or directly: npx wdio run ./config/wdio.android.conf.ts --suite smoke
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { settings, PROJECT_ROOT } from '../src/config/settings.js';
 import { resolveDevice, clearLogcat, saveLogcat, anrEvents } from '../src/utils/adb.js';
 import { captureFailure } from '../src/utils/evidence.js';
@@ -88,5 +89,19 @@ export const config: WebdriverIO.Config = {
     saveLogcat(serial, path.join(runDir, 'logcat.txt'));
     const anrs = anrEvents(serial, settings.appId);
     if (anrs.length) fs.writeFileSync(path.join(runDir, 'anr-events.txt'), anrs.join('\n'));
+  },
+
+  // Direct runs (npm test, npx wdio ...): record the results as the runner does, so the workbooks and the
+  // all-modules Allure report (reports\allure\index.html) are updated after every run. The runner scripts set
+  // QA_RUNNER and do this themselves, after writing summary.md and results.json.
+  onComplete: () => {
+    if (process.env.QA_RUNNER) return;
+    const node = (script: string, ...args: string[]) => {
+      const out = spawnSync(process.execPath, [path.join(PROJECT_ROOT, script), ...args], { cwd: PROJECT_ROOT, encoding: 'utf8' });
+      if (out.stdout?.trim()) console.log(out.stdout.trim());
+      if (out.status !== 0) console.warn(`${script} failed: ${(out.stderr || '').trim()}`);
+    };
+    if (fs.readdirSync(runDir).some((f) => /^junit.*\.xml$/.test(f))) node('tools/excel/update-workbooks.js', runDir);
+    node('tools/allure/build-report.mjs');
   },
 };

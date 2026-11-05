@@ -29,4 +29,10 @@ module.exports = [
     cases: require('./tasks.cases'), defects: require('./tasks.defects') },
   { sheet: 'Calendar', label: 'Calendar (CRM)', role: 'Signed-in workspace user (mobile app)',
     cases: require('./calendar.cases'), defects: require('./calendar.defects') },
+  { sheet: 'Documents', label: 'Documents (CRM)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./documents.cases'), defects: require('./documents.defects') },
+  { sheet: 'Tickets', label: 'Tickets (CRM)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./tickets.cases'), defects: require('./tickets.defects') },
+  { sheet: 'Quotations', label: 'Quotations (Sales)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./quotations.cases'), defects: require('./quotations.defects') },
 ];

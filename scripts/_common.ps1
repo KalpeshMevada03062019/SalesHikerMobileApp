@@ -446,6 +446,7 @@ function Invoke-WdioRun {
     $runDir = New-RunDirectory $Label
     $env:RUN_DIR = $runDir
     $env:DEVICE_SERIAL = $serial
+    $env:QA_RUNNER = '1'   # the wdio onComplete hook leaves workbooks and reports to this script
     $console = Join-Path $runDir 'wdio-console.txt'
 
     $specDir = Join-Path $ProjectRoot 'test\specs'
@@ -468,6 +469,8 @@ function Invoke-WdioRun {
     $exitCode = $LASTEXITCODE
     $ErrorActionPreference = $previous
     Pop-Location
+    # Only wdio needs these; left set, a later direct run in this window would reuse this folder and skip its hook.
+    Remove-Item Env:RUN_DIR, Env:QA_RUNNER -ErrorAction SilentlyContinue
     $duration = [math]::Round(((Get-Date) - $started).TotalSeconds)
 
     # Reports can contain the typed password; strip it (and its case-swapped variant, MLGN-007).
@@ -568,12 +571,14 @@ function Invoke-WdioRun {
         $docOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\docs\framework-overview.mjs'))
         $docOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
         if ($docOut.ExitCode -ne 0) { Write-Warn 'Framework overview not rebuilt (see above). Run: npm run docs:framework' }
-        # All-modules Allure report (reports\allure\index.html): the latest result of every test, from the ledger
-        Write-Step 'Building the all-modules Allure report'
-        $allOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\allure\build-report.mjs'))
-        $allOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
-        if ($allOut.ExitCode -ne 0) { Write-Warn 'All-modules Allure report not rebuilt (see above). Run: npm run report' }
     }
+
+    # ---- All-modules Allure report (reports\allure\index.html) after every run: the latest result of every test,
+    # from the ledger (also rebuilt when the workbooks were skipped or nothing ran)
+    Write-Step 'Building the all-modules Allure report'
+    $allOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\allure\build-report.mjs'))
+    $allOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
+    if ($allOut.ExitCode -ne 0) { Write-Warn 'All-modules Allure report not rebuilt (see above). Run: npm run report' }
 
     if ($failed -or $notRun) { return 1 }
     0

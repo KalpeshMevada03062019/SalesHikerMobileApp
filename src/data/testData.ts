@@ -107,3 +107,26 @@ export const taskData = {
   priority: 'High',
   noMatch: 'qa_no_such_task_zz',
 };
+
+/** Beta documents (read only). "qa" matches three names in any letter case. */
+export const documentData = {
+  search: 'qa',
+  noMatch: 'qa_no_such_doc_zz',
+};
+
+/** The beta ticket (read only): TT1 "Test", Closed, Normal, assigned to Yash. */
+export const ticketData = {
+  number: 'TT1',
+  title: 'Test',
+  priority: 'Normal',
+  otherPriority: 'Urgent',
+  noMatch: 'qa_no_such_ticket_zz',
+};
+
+/** Beta quotation (read only): QT-301006 "QA-TEST-R12 Quote A", Draft, ₹240, with sales order SO-300004. */
+export const quotationData = {
+  number: 'QT-301006',
+  title: 'QA-TEST-R12 Quote A',
+  titleSearch: 'qa-test-r12',
+  noMatch: 'qa_no_such_quote_zz',
+};

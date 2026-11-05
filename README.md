@@ -83,7 +83,13 @@ Each run writes `reports\<timestamp>-<name>\`:
 
 ### All-modules Allure report
 
-`reports\allure\index.html` shows every module in one Allure report. It is rebuilt after each run (or with `npm run report`) by `tools\allure\build-report.mjs`:
+`reports\allure\index.html` shows every module in one Allure report, built by `tools\allure\build-report.mjs`. It is rebuilt automatically after every test run:
+
+- **Runner scripts** (`scripts\run-*.ps1`): always rebuilt, even with `-SkipWorkbooks` or when nothing ran.
+- **Direct runs** (`npm test`, `npx wdio run ...`): the wdio `onComplete` hook first adds the run's results to the ledger and workbooks, then rebuilds the report.
+- **By hand:** `npm run report`.
+
+What the report shows:
 
 - Each test shows its latest PASS/FAIL from `docs\test-execution-ledger.json`, the same result the workbooks use, with that run's screenshots and failure diagnostics. Up to 4 earlier runs appear under Retries, without attachments.
 - **Suites** and **Behaviors** group tests by module and scenario. Smoke tests have severity *critical*.
