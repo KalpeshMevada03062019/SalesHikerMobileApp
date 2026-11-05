@@ -81,6 +81,16 @@ Each run writes `reports\<timestamp>-<name>\`:
 
 `reports\` can contain personal data from the app and is git-ignored.
 
+### All-modules Allure report
+
+`reports\allure\index.html` shows every module in one Allure report. It is rebuilt after each run (or with `npm run report`) by `tools\allure\build-report.mjs`:
+
+- Each test shows its latest PASS/FAIL from `docs\test-execution-ledger.json`, the same result the workbooks use, with that run's screenshots and failure diagnostics. Up to 4 earlier runs appear under Retries, without attachments.
+- **Suites** and **Behaviors** group tests by module and scenario. Smoke tests have severity *critical*.
+- **Categories:** a failure linked to a defect shows the defect ID and tracker status, for example `[MLED-D01 Open]`. Other failures show their triage classification from the defect tracker.
+- **Trend:** the trend charts build up from `reports\allure\history` with each rebuild.
+- Each run folder still has its own `allure-report\index.html` for that run alone.
+
 ## Test-case and defect workbooks (automatic)
 
 After each run, `tools\excel\update-workbooks.js` updates:

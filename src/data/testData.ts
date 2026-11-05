@@ -64,3 +64,46 @@ export const templateData = {
   previewBody: 'QA preview check',
   noMatch: 'qa_no_such_template_zz',
 };
+
+/** Chatbots (read only). */
+export const chatbotData = {
+  noMatch: 'qa_no_such_chatbot_zz',
+};
+
+export const aiAgentData = {
+  noMatch: 'qa_no_such_agent_zz',
+};
+
+export const whatsAppLogData = {
+  noMatch: 'qa_no_such_log_zz',
+};
+
+export const workflowData = {
+  noMatch: 'qa_no_such_workflow_zz',
+};
+
+/** Leads: a lead with a linked contact, an enquiry and activity on beta (read only). */
+export const leadData = {
+  withContact: 'Pharmacy chain - WhatsApp CRM Enterprise, 12 users',
+  withContactSearch: 'Pharmacy',
+  source: 'Manual',
+  noMatch: 'qa_no_such_lead_zz',
+};
+
+/** Seed organization on beta with every section filled in (read only). */
+export const organizationData = {
+  name: 'Seed — Acme Corp',
+  search: 'acme',
+  domain: 'acme.com',
+  noMatch: 'qa_no_such_org_zz',
+};
+
+/** Beta tasks (read only). "verify" matches two titles and one description ("verifying ..."). */
+export const taskData = {
+  search: 'verify',
+  titleMatch: 'Verify 184-186',
+  descriptionMatch: 'QA-TEST-R12 Task 1',
+  assignee: 'Yash',
+  priority: 'High',
+  noMatch: 'qa_no_such_task_zz',
+};

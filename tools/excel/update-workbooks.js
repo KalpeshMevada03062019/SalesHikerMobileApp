@@ -431,6 +431,12 @@ async function buildDefects(ledger) {
     console.log(`Test cases -> ${TC_FILE}`);
     console.log(`Defects: ${dt.total} (manual fields kept for ${dt.kept}); failures to triage: ${dt.open} -> ${DT_FILE}`);
     for (const c of dt.changes) console.log(`Defect status changed: ${c}`);
+    // Rebuild the framework overview from the new results (npm run excel; the runner calls it separately).
+    if (!process.env.SKIP_DOCS) {
+      const { execFileSync } = require('child_process');
+      try { process.stdout.write(execFileSync(process.execPath, [path.join(ROOT, 'tools', 'docs', 'framework-overview.mjs')], { encoding: 'utf8' })); }
+      catch (e) { console.warn('Framework overview not rebuilt: ' + String(e.message).split('\n')[0]); }
+    }
   } catch (e) {
     if (e.code === 'EBUSY' || e.code === 'EPERM') {
       ledger.defects = JSON.parse(defectChecks);   // status moves not written yet: apply them on the next update

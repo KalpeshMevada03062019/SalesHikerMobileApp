@@ -559,13 +559,20 @@ function Invoke-WdioRun {
     # ---- Test-case and defect workbooks (docs\*.xlsx), only when some test produced a result
     if (-not $SkipWorkbooks -and ($passed + $failed + $skipped) -gt 0) {
         Write-Step 'Updating test-case and defect workbooks'
+        $env:SKIP_DOCS = '1'   # the framework overview is rebuilt just below
         $wbOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\excel\update-workbooks.js'), $runDir)
+        Remove-Item Env:SKIP_DOCS -ErrorAction SilentlyContinue
         $wbOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
         if ($wbOut.ExitCode -ne 0) { Write-Warn 'Workbooks not updated (see above). The run itself is unaffected.' }
         # Framework overview (docs\SalesHiker_Mobile_QA_Automation_Framework.html/.pdf) from the new results
         $docOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\docs\framework-overview.mjs'))
         $docOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
         if ($docOut.ExitCode -ne 0) { Write-Warn 'Framework overview not rebuilt (see above). Run: npm run docs:framework' }
+        # All-modules Allure report (reports\allure\index.html): the latest result of every test, from the ledger
+        Write-Step 'Building the all-modules Allure report'
+        $allOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\allure\build-report.mjs'))
+        $allOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
+        if ($allOut.ExitCode -ne 0) { Write-Warn 'All-modules Allure report not rebuilt (see above). Run: npm run report' }
     }
 
     if ($failed -or $notRun) { return 1 }
