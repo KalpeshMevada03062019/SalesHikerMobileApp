@@ -16,67 +16,17 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { createRequire } from 'node:module';
 import { spawnSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { ROOT, REPORTS, ID_PATTERN, DT_FILE, trackerState, loadCatalog } from '../report-data.mjs';
 
-const require = createRequire(import.meta.url);
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const modules = require(path.join(ROOT, 'tools', 'excel', 'modules'));
-const ExcelJS = require('exceljs');
-
-const REPORTS = path.join(ROOT, 'reports');
 const OUT = path.join(REPORTS, 'allure');
 const RESULTS = path.join(OUT, 'results');
 const HISTORY = path.join(OUT, 'history');
-const LEDGER_FILE = path.join(ROOT, 'docs', 'test-execution-ledger.json');
-const DT_FILE = path.join(ROOT, 'docs', 'SalesHiker_Mobile_Defect_Tracker.xlsx');
-const SPEC_DIR = path.join(ROOT, 'test', 'specs');
-const ID_PATTERN = /^([A-Z]+(?:-[A-Z]+)?-\d+)\b/;
 const MAX_RETRIES = 4;
-// Tests that have no sheet in the workbooks.
-const EXTRA_MODULES = [{ prefix: 'REG-NAV-', label: 'Navigation (tabs and More)' }];
-
-const cellText = (v) => (v && typeof v === 'object' ? v.text || v.result || '' : v == null ? '' : String(v));
 const md5 = (s) => crypto.createHash('md5').update(s).digest('hex');
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // ---------------------------------------------------------------- inputs
-function specIndex(dir = SPEC_DIR, index = new Map()) {
-  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    const file = path.join(dir, e.name);
-    if (e.isDirectory()) specIndex(file, index);
-    else if (e.name.endsWith('.spec.ts')) {
-      for (const m of fs.readFileSync(file, 'utf8').matchAll(/\bit\(\s*['"`]([A-Z]+(?:-[A-Z]+)?-\d+) ([^'"`]*)/g)) {
-        index.set(m[1], { file: path.relative(ROOT, file).replace(/\\/g, '/'), title: `${m[1]} ${m[2]}` });
-      }
-    }
-  }
-  return index;
-}
-
-async function trackerState() {
-  const defects = new Map();
-  const triage = new Map();
-  if (!fs.existsSync(DT_FILE)) return { defects, triage };
-  const wb = new ExcelJS.Workbook();
-  await wb.xlsx.readFile(DT_FILE);
-  wb.eachSheet((ws) => {
-    if (ws.name === 'Summary') return;
-    for (let r = 2; r <= ws.rowCount; r++) {
-      const row = ws.getRow(r);
-      if (ws.name === 'Failures to triage') {
-        const id = cellText(row.getCell(1).value);
-        if (id) triage.set(id, cellText(row.getCell(7).value));
-        continue;
-      }
-      const id = (cellText(row.getCell(4).value).match(/^([A-Z]+-D\d+)/) || [])[1];
-      if (id) defects.set(id, cellText(row.getCell(12).value));
-    }
-  });
-  return { defects, triage };
-}
-
 const runCache = new Map();
 /** The Allure results of one run folder, by test ID (the latest if a test ran twice). */
 function runResults(run) {
@@ -134,15 +84,7 @@ function labelsFor(id, tc, mod, spec, run, device) {
 }
 
 function main(state) {
-  const ledger = JSON.parse(fs.readFileSync(LEDGER_FILE, 'utf8'));
-  const specs = specIndex();
-  const cases = new Map();
-  const defectsById = new Map();
-  for (const mod of modules) {
-    for (const tc of mod.cases) cases.set(tc.id, { tc, mod });
-    for (const d of mod.defects) defectsById.set(d.id, d);
-  }
-  const moduleOf = (id) => cases.get(id)?.mod || EXTRA_MODULES.find((m) => id.startsWith(m.prefix)) || { label: 'Other' };
+  const { ledger, specs, cases, defectsById, moduleOf, ids } = loadCatalog();
 
   // Emptied rather than removed: Windows cannot remove a folder that a shell or Explorer has open.
   fs.mkdirSync(RESULTS, { recursive: true });
@@ -153,7 +95,6 @@ function main(state) {
   let device = '';
   let app = '';
   // Test order follows the workbooks (module by module), then any spec-only tests.
-  const ids = [...new Set([...cases.keys(), ...specs.keys()])].filter((id) => specs.has(id));
   for (const id of ids) {
     const { tc } = cases.get(id) || {};
     const mod = moduleOf(id);

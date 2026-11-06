@@ -17,6 +17,7 @@ export interface SalesListConfig {
   noResults: string;          // empty state, e.g. "No quotations found"
   noResultsHint: string;
   newButton?: string;         // header button to create one, e.g. "New sales order" (never tapped)
+  minRowTexts?: number;        // texts in a list row (default 5); invoices without a due date have 4
 }
 
 export interface SalesDetailConfig {
@@ -40,7 +41,7 @@ const listSelectors = (config: SalesListConfig) => ({
   clearFilters: by.a11y('Clear filters'),                 // on the empty state
   filter: (name: string) => `//android.widget.Button[@content-desc=${JSON.stringify(name)} and contains(@bounds, ",${CHIP_TOP}]")]`,
   selectedFilters: `//android.widget.Button[@selected="true" and contains(@bounds, ",${CHIP_TOP}]")]`,
-  rows: '//android.widget.Button[count(.//android.widget.TextView) >= 5]',
+  rows: `//android.widget.Button[count(.//android.widget.TextView) >= ${config.minRowTexts ?? 5}]`,
   row: (label: string) => `(//android.widget.Button[@content-desc=${JSON.stringify(label)}])[1]`,
   noResults: by.text(config.noResults),
   noResultsHint: by.text(config.noResultsHint),

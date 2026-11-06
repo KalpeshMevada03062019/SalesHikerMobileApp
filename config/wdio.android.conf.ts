@@ -3,6 +3,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
+import type { Reporters } from '@wdio/types';
+import { HtmlReporter, ReportAggregator } from 'wdio-html-nice-reporter';
 import { settings, PROJECT_ROOT } from '../src/config/settings.js';
 import { resolveDevice, clearLogcat, saveLogcat, anrEvents } from '../src/utils/adb.js';
 import { captureFailure } from '../src/utils/evidence.js';
@@ -12,6 +14,20 @@ const runDir = settings.runDir;
 fs.mkdirSync(runDir, { recursive: true });
 // Workers are forked from this process: pin the folder so every worker writes to the same run.
 process.env.RUN_DIR = runDir;
+
+// WebdriverIO HTML report of this run (reports\<run>\html-reports\report.html). The reporter joins its folder to
+// the working directory, so it must be relative; checkpoint screenshots are picked up from takeScreenshot.
+const htmlOptions = {
+  outputDir: `${path.relative(process.cwd(), path.join(runDir, 'html-reports'))}${path.sep}`,
+  filename: 'report.html',
+  reportTitle: `SalesHiker Mobile - ${path.basename(runDir)}`,
+  browserName: serial,
+  useOnAfterCommandForScreenshot: true,
+  linkScreenshots: true,
+  collapseTests: true,
+  showInBrowser: false,
+};
+let htmlAggregator: ReportAggregator | undefined;
 
 export const config: WebdriverIO.Config = {
   runner: 'local',
@@ -70,7 +86,15 @@ export const config: WebdriverIO.Config = {
     // One file per worker (spec): a shared name lets the last spec overwrite the others.
     ['junit', { outputDir: runDir, outputFileFormat: (o: { cid: string }) => `junit-${o.cid}.xml`, suiteNameFormat: /[\r\n]+/ }],
     ['allure', { outputDir: path.join(runDir, 'allure-results'), disableWebdriverStepsReporting: true, disableWebdriverScreenshotsReporting: true }],
+    // Built for WebdriverIO 8; its types differ from the v10 reporter types, the runtime events do not.
+    [HtmlReporter as unknown as Reporters.ReporterClass, htmlOptions],
   ],
+
+  // The aggregator empties its folder when created: create it before the workers start.
+  onPrepare: () => {
+    htmlAggregator = new ReportAggregator(htmlOptions as never);
+    htmlAggregator.clean();
+  },
 
   before: async () => {
     clearLogcat(serial);
@@ -91,10 +115,12 @@ export const config: WebdriverIO.Config = {
     if (anrs.length) fs.writeFileSync(path.join(runDir, 'anr-events.txt'), anrs.join('\n'));
   },
 
-  // Direct runs (npm test, npx wdio ...): record the results as the runner does, so the workbooks and the
-  // all-modules Allure report (reports\allure\index.html) are updated after every run. The runner scripts set
-  // QA_RUNNER and do this themselves, after writing summary.md and results.json.
-  onComplete: () => {
+  // This run's HTML report; then, for direct runs (npm test, npx wdio ...), record the results as the runner
+  // does, so the workbooks and the all-modules reports (reports\allure, reports\html, reports\monocart) are
+  // updated after every run. The runner scripts set QA_RUNNER and do the rest themselves, after writing
+  // summary.md and results.json.
+  onComplete: async () => {
+    try { await htmlAggregator?.createReport(); } catch (err) { console.warn(`Run HTML report not generated: ${err}`); }
     if (process.env.QA_RUNNER) return;
     const node = (script: string, ...args: string[]) => {
       const out = spawnSync(process.execPath, [path.join(PROJECT_ROOT, script), ...args], { cwd: PROJECT_ROOT, encoding: 'utf8' });
@@ -103,5 +129,7 @@ export const config: WebdriverIO.Config = {
     };
     if (fs.readdirSync(runDir).some((f) => /^junit.*\.xml$/.test(f))) node('tools/excel/update-workbooks.js', runDir);
     node('tools/allure/build-report.mjs');
+    node('tools/html/build-report.mjs');
+    node('tools/monocart/build-report.mjs');
   },
 };

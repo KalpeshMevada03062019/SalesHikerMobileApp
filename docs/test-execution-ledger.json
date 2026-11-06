@@ -62,7 +62,18 @@
     "20261105-124742-single-MQTN-001",
     "20261105-124945-full",
     "20261105-125911-single-MQTN-003",
-    "20261105-171150-single-MSOR-001"
+    "20261105-171150-single-MSOR-001",
+    "20261106-173714-single-MINV-001",
+    "20261106-174003-single-MINV-002",
+    "20261106-174246-single-MINV-003",
+    "20261106-174549-single-MINV-004",
+    "20261106-174715-single-MINV-005",
+    "20261106-174947-single-MINV-006",
+    "20261106-175151-single-MINV-007",
+    "20261106-175325-single-MINV-008",
+    "20261106-175550-single-MINV-009",
+    "20261106-175802-single-MINV-010",
+    "20261106-180116-single-MINV-011"
   ],
   "tests": {
     "MCMP-001": {
@@ -4970,6 +4981,231 @@
         "message": "",
         "evidence": [
           "reports/20261105-171150-single-MSOR-001/screenshots/MSOR-001_sales_orders.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-001": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-06T17:37:15.0897542+05:30",
+          "run": "20261106-173714-single-MINV-001"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-06T17:37:15.0897542+05:30",
+        "run": "20261106-173714-single-MINV-001",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261106-173714-single-MINV-001/screenshots/MINV-001_invoices.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-002": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-06T17:40:03.8827452+05:30",
+          "run": "20261106-174003-single-MINV-002"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-06T17:40:03.8827452+05:30",
+        "run": "20261106-174003-single-MINV-002",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261106-174003-single-MINV-002/screenshots/MINV-002_last_status.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-003": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-11-06T17:42:46.8807265+05:30",
+          "run": "20261106-174246-single-MINV-003"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-11-06T17:42:46.8807265+05:30",
+        "run": "20261106-174246-single-MINV-003",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "status filters: expected [ 'Approved: no invoices', …(1) ] to deeply equal []",
+        "evidence": [
+          "reports/20261106-174246-single-MINV-003/failures/MINV-003_Each_status_filter_shows_only_invoices_with_that_status/screenshot.png",
+          "reports/20261106-174246-single-MINV-003/screenshots/MINV-003_last_status.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-004": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-11-06T17:45:49.4816435+05:30",
+          "run": "20261106-174549-single-MINV-004"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-11-06T17:45:49.4816435+05:30",
+        "run": "20261106-174549-single-MINV-004",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "MorePage not shown within 15000 ms",
+        "evidence": [
+          "reports/20261106-174549-single-MINV-004/failures/MINV-004_Search_finds_an_invoice_by_number_or_subject_in_any_letter_case/screenshot.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-005": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-06T17:47:15.3697104+05:30",
+          "run": "20261106-174715-single-MINV-005"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-06T17:47:15.3697104+05:30",
+        "run": "20261106-174715-single-MINV-005",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261106-174715-single-MINV-005/screenshots/MINV-005_no_match.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-006": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-06T17:49:48.2331607+05:30",
+          "run": "20261106-174947-single-MINV-006"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-06T17:49:48.2331607+05:30",
+        "run": "20261106-174947-single-MINV-006",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261106-174947-single-MINV-006/screenshots/MINV-006_detail.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-007": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-11-06T17:51:52.0961680+05:30",
+          "run": "20261106-175151-single-MINV-007"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-11-06T17:51:52.0961680+05:30",
+        "run": "20261106-175151-single-MINV-007",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Total vs Subtotal Share sends a link your customer can open and print. 0: expected NaN to equal 109890",
+        "evidence": [
+          "reports/20261106-175151-single-MINV-007/failures/MINV-007_Line_items_with_discount_taxes_and_the_total_add_up_to_the_invoice_amou/screenshot.png",
+          "reports/20261106-175151-single-MINV-007/screenshots/MINV-007_totals.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-008": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-11-06T17:53:25.7873976+05:30",
+          "run": "20261106-175325-single-MINV-008"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-11-06T17:53:25.7873976+05:30",
+        "run": "20261106-175325-single-MINV-008",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Paid vs the payments 0 + 0: expected +0 to equal 107692",
+        "evidence": [
+          "reports/20261106-175325-single-MINV-008/failures/MINV-008_A_paid_invoice_shows_its_payments_adding_up_to_the_total_with_nothing_d/screenshot.png",
+          "reports/20261106-175325-single-MINV-008/screenshots/MINV-008_payment.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-009": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-11-06T17:55:50.6122349+05:30",
+          "run": "20261106-175550-single-MINV-009"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-11-06T17:55:50.6122349+05:30",
+        "run": "20261106-175550-single-MINV-009",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "Paid vs the payments listed 0: expected +0 to equal 4038100",
+        "evidence": [
+          "reports/20261106-175550-single-MINV-009/failures/MINV-009_A_partially_paid_invoice_shows_paid_balance_and_progress_that_agree_wit/screenshot.png",
+          "reports/20261106-175550-single-MINV-009/screenshots/MINV-009_payment.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-010": {
+      "history": [
+        {
+          "status": "FAIL",
+          "date": "2026-11-06T17:58:02.9054101+05:30",
+          "run": "20261106-175802-single-MINV-010"
+        }
+      ],
+      "last": {
+        "status": "FAIL",
+        "date": "2026-11-06T17:58:02.9054101+05:30",
+        "run": "20261106-175802-single-MINV-010",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "InvoiceDetailPage not shown within 60000 ms",
+        "evidence": [
+          "reports/20261106-175802-single-MINV-010/failures/MINV-010_The_invoice_links_to_its_sales_order_and_the_sales_order_lists_the_invo/screenshot.png",
+          "reports/20261106-175802-single-MINV-010/screenshots/MINV-010_sales_order.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MINV-011": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-06T18:01:16.8106600+05:30",
+          "run": "20261106-180116-single-MINV-011"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-06T18:01:16.8106600+05:30",
+        "run": "20261106-180116-single-MINV-011",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261106-180116-single-MINV-011/screenshots/MINV-011_closed.png"
         ]
       },
       "iterations": 1

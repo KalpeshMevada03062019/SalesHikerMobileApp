@@ -10,6 +10,9 @@
     "test:smoke": "wdio run ./config/wdio.android.conf.ts --suite smoke",
     "test:regression": "wdio run ./config/wdio.android.conf.ts --suite regression",
     "report": "node tools/allure/build-report.mjs",
+    "report:html": "node tools/html/build-report.mjs",
+    "report:monocart": "node tools/monocart/build-report.mjs",
+    "reports": "node tools/allure/build-report.mjs && node tools/html/build-report.mjs && node tools/monocart/build-report.mjs",
     "excel": "node tools/excel/update-workbooks.js",
     "docs:framework": "node tools/docs/framework-overview.mjs",
     "docs:framework:check": "node tools/docs/framework-overview.mjs --check",
@@ -34,7 +37,10 @@
     "chai": "^6.3.0",
     "dotenv": "^18.0.9",
     "exceljs": "^4.4.0",
+    "lodash": "^4.18.1",
+    "monocart-reporter": "^2.15.1",
     "typescript": "^7.0.2",
+    "wdio-html-nice-reporter": "^8.1.7",
     "webdriverio": "^10.1.0"
   }
 }

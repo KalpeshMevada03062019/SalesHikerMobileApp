@@ -543,6 +543,7 @@ function Invoke-WdioRun {
     $md += $rows | ForEach-Object { "| $($_.Test) | $($_.Status) | $($_.Seconds) | $(($_.Detail -replace '\|', '/')) |" }
     $md += @('', '## Evidence', '',
         "- HTML report: ``$(& $relative (Join-Path $allureReport 'index.html'))``",
+        "- WebdriverIO HTML report: ``$(& $relative (Join-Path $runDir 'html-reports\report.html'))``",
         "- JUnit: ``$(& $relative $junit)``",
         "- Console: ``$(& $relative $console)``",
         "- Appium server log: ``$(& $relative (Join-Path $runDir 'appium.log'))``",
@@ -579,6 +580,16 @@ function Invoke-WdioRun {
     $allOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\allure\build-report.mjs'))
     $allOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
     if ($allOut.ExitCode -ne 0) { Write-Warn 'All-modules Allure report not rebuilt (see above). Run: npm run report' }
+    # ---- All-modules WebdriverIO HTML report (reports\html\index.html), from the same ledger
+    Write-Step 'Building the all-modules HTML report'
+    $htmlOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\html\build-report.mjs'))
+    $htmlOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
+    if ($htmlOut.ExitCode -ne 0) { Write-Warn 'All-modules HTML report not rebuilt (see above). Run: npm run report:html' }
+    # ---- All-modules Monocart report (reports\monocart\index.html), from the same ledger
+    Write-Step 'Building the all-modules Monocart report'
+    $monoOut = Invoke-Native 'node' @((Join-Path $ProjectRoot 'tools\monocart\build-report.mjs'))
+    $monoOut.Text.Trim() -split "`r?`n" | ForEach-Object { Write-Host "  $_" }
+    if ($monoOut.ExitCode -ne 0) { Write-Warn 'All-modules Monocart report not rebuilt (see above). Run: npm run report:monocart' }
 
     if ($failed -or $notRun) { return 1 }
     0

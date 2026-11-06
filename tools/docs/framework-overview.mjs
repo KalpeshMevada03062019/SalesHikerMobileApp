@@ -112,7 +112,7 @@ function versions() {
   const v = (name) => (dev[name] || 'Not available').replace(/^[\^~]/, '');
   const driver = readJson(join(homedir(), '.appium', 'node_modules', 'appium-uiautomator2-driver', 'package.json'));
   return {
-    wdio: v('webdriverio'), typescript: v('typescript'), mocha: v('@wdio/mocha-framework'), chai: v('chai'), allure: v('allure-commandline'),
+    wdio: v('webdriverio'), typescript: v('typescript'), mocha: v('@wdio/mocha-framework'), chai: v('chai'), allure: v('allure-commandline'), htmlReporter: v('wdio-html-nice-reporter'), monocart: v('monocart-reporter'),
     exceljs: v('exceljs'), dotenv: v('dotenv'), node: process.version.replace(/^v/, ''),
     appium: run('appium', ['--version']) || 'Not available', uia2: driver?.version || 'Not available',
     adb: (run('adb', ['version']).match(/Version ([\d.]+)/) || [])[1] || 'Not available',
@@ -256,7 +256,9 @@ function render(x, meta) {
     ['Test runner', `<b>WebdriverIO</b> ${esc(v.wdio)} with <b>Mocha</b> (@wdio/mocha-framework ${esc(v.mocha)}) and <b>Chai</b> ${esc(v.chai)}`, 'Starts Appium, runs one spec per session, waits for elements, readable assertions.'],
     ['Language', `<b>TypeScript</b> ${esc(v.typescript)}, Node.js ${esc(v.node)}`, 'Class-based page objects and typed helpers; errors caught before a run.'],
     ['Device access', `Android SDK platform-tools (adb ${esc(v.adb)}), no Android Studio`, 'Installs the APK, reads device logs and ANR events, captures screenshots.'],
-    ['Reports', `Allure ${esc(v.allure)} (single-file HTML), JUnit, ${code('summary.md')}`, 'Readable results with screenshots per run; machine-readable results for the workbooks.'],
+    ['Reports', `Allure ${esc(v.allure)} (single-file HTML), JUnit, ${code('summary.md')}`, 'Readable results with screenshots per run, plus all-modules Allure, WebdriverIO HTML and Monocart reports (latest result of every test) rebuilt after every run; machine-readable results for the workbooks.'],
+    ['HTML report', `<b>wdio-html-nice-reporter</b> ${esc(v.htmlReporter)}`, 'WebdriverIO HTML report per run and for all modules: module, scenario and test with result, error and screenshots.'],
+    ['Monocart report', `<b>monocart-reporter</b> ${esc(v.monocart)} (merge API)`, 'All-modules Monocart report: searchable tree of modules, scenarios and tests, trend chart, screenshots copied in.'],
     ['Test cases and defects', `<b>exceljs</b> ${esc(v.exceljs)} + ${code('tools/excel/update-workbooks.js')}`, 'Writes run results into the test-case workbook and keeps the defect tracker up to date.'],
     ['Configuration', `dotenv ${esc(v.dotenv)}`, 'Device, test account and send switches live in a local <code>config\\.env</code> (never in git).'],
     ['Code quality', 'TypeScript strict mode, <code>npm run typecheck</code>', 'Type errors are caught before tests run.'],
@@ -268,9 +270,9 @@ function render(x, meta) {
       <div class="arrow">↓</div>
       <div class="row" style="grid-template-columns:1fr 1fr"><div class="box"><b>test/specs/ - tests</b>smoke/ and regression/ · one ID per test<br>${total.tests} tests in ${x.specCount} files</div><div class="box"><b>test/helpers/ - shared steps</b>sign-in when needed, open a module, discard half-made broadcasts</div></div>
       <div class="arrow">↓</div>
-      <div class="row" style="grid-template-columns:1fr"><div class="box ok"><b>src/ - shared framework</b>pages/ (one class per screen, selectors only here) · utils/ (app lifecycle, adb, evidence) · data/ (test inputs) · config/ (settings from config\\.env)</div></div>
+      <div class="row" style="grid-template-columns:1fr"><div class="box ok"><b>src/ - shared framework</b>pages/ (one class per screen, selectors only here; quotations and sales orders share one set of sales-document screens) · utils/ (app lifecycle, adb, evidence) · data/ (test inputs) · config/ (settings from config\\.env)</div></div>
       <div class="arrow">↓</div>
-      <div class="row" style="grid-template-columns:1fr 1fr 1fr"><div class="box warn"><b>reports/&lt;run&gt;</b>summary, Allure HTML, screenshots, logcat, failure diagnostics</div><div class="box warn"><b>docs/</b>test-case workbook, defect tracker, results ledger, this document</div><div class="box warn"><b>tools/</b>workbook and document generators, test cases and defects per module</div></div>
+      <div class="row" style="grid-template-columns:1fr 1fr 1fr"><div class="box warn"><b>reports/</b>&lt;run&gt;: summary, Allure HTML, screenshots, logcat, failure diagnostics · allure/, html/, monocart/: all-modules reports</div><div class="box warn"><b>docs/</b>test-case workbook, defect tracker, results ledger, this document</div><div class="box warn"><b>tools/</b>workbook, report and document generators, test cases and defects per module</div></div>
     </div>
     <p class="caption">Figure 1 - Layers. Specs say <i>what</i> is tested, page classes know <i>how</i> to use each screen, and the shared framework handles the device, sign-in, evidence and safety for every module.</p>
   </section>`;
@@ -278,7 +280,7 @@ function render(x, meta) {
   const flow = (steps, cls = []) => `<div class="flow">${steps.map(([t, d], i) => `<div class="box ${cls[i] ?? ''}"><b>${i + 1} ${t}</b>${d}</div>`).join('')}</div>`;
   const how = `<section class="page"><h1>3. How it works</h1>
     <h2>3.1 From a new module to tested coverage</h2>
-    ${flow([['Explore', 'read-only walk-through on the phone (UI dumps, screenshots)'], ['Page classes', 'one class per screen; selectors from the live app'], ['Specs', 'tests with IDs; smoke or regression'], ['Run on device', 'real phone over USB; one session per spec'], ['Report kept', 'summary, Allure HTML, screenshots, logs per run'], ['Triage', 'test issue, environment problem or app defect'], ['Defect logged', 'steps, expected / actual, severity; guard test linked'], ['Records updated', 'workbooks and this document rebuilt automatically']], ['', '', '', '', 'warn', 'warn', 'bad', 'ok'])}
+    ${flow([['Explore', 'read-only walk-through on the phone (UI dumps, screenshots)'], ['Page classes', 'one class per screen; selectors from the live app'], ['Specs', 'tests with IDs; smoke or regression'], ['Run on device', 'real phone over USB; one session per spec'], ['Report kept', 'summary, Allure HTML, screenshots, logs per run; all-modules Allure report updated'], ['Triage', 'test issue, environment problem or app defect'], ['Defect logged', 'steps, expected / actual, severity; guard test linked'], ['Records updated', 'workbooks and this document rebuilt automatically']], ['', '', '', '', 'warn', 'warn', 'bad', 'ok'])}
     <p class="caption">Figure 2 - Testing workflow. A failure first goes to the "Failures to triage" sheet; it becomes a defect only after triage. A test problem is fixed and re-run instead.</p>
     <h2>3.2 Defect lifecycle</h2>
     ${flow([['Test fails', 'listed under "Failures to triage"'], ['Triage', 'test-side, environment or application defect'], ['Logged', 'defect with ID, severity, steps and evidence'], ['Guard test', 'the test that fails while the defect exists'], ['Developer fixes', 'next build of the app'], ['Guard passes', 'status moves to <b>Ready for Retest</b>'], ['Retest and close', 'closing is always manual'], ['Reopened', 'automatically, if the guard fails again']], ['bad', 'warn', 'warn', '', '', 'ok', 'ok', 'bad'])}
@@ -289,7 +291,7 @@ function render(x, meta) {
       <li><b>Each test</b> restarts the app; signed-in tests sign in only when the session is gone. Tests that need data the account lacks are <b>skipped with a reason</b>, never passed.</li>
       <li><b>Safety:</b> sending needs <code>BROADCAST_SEND=true</code>; the audience and recipients are checked against the allowlist; nothing is deleted.</li>
       <li><b>Evidence:</b> screenshots at key steps; on failure the screen, UI hierarchy, foreground app and logcat are saved.</li>
-      <li><b>After the run:</b> environment aborts are reported as "not executed" (not failed), then the test-case workbook, defect tracker and this document are updated.</li></ol>
+      <li><b>After the run:</b> environment aborts are reported as "not executed" (not failed), then the test-case workbook, defect tracker and this document are updated, and the all-modules Allure, HTML and Monocart reports (<code>reports/allure</code>, <code>reports/html</code>, <code>reports/monocart</code>) are rebuilt. Runs started directly with <code>npm test</code> or <code>npx wdio</code> do the same through the WebdriverIO <code>onComplete</code> hook.</li></ol>
   </section>`;
 
   const count = (pred) => tests.filter(pred).length;
@@ -306,10 +308,10 @@ function render(x, meta) {
     <h2>4.2 Safety rules on the live workspace</h2>${table(['Rule', 'How it is enforced'], [
       ['Beta backend only', 'The APK under test points to <code>accountsbeta.saleshiker.com</code>; production is never used.'],
       ['Real messages only to test numbers', `The broadcast audience is a tag carried only by the ${plural(x.sendAllowlist, 'allowlisted contact')}. Before sending, each number must have exactly one contact with that tag; after sending, the recipients must be exactly the allowlist.`],
-      ['Sending needs a switch', '<code>BROADCAST_SEND=true</code> must be set; otherwise the send test runs every check and stops before "Send Now" (skipped).'],
+      ['Sending needs a switch', '<code>BROADCAST_SEND=true</code> (broadcasts) or <code>INBOX_SEND=true</code> (inbox replies) must be set; otherwise the send tests run every check and stop before sending (skipped).'],
       ['Send once, never retry', '"Send Now" is tapped once; "All contacts" can never be chosen by the automation.'],
       ['No half-made broadcasts', 'Every wizard test ends with Cancel / Discard; a safety net discards an open wizard after each test.'],
-      ['Read-only elsewhere', 'Campaign tests never create, pause or edit campaigns; nothing is deleted.'],
+      ['Read-only elsewhere', 'Every other module is tested read-only: nothing is created, edited, completed, converted or deleted, and menus are opened and closed without choosing. The only records changed are the approved QA ones: deal <code>DL-100005</code> (always restored to Qualification) and chatbot <code>qa_mobile_bot_edit</code>.'],
       ['No secrets in git', 'Credentials, device serial and allowlist live in <code>config\\.env</code> (git-ignored); the runner removes the password from all reports.'],
     ])}
   </section>`;
@@ -321,7 +323,9 @@ function render(x, meta) {
     <p class="note">Defects are the records in <code>docs/SalesHiker_Mobile_Defect_Tracker.xlsx</code> (open and closed). Results are the last PASS/FAIL per test in <code>docs/test-execution-ledger.json</code>; skipped and not-executed runs never replace a result.</p>
     <h2>Out of scope, or waiting</h2>${table(['Item', 'Status / reason'], [
       ['iOS app', 'Not covered: Android only.'],
-      ['Other app areas', 'Not covered: Dashboard, Inbox (chats), Contacts and Deals tabs, Templates, Chatbots, AI Agents, WhatsApp Logs, Organizations, Leads, Tasks, Calendar.'],
+      ['Other app areas', 'Not covered yet: Dashboard and Contacts tabs, Invoices, Delivery Notes and the More entries after them.'],
+      ['Creating records', 'Not covered in the read-only modules (AI agents, chatbots, tasks, tickets, documents, quotations, sales orders and others): creating would add data to the shared workspace.'],
+      ['Web comparison', 'Waiting: comparing quotation totals with the web app (and one new QA quotation) needs browser access on the QA machine.'],
       ['Scheduled broadcasts, drafts', 'Not covered: only "Send now" is tested; scheduling would leave a pending send.'],
       ['Emulator runs', 'Scripts kept, but the emulators on this PC are unstable under memory pressure; tests run on the real phone.'],
       ['API / back-end tests', 'Out of scope: UI tests only.'],
@@ -361,9 +365,13 @@ function render(x, meta) {
       [code('config/'), 'WebdriverIO configuration, .env (local only) and .env.example'],
       [code('scripts/'), 'PowerShell runners, emulator and APK scripts'],
       [code('tools/excel'), 'Workbook generator; test cases and defects per module in modules/'],
+      [`${code('tools/allure')}, ${code('tools/html')}, ${code('tools/monocart')}`, 'Builders of the all-modules Allure, WebdriverIO HTML and Monocart reports (shared data: tools/report-data.mjs)'],
       [code('tools/docs'), 'Generator of this document'],
       [code('docs/'), 'Test-case workbook, defect tracker, results ledger, this document, setup notes'],
       [code('reports/<run>'), 'One folder per run: summary.md, Allure HTML, JUnit, screenshots, logs, failure diagnostics'],
+      [code('reports/allure'), 'All-modules Allure report (index.html), its results and trend history'],
+      [code('reports/html'), 'All-modules WebdriverIO HTML report (index.html); screenshots linked from the run folders'],
+      [code('reports/monocart'), 'All-modules Monocart report (index.html) with its screenshots'],
     ])}
     <h3>Common commands</h3>${table(['Command', 'What it does'], [
       [code('npm install'), 'Install dependencies (Appium: npm install -g appium; appium driver install uiautomator2)'],
@@ -372,6 +380,9 @@ function render(x, meta) {
       [code('.\\scripts\\run-regression.ps1 -IncludeSmoke -Grep MCMP'), 'One module by its ID prefix'],
       [code('.\\scripts\\run-single-test.ps1 MBRD-012'), 'One test by its ID'],
       [code('npm run excel'), 'Rebuild the workbooks and this document from the recorded results'],
+      [code('npm run report'), 'Rebuild the all-modules Allure report from the recorded results'],
+      [code('npm run report:html'), 'Rebuild the all-modules WebdriverIO HTML report from the recorded results'],
+      [code('npm run report:monocart'), 'Rebuild the all-modules Monocart report; npm run reports rebuilds all three'],
       [code('npm run docs:framework'), 'Rebuild this document (HTML and PDF); add -- --watch to rebuild on every change'],
     ])}
     <h3>Conventions</h3><ul>

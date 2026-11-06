@@ -97,6 +97,24 @@ What the report shows:
 - **Trend:** the trend charts build up from `reports\allure\history` with each rebuild.
 - Each run folder still has its own `allure-report\index.html` for that run alone.
 
+### All-modules WebdriverIO HTML report
+
+`reports\html\index.html` is a WebdriverIO HTML report (wdio-html-nice-reporter) of every module. It is built by `tools\html\build-report.mjs` and rebuilt after every test run, the same way as the Allure report (by hand: `npm run report:html`).
+
+- It uses the same latest result per test from the ledger. Modules are sections, scenarios are suites, and each test shows its result, run, device, expected result, defect or triage classification, error and screenshots.
+- Screenshots are linked from the run folders, not embedded, which keeps the file under 1 MB. The report must stay in `reports\html` to show them.
+- Each run also gets its own WebdriverIO HTML report, `reports\<run>\html-reports\report.html`, with the checkpoint screenshots of that run.
+- All three all-modules builders share `tools\report-data.mjs` (specs, test cases, ledger, defect tracker).
+
+### All-modules Monocart report
+
+`reports\monocart\index.html` is a [Monocart](https://github.com/cenfun/monocart-reporter) report of every module, built by `tools\monocart\build-report.mjs` and rebuilt after every test run, the same way as the other two (by hand: `npm run report:monocart`; all three: `npm run reports`).
+
+- **Why it is built, not plugged in:** Monocart's test reporter is for Playwright only. The builder writes Monocart report data from the recorded results, and Monocart's own `merge()` turns that data into the report.
+- **What it shows:** modules are projects and scenarios are describe groups. Each test is a case with its status, duration, error, screenshots, logs (run, device) and annotations (expected result, defect or triage). Tests with no result yet are skipped cases.
+- **Screenshots** are copied into `reports\monocart\attachments`, so the folder can be moved or zipped as a whole.
+- **Trend:** the trend chart builds up from one rebuild to the next.
+
 ## Test-case and defect workbooks (automatic)
 
 After each run, `tools\excel\update-workbooks.js` updates:

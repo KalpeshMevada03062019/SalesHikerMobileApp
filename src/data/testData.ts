@@ -139,3 +139,13 @@ export const salesOrderData = {
   quotation: 'QT-301006',
   noMatch: 'qa_no_such_order_zz',
 };
+
+/** Invoices (More > SALES > Invoices), read only. INV-300005: paid in two payments, one discounted line, a
+ *  deducted tax, made from SO-077380. INV-004221: partially paid, due 8 Jul 2026. */
+export const invoiceData = {
+  paid: 'INV-300005',
+  salesOrder: 'SO-077380',
+  partial: 'INV-004221',
+  titleSearch: 'invoice 4221',
+  noMatch: 'qa_no_such_invoice_zz',
+};
