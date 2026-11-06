@@ -61,7 +61,8 @@
     "20261105-120411-full",
     "20261105-124742-single-MQTN-001",
     "20261105-124945-full",
-    "20261105-125911-single-MQTN-003"
+    "20261105-125911-single-MQTN-003",
+    "20261105-171150-single-MSOR-001"
   ],
   "tests": {
     "MCMP-001": {
@@ -4949,6 +4950,26 @@
         "message": "",
         "evidence": [
           "reports/20261105-124945-full/screenshots/MQTN-009_closed.png"
+        ]
+      },
+      "iterations": 1
+    },
+    "MSOR-001": {
+      "history": [
+        {
+          "status": "PASS",
+          "date": "2026-11-05T17:11:51.1726310+05:30",
+          "run": "20261105-171150-single-MSOR-001"
+        }
+      ],
+      "last": {
+        "status": "PASS",
+        "date": "2026-11-05T17:11:51.1726310+05:30",
+        "run": "20261105-171150-single-MSOR-001",
+        "env": "DQCI7XBU5LXWB6KZ (RMX3997, Android 16); app com.saleshiker.app 1.0.0",
+        "message": "",
+        "evidence": [
+          "reports/20261105-171150-single-MSOR-001/screenshots/MSOR-001_sales_orders.png"
         ]
       },
       "iterations": 1

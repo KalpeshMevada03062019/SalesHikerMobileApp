@@ -130,3 +130,12 @@ export const quotationData = {
   titleSearch: 'qa-test-r12',
   noMatch: 'qa_no_such_quote_zz',
 };
+
+/** Beta sales order (read only): SO-300004 "QA-TEST-R12 Quote A", Draft, ₹240, made from quotation QT-301006. */
+export const salesOrderData = {
+  number: 'SO-300004',
+  title: 'QA-TEST-R12 Quote A',
+  titleSearch: 'qa-test-r12',
+  quotation: 'QT-301006',
+  noMatch: 'qa_no_such_order_zz',
+};

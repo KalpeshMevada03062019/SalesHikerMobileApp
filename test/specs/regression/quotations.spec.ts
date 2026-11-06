@@ -62,7 +62,7 @@ describe('Quotations: filters, search and detail (nothing is changed)', () => {
     const all = await p.count();
     await p.search(quotationData.noMatch);
     expect(await p.isEmptyStateShown(), `"${QUOTATION_TEXTS.noQuotations}"`).to.equal(true);
-    expect(await $(p.selectors.noQuotationsHint).isExisting(), `"${QUOTATION_TEXTS.noQuotationsHint}"`).to.equal(true);
+    expect(await $(p.selectors.noResultsHint).isExisting(), `"${QUOTATION_TEXTS.noQuotationsHint}"`).to.equal(true);
     expect(await p.count(), 'count').to.equal(0);
     await checkpoint('MQTN-005 no match');
     await p.clearFromEmptyState();
@@ -104,18 +104,18 @@ describe('Quotations: filters, search and detail (nothing is changed)', () => {
   it('MQTN-008 The quotation shows who it is assigned to, its sales order and the share options', async function () {
     const row = await openQuotation(this, quotationData.number);
     const d = quotationDetailPage;
-    await d.scrollTo(d.selectors.shareHint);
-    expect(await $(d.selectors.assignedTo).getAttribute('content-desc'), 'Assigned to').to.match(/^Assigned to, .+/);
-    expect(await $(d.selectors.salesOrder).getAttribute('content-desc'), 'Sales order').to.match(new RegExp(`^Sales order, [A-Za-z ]+, SO-[0-9]+, ${row.amount.replace(/[.]/g, '[.]')}$`));
-    expect(await $(d.selectors.shareHint).isExisting(), `"${QUOTATION_TEXTS.shareHint}"`).to.equal(true);
-    expect(await $(d.selectors.downloadPdf).isExisting(), 'Download PDF (not tapped)').to.equal(true);
-    expect(await $(d.selectors.share).isExisting(), 'Share (not tapped)').to.equal(true);
+    await d.scrollTo(d.selectors.text(QUOTATION_TEXTS.shareHint));
+    expect(await d.relatedLabel('Assigned to'), 'Assigned to').to.match(/^Assigned to, .+/);
+    expect(await d.relatedLabel('Sales order'), 'Sales order').to.match(new RegExp(`^Sales order, [A-Za-z ]+, SO-[0-9]+, ${row.amount.replace(/[.]/g, '[.]')}$`));
+    expect(await $(d.selectors.text(QUOTATION_TEXTS.shareHint)).isExisting(), `"${QUOTATION_TEXTS.shareHint}"`).to.equal(true);
+    expect(await $(d.selectors.button('Download PDF')).isExisting(), 'Download PDF (not tapped)').to.equal(true);
+    expect(await $(d.selectors.button('Share')).isExisting(), 'Share (not tapped)').to.equal(true);
     await checkpoint('MQTN-008 related');
   });
 
   it('MQTN-009 The actions menu offers its actions and blocks a second sales order', async function () {
     await openQuotation(this, quotationData.number);
-    const options = await quotationDetailPage.actionOptions();
+    const options = await quotationDetailPage.actionOptions(QUOTATION_ACTIONS);
     await checkpoint('MQTN-009 closed');
     expect(options.map((o) => o.label.split(', ')[0]), 'Quotation actions').to.deep.equal([...QUOTATION_ACTIONS]);
     const convert = options.find((o) => o.label.startsWith('Convert to sales order'))!;

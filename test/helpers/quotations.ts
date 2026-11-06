@@ -22,7 +22,7 @@ export async function openQuotation(ctx: Mocha.Context, number: string): Promise
   await quotationsPage.search(number);
   const row = (await quotationsPage.visibleRows()).find((r) => r.number === number);
   if (!row) skipBecause(ctx, `no quotation ${number}`);
-  await quotationsPage.openQuotation(row.label);
+  await quotationsPage.open(row.label);
   await quotationDetailPage.waitForDisplayed(15_000);
   return row;
 }
