@@ -57,7 +57,8 @@ describe('Invoices: filters, search, calculations and payments (nothing is chang
     await checkpoint('MINV-004 by subject');
     expect(bySubject.map((r) => r.number), `results for "${invoiceData.titleSearch.toUpperCase()}"`).to.include(invoiceData.partial);
     expect(bySubject.filter((r) => !r.title.toLowerCase().includes(invoiceData.titleSearch)).map((r) => r.label), 'results without the words').to.deep.equal([]);
-    expect(await p.count(), 'count vs results').to.equal(bySubject.length);
+    // Only the rows on screen are read: the count can be higher than what fits.
+    expect(await p.count(), 'count vs results on screen').to.be.at.least(bySubject.length);
   });
 
   it('MINV-005 An unknown word finds no invoices and Clear filters restores the list', async () => {

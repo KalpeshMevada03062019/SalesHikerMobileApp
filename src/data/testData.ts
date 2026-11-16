@@ -149,3 +149,40 @@ export const invoiceData = {
   titleSearch: 'invoice 4221',
   noMatch: 'qa_no_such_invoice_zz',
 };
+
+/** New invoice (MINV-020 saves it with INVOICE_CREATE=1; MINV-021 only fills the form). A service, not a product:
+ *  services carry no stock (Save refuses out-of-stock products, and a stocked one would change inventory).
+ *  Expected: line 1 2 x 140 = 280 - 10% = 252 + Sales 10% 25.20; line 2 140 - 6 = 134 - TDS 2% 2.68;
+ *  Subtotal 386, Total 408.52. */
+export const newInvoiceData = {
+  subjectPrefix: 'QA-TEST-INV',
+  unitPrice: 140,
+  lines: [
+    { kind: 'service', product: 'test service', quantity: 2, discountPercent: 10, tax: 'Sales 10%' },
+    { kind: 'service', product: 'test service', quantity: 1, discountAmount: 6, tax: 'TDS 2%' },
+  ],
+  subtotal: 386,
+  total: 408.52,
+  /** Saved by MINV-020 on 2026-11-16 (run 20261116-123643), kept as a Draft; MINV-022 reads it. */
+  saved: 'INV-300013',
+  savedSubject: 'QA-TEST-INV 20261116-070707',
+} as const;
+
+/** Delivery notes (More > SALES > Delivery Notes), read only; 7 on beta (2026-11-16). DN-0005 has every field;
+ *  DN-0006 has no subject. The form test adds the service of the invoice tests and discards it. */
+export const deliveryData = {
+  full: 'DN-0005',
+  fullSubject: 'QA-A Delivery Note 1789 allfields INLINE-EDIT',
+  subjectSearch: 'qa-a delivery note',
+  dispatched: 'Dispatched 15 Sep 2026',
+  item: { name: 'QA-A Premium Widget', price: '₹45', quantity: 2, serial: 'Serial #WIDGET-9999' },
+  tracking: 'TRK-987654321',
+  address: '123 Fulfillment Boulevard, Dock 4',
+  notes: 'Fragile shipment. Handle with care. Ünïcødé 📦',
+  noSubject: 'DN-0006',
+  noMatch: 'qa_no_such_dn_zz',
+  service: 'test service',
+  serviceQuantity: 3,
+  serviceLine: 'test service, 3 x ₹140, ₹420',
+  serviceTotal: '₹420',
+};

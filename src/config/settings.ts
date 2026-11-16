@@ -43,6 +43,10 @@ export const settings = {
     send: value('INBOX_SEND').toLowerCase() === 'true',
     recipient: value('INBOX_RECIPIENT'),
   },
+  /** Invoice create test (MINV-020): saves one QA-TEST Draft invoice on beta, only when INVOICE_CREATE is 1 or true. */
+  invoice: {
+    create: ['1', 'true'].includes(value('INVOICE_CREATE').toLowerCase()),
+  },
   /** Reuse the UiAutomator2 server on the device (phones that block adb installs behind a prompt). */
   skipServerInstall: value('SKIP_SERVER_INSTALL') === '1',
   /** Folder for this run's reports. Set by the PowerShell runners; generated otherwise. */

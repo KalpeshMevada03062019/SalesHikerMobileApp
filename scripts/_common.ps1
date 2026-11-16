@@ -496,7 +496,10 @@ function Invoke-WdioRun {
     $results = @{}
     $junit = Join-Path $runDir 'junit-*.xml'   # one file per spec worker
     foreach ($junitFile in @(Get-ChildItem $junit -ErrorAction SilentlyContinue)) {
-        [xml]$xml = Get-Content $junitFile.FullName -Raw
+        # A worker whose spec has no test matching the grep can leave an empty file (run 20261116-124454-full).
+        $raw = Get-Content $junitFile.FullName -Raw
+        if (-not $raw) { continue }
+        try { [xml]$xml = $raw } catch { Write-Warn "Unreadable $($junitFile.Name): $($_.Exception.Message)"; continue }
         foreach ($case in $xml.SelectNodes('//testcase')) {
             $failure = $case.SelectSingleNode('failure'); if (-not $failure) { $failure = $case.SelectSingleNode('error') }
             $message = if ($failure) { (($failure.GetAttribute('message'), $failure.InnerText) | Where-Object { $_ } | Select-Object -First 1) } else { '' }

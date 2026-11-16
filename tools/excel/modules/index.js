@@ -39,4 +39,6 @@ module.exports = [
     cases: require('./salesorders.cases'), defects: require('./salesorders.defects') },
   { sheet: 'Invoices', label: 'Invoices (Sales)', role: 'Signed-in workspace user (mobile app)',
     cases: require('./invoices.cases'), defects: require('./invoices.defects') },
+  { sheet: 'Delivery notes', label: 'Delivery notes (Sales)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./deliverynotes.cases'), defects: require('./deliverynotes.defects') },
 ];

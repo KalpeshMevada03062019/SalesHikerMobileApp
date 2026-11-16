@@ -1,0 +1,58 @@
+// Mobile Delivery note test cases (More > SALES > Delivery Notes), SalesHiker Android 1.0.0. Expected results
+// come from the live app on the Realme RMX3997 (2026-11-16). Beta holds 7 delivery notes (6 Draft, 1 Dispatched).
+// Read only: Save, Download PDF, Share, every menu action and every status are never chosen; the New delivery note
+// form is filled and discarded.
+
+const PRE = 'Registered beta test account (config\\.env).\nApp restarted signed in; More > Delivery Notes open.';
+const tc = (fields) => ({ req: 'REQ-MDLV-01', input: 'Test account from config\\.env. Beta delivery notes.', pre: PRE, ...fields });
+
+module.exports = [
+  tc({ ts: 'TS-MDLV-01', scenario: 'Delivery note list', id: 'MDLV-001', title: 'Delivery notes opens with the count, search, status filters and notes',
+    steps: '1. More > Delivery Notes.\n2. Scroll to the end of the list.', type: 'Smoke', design: 'Positive',
+    expected: '"Delivery notes" with the count, New delivery note (not tapped), "Search delivery notes", chips All (selected) / Draft / Dispatched / Delivered / Cancelled; rows with subject (or the number), DN- number, date and status; "End of list. N delivery notes." with N = the count.',
+    observed: '7 delivery notes; "End of list. 7 delivery notes."' }),
+  tc({ ts: 'TS-MDLV-01', scenario: 'Delivery note list', id: 'MDLV-002', title: 'Status counts add up to all delivery notes and All lists every note',
+    steps: '1. Read All and the statuses on the list.\n2. Tap each status chip and read its count.', type: 'Functional', design: 'Validation',
+    expected: 'Draft + Dispatched + Delivered + Cancelled = All; on the All list each status appears as often as its chip count.',
+    observed: 'Draft 6 + Dispatched 1 + Delivered 0 + Cancelled 0 = 7.' }),
+  tc({ ts: 'TS-MDLV-01', scenario: 'Delivery note list', id: 'MDLV-003', title: 'Each status filter shows only notes with that status or the empty state',
+    steps: '1. Tap Draft, Dispatched, Delivered and Cancelled in turn.', type: 'Functional', design: 'Equivalence Partitioning',
+    expected: 'The tapped chip is selected (not All); only notes with that status are listed; a status with count 0 shows "No delivery notes found".',
+    observed: 'Delivered and Cancelled empty.' }),
+  tc({ ts: 'TS-MDLV-01', scenario: 'Delivery note list', id: 'MDLV-004', title: 'Search finds a delivery note by number or subject in any letter case',
+    steps: '1. Search dn-0005.\n2. Search QA-A DELIVERY NOTE.', input: 'Search: dn-0005, then QA-A DELIVERY NOTE', type: 'Functional', design: 'Equivalence Partitioning',
+    expected: 'Only DN-0005 (count 1) for the number; for the subject only subjects with the words (count = rows), DN-0005 among them.',
+    observed: 'See the run.' }),
+  tc({ ts: 'TS-MDLV-01', scenario: 'Delivery note list', id: 'MDLV-005', title: 'An unknown word finds no delivery notes and Clear filters restores the list',
+    steps: '1. Search qa_no_such_dn_zz.\n2. Tap Clear filters.', input: 'Search: qa_no_such_dn_zz', type: 'Functional', design: 'Negative',
+    expected: 'Count 0, "No delivery notes found", "Try another search or status." and Clear filters; Clear filters empties the search, keeps All and restores the count.',
+    observed: 'Empty state shown (exploration).' }),
+  tc({ ts: 'TS-MDLV-02', scenario: 'Delivery note detail', id: 'MDLV-006', title: 'The delivery note detail shows its number, status, subject and dispatch date as on the list',
+    steps: '1. Search and open DN-0005.\n2. Tap Back.', type: 'Functional', design: 'Validation',
+    expected: '"Delivery note" with DN-0005, Dispatched, the subject and "Dispatched 15 Sep 2026" (list: "Dispatched 15 Sep"); Download PDF and Share (not tapped); Back returns to the list.',
+    observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MDLV-02', scenario: 'Delivery note detail', id: 'MDLV-007', title: 'Items show name, price, quantity and serial and add up to the total quantity',
+    steps: '1. Open DN-0005.\n2. Read ITEMS.', type: 'Functional', design: 'Validation',
+    expected: 'As many items as the ITEMS count; QA-A Premium Widget, ₹45, x 2, Serial #WIDGET-9999; Total quantity = sum of the quantities (2).',
+    observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MDLV-02', scenario: 'Delivery note detail', id: 'MDLV-008', title: 'Shipping, notes and activity show the tracking number, address, notes and status history',
+    steps: '1. Open DN-0005.\n2. Scroll through SHIPPING, NOTES and ACTIVITY.', type: 'Functional', design: 'Validation',
+    expected: 'Tracking number TRK-987654321; Shipping address 123 Fulfillment Boulevard, Dock 4; notes with accents and emoji as typed; ACTIVITY count = entries, with the draft to dispatched change and the "created" entry last.',
+    observed: '5 activity entries (exploration).' }),
+  tc({ ts: 'TS-MDLV-02', scenario: 'Delivery note detail', id: 'MDLV-009', title: 'A delivery note without a subject shows its number instead and only the parts it has',
+    steps: '1. Search and open DN-0006.', type: 'Functional', design: 'Boundary Value',
+    expected: 'The list row is titled DN-0006; the detail has no subject, no SHIPPING and no NOTES; Total quantity = sum of the items.',
+    observed: 'Draft, 1 item (Invalid Item Test, ₹10, x 1) (exploration).' }),
+  tc({ ts: 'TS-MDLV-03', scenario: 'Delivery note actions', id: 'MDLV-010', title: 'The actions menu offers status, edit, share link, notes, task and delete',
+    steps: '1. Open DN-0005.\n2. More actions; read it; tap Close.', type: 'Functional', design: 'Positive',
+    expected: '"Delivery note actions": Change status, Edit, Share link, Notes, Add task, Delete, all enabled. Nothing is chosen.',
+    observed: 'All six offered (exploration).' }),
+  tc({ ts: 'TS-MDLV-03', scenario: 'Delivery note actions', id: 'MDLV-011', title: 'Change status lists every status with the current one selected and closes without a change',
+    steps: '1. Open DN-0005.\n2. More actions > Change status; read it; tap Close.', type: 'Functional', design: 'Positive',
+    expected: 'Draft, Dispatched, Delivered, Cancelled with Dispatched selected; after Close the status is still Dispatched.',
+    observed: 'Dispatched ticked (exploration).' }),
+  tc({ ts: 'TS-MDLV-04', scenario: 'New delivery note', id: 'MDLV-012', title: 'The new delivery note form starts as Draft and shows an added line, then discards without saving',
+    steps: '1. New delivery note.\n2. Read the defaults; open Status and close it.\n3. Add service "test service", Qty 3, Add line.\n4. Read the line, Lines total and the Carrier hint.\n5. Cancel > Discard.', input: 'Service "test service" (₹140), Qty 3.', type: 'Functional', design: 'Positive',
+    expected: 'Status Draft (selected in the picker with Dispatched, Delivered, Cancelled), no dates, "Link a contact", Owner Me; line "3 x ₹140" ₹420 and Lines total ₹420; Carrier hint "BlueDart, FedEx"; "Discard this note?" / "This note is not saved yet."; the count is unchanged.',
+    observed: 'As expected (exploration); nothing saved.' }),
+];
