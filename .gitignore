@@ -27,3 +27,6 @@ Thumbs.db
 # Excel generator dependencies
 tools/excel/node_modules/
 node_modules
+
+# Defect screenshots (embedded in the defect tracker; may show beta records)
+docs/defect-evidence/

@@ -103,3 +103,16 @@ Copy-Item config\.env.example config\.env     # then edit APK_PATH, TEST_USERNAM
 | Black emulator window | Set `AVD_GPU_MODE=swiftshader_indirect` |
 | "Maestro Android driver did not start up in time" | The scripts already wait 180 s (`MAESTRO_DRIVER_STARTUP_TIMEOUT`); retry once the device is idle |
 | `maestro` not found in an old terminal or editor | Open a new terminal. VS Code must be fully restarted to pick up the new PATH |
+
+## Google Drive copy of the workbooks
+
+After every run (and every `npm run excel`) the Defect Tracker and Test Cases workbooks are copied into
+`<Drive letter>:\My Drive\SalesHiker Mobile QA`, which Google Drive for desktop uploads. The file names never change,
+so the Drive files and their share links stay the same and always hold the latest results.
+
+1. Install Google Drive for desktop and sign in with the account that should own the files.
+2. Run `npm run excel` once: the folder `SalesHiker Mobile QA` appears in My Drive with both workbooks.
+3. Share that folder (or the two files) with the team from drive.google.com.
+
+Another folder: set `DRIVE_SYNC_DIR` in `config\.env`; `DRIVE_SYNC_DIR=off` stops the copy. If a copy is open in
+Excel from the Drive folder it is locked; the next update copies again.

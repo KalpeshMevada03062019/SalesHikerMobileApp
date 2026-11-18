@@ -313,6 +313,63 @@ function autoStatus(ledger, d, current, changes) {
   return next;
 }
 
+// ---------------------------------------------------------------- defect screenshots (embedded in the workbook)
+// Each defect gets its own `images` (web / exploration screenshots with captions, kept in docs/defect-evidence) and
+// the screenshots of the latest failing run of its tests. They are shrunk to JPEG once (docs/defect-evidence/cache)
+// and embedded, so the tracker shows them wherever the file is opened or sent.
+const EVIDENCE_CACHE = path.join(DOCS, 'defect-evidence', 'cache');
+const MANIFEST = path.join(EVIDENCE_CACHE, 'manifest.json');
+const MAX_RUN_SHOTS = { guard: 2, other: 1 };
+
+function defectImages(ledger, d) {
+  const out = [];
+  for (const im of d.images || []) out.push({ src: path.resolve(ROOT, im.file), caption: im.caption });
+  // Exploration dumps named in the evidence text ("reports/explore-x/12-name.xml"): their screenshot (.png) when kept.
+  for (const m of (d.evidence || '').matchAll(/reports\/explore-[\w-]+\/[\w.-]+\.(?:xml|png)/g)) {
+    const png = path.join(ROOT, m[0].replace(/\.xml$/, '.png'));
+    if (fs.existsSync(png) && !out.some((o) => o.src === png)) out.push({ src: png, caption: `Phone (exploration): ${m[0].split('/').slice(-2).join('/').replace(/\.xml$/, '.png')}` });
+  }
+  const tests = [...new Set([d.guardTest, ...(d.tests || [])].filter(Boolean))];   // the guard test first
+  for (const t of tests) {
+    const last = ledger.tests[t] && ledger.tests[t].last;
+    if (!last || last.status !== 'FAIL') continue;   // a passing run does not show the defect
+    const ev = last.evidence || [];
+    const ordered = [...ev.filter((e) => !e.includes('/failures/')), ...ev.filter((e) => e.includes('/failures/'))];
+    for (const e of ordered.slice(0, t === d.guardTest ? MAX_RUN_SHOTS.guard : MAX_RUN_SHOTS.other)) {
+      const what = e.includes('/failures/') ? 'screen at the failure' : path.basename(e, path.extname(e)).replace(`${t}_`, '').replace(/_/g, ' ');
+      out.push({ src: path.join(ROOT, e), caption: `Phone, automated run: ${t} (${what}), run ${last.run}` });
+    }
+  }
+  return out.slice(0, 4);
+}
+
+/** Shrinks the images not cached yet (one PowerShell call) and sets im.cache / im.dims; missing sources are dropped. */
+function prepareImages(all) {
+  const manifest = fs.existsSync(MANIFEST) ? JSON.parse(fs.readFileSync(MANIFEST, 'utf8')) : {};
+  const todo = new Map();
+  for (const im of all) {
+    im.key = rel(im.src).replace(/[\\/:]+/g, '__').replace(/\.(png|jpe?g)$/i, '') + '.jpg';
+    im.cache = path.join(EVIDENCE_CACHE, im.key);
+    if (!(manifest[im.key] && fs.existsSync(im.cache)) && fs.existsSync(im.src)) todo.set(im.key, { src: im.src, dst: im.cache });
+  }
+  if (todo.size) {
+    fs.mkdirSync(EVIDENCE_CACHE, { recursive: true });
+    const list = path.join(EVIDENCE_CACHE, 'todo.json');
+    fs.writeFileSync(list, JSON.stringify([...todo.values()]));
+    const { execFileSync } = require('child_process');
+    try {
+      const res = JSON.parse(execFileSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(__dirname, 'shrink-images.ps1'), '-ListFile', list], { encoding: 'utf8' }).trim() || '{}');
+      for (const [dst, dims] of Object.entries(res)) manifest[path.basename(dst)] = dims;
+      fs.writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2));
+    } catch (e) { console.warn('Screenshots not shrunk: ' + String(e.message).split('\n')[0]); }
+    fs.rmSync(list, { force: true });
+  }
+  for (const im of all) { im.dims = manifest[im.key]; im.ok = !!im.dims && fs.existsSync(im.cache); }
+}
+
+/** Size that fits the image in a box, keeping its proportions (pixels). */
+const fit = ([w, h], boxW, boxH) => { const s = Math.min(boxW / w, boxH / h); return { width: Math.round(w * s), height: Math.round(h * s) }; };
+
 async function buildDefects(ledger) {
   const manual = await readManual();
   const wb = new ExcelJS.Workbook();
@@ -323,6 +380,24 @@ async function buildDefects(ledger) {
   const sheets = [];
   const today = new Date();
 
+  // Screenshots per defect, and where each defect's block starts on the Screenshots sheet (title, captions, images).
+  const shots = new Map();
+  for (const mod of modules) for (const d of mod.defects) shots.set(d.id, defectImages(ledger, d));
+  prepareImages([...shots.values()].flat());
+  const imageIds = new Map();
+  const imageId = (im) => {
+    if (!imageIds.has(im.key)) imageIds.set(im.key, wb.addImage({ filename: im.cache, extension: 'jpeg' }));
+    return imageIds.get(im.key);
+  };
+  const shotRow = new Map();
+  let nextShotRow = 3;
+  for (const mod of modules) for (const d of mod.defects) {
+    const ok = shots.get(d.id).filter((im) => im.ok);
+    shots.set(d.id, ok);
+    if (ok.length) { shotRow.set(d.id, nextShotRow); nextShotRow += 4; }
+  }
+  const defectRow = new Map();   // defect ID -> { sheet, row } for the link back
+
   for (const mod of modules) {
     const ws = wb.addWorksheet(mod.sheet, { views: [{ state: 'frozen', xSplit: 4, ySplit: 1, topLeftCell: 'E2' }] });
     ws.columns = [6, 22, 18, 40, 60, 40, 45, 12, 14, 11, 13, 16, 24, 36, 20, 14, 14, 14, 50, 30, 12].map((w) => ({ width: w }));
@@ -332,8 +407,11 @@ async function buildDefects(ledger) {
     mod.defects.forEach((d, i) => {
       const keep = manual.defects.get(d.id) || {};
       const status = autoStatus(ledger, d, keep.status || d.status, changes);
-      const shots = (d.tests || []).flatMap((t) => (ledger.tests[t] && ledger.tests[t].last && ledger.tests[t].last.evidence) || []);
-      const evidence = shots.length ? link(shots[0], shots.map((s) => 'Screenshot: ' + path.basename(s)).slice(0, 3).join('\n')) : (d.evidence || '');
+      const images = shots.get(d.id);
+      const runShots = (d.tests || []).flatMap((t) => (ledger.tests[t] && ledger.tests[t].last && ledger.tests[t].last.evidence) || []);
+      const evidence = images.length
+        ? { text: `${images.length} screenshot${images.length === 1 ? '' : 's'} (embedded): open the Screenshots sheet`, hyperlink: `#'Screenshots'!A${shotRow.get(d.id)}` }
+        : runShots.length ? link(runShots[0], runShots.map((s) => 'Screenshot: ' + path.basename(s)).slice(0, 3).join('\n')) : (d.evidence || '');
       let qa = d.qaComment;
       const guard = d.guardTest && ledger.tests[d.guardTest];
       if (guard && guard.last) {
@@ -348,6 +426,15 @@ async function buildDefects(ledger) {
       row.getCell(8).numFmt = 'dd-mmm-yyyy';
       row.getCell(21).numFmt = 'dd-mmm-yyyy';
       if (typeof evidence === 'object') row.getCell(14).font = LINK_FONT;
+      defectRow.set(d.id, { sheet: mod.sheet, row: row.number });
+      if (images.length) {
+        // Two thumbnails under the link in column N (36 characters, about 257 px wide); the rest on the Screenshots sheet.
+        const ROW_PX = 230;
+        row.height = ROW_PX * 0.75;
+        images.slice(0, 2).forEach((im, k) => {
+          ws.addImage(imageId(im), { tl: { col: 13.03 + k * 0.5, row: row.number - 1 + 40 / ROW_PX }, ext: fit(im.dims, 120, ROW_PX - 48), editAs: 'oneCell' });
+        });
+      }
       if (SEVERITY_FILL[d.severity]) row.getCell(10).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: SEVERITY_FILL[d.severity] } };
       tally[status] = (tally[status] || 0) + 1;
       tally.severity[d.severity] = (tally.severity[d.severity] || 0) + 1;
@@ -383,6 +470,37 @@ async function buildDefects(ledger) {
   listValidation(triage, 'G', 2, Math.max(triage.rowCount, 2) + 20, TRIAGE);
   if (!open) triage.addRow(['No failed test without a linked defect.']);
 
+  // ---- Screenshots: per defect its title (link back to the row), a caption per image, and the images, large.
+  const SHOT_COLS = 4, COL_CHARS = 64, IMG_W = 440, IMG_H = 560;
+  const ss = wb.addWorksheet('Screenshots', { views: [{ state: 'frozen', ySplit: 1 }] });
+  ss.columns = Array.from({ length: SHOT_COLS }, () => ({ width: COL_CHARS }));
+  ss.getCell('A1').value = 'Screenshots of each defect: web app (read only) and phone (exploration or the latest failing automated run). Click a title to go back to the defect.';
+  ss.getCell('A1').font = { name: 'Arial', size: 10, italic: true };
+  for (const mod of modules) for (const d of mod.defects) {
+    const r = shotRow.get(d.id);
+    if (!r) continue;
+    const images = shots.get(d.id);
+    const back = defectRow.get(d.id);
+    ss.mergeCells(r, 1, r, SHOT_COLS);
+    const title = ss.getCell(r, 1);
+    title.value = { text: `${d.id} - ${d.title}  (${mod.label}, ${d.severity})`, hyperlink: `#'${back.sheet}'!D${back.row}` };
+    title.font = { name: 'Arial', size: 11, bold: true, underline: true, color: { argb: 'FF0563C1' } };
+    title.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDDEBF7' } };
+    ss.getRow(r).height = 22;
+    const captions = ss.getRow(r + 1);
+    captions.height = 30;
+    const pics = ss.getRow(r + 2);
+    pics.height = (IMG_H + 10) * 0.75;
+    images.slice(0, SHOT_COLS).forEach((im, col) => {
+      const cap = captions.getCell(col + 1);
+      cap.value = im.caption;
+      cap.font = { name: 'Arial', size: 9, bold: true };
+      cap.alignment = { vertical: 'top', wrapText: true };
+      ss.addImage(imageId(im), { tl: { col: col + 0.02, row: r + 1 + 0.01 }, ext: fit(im.dims, IMG_W, IMG_H), editAs: 'oneCell' });
+    });
+  }
+  if (!shotRow.size) ss.getCell('A3').value = 'No screenshots yet.';
+
   // ---- Summary (same columns and formulas as the web tracker)
   summary.columns = [48, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12].map((w) => ({ width: w }));
   summary.addRow(['Module', 'Total', ...STATUSES, 'Critical', 'High', 'Medium', 'Low']);
@@ -413,6 +531,48 @@ async function buildDefects(ledger) {
   return { total: sheets.reduce((a, s) => a + s.total, 0), kept: manual.defects.size, changes, open };
 }
 
+// ---------------------------------------------------------------- Google Drive copy (Google Drive for desktop)
+const DRIVE_FOLDER_NAME = 'SalesHiker Mobile QA';
+
+/** DRIVE_SYNC_DIR from the shell, config/.env or config/.env.example (same precedence as src/config/settings.ts). */
+function driveSetting() {
+  if (process.env.DRIVE_SYNC_DIR !== undefined) return process.env.DRIVE_SYNC_DIR.trim();
+  let value = '';
+  for (const name of ['.env.example', '.env']) {
+    const file = path.join(ROOT, 'config', name);
+    if (!fs.existsSync(file)) continue;
+    const m = fs.readFileSync(file, 'utf8').match(/^\s*DRIVE_SYNC_DIR\s*=\s*(.*)$/m);
+    if (m) value = m[1].trim().replace(/^["']|["']$/g, '');
+  }
+  return value;
+}
+
+/** The Drive folder to copy into, or '' when there is none: the setting, else "<X>:\My Drive\SalesHiker Mobile QA". */
+function driveFolder() {
+  const setting = driveSetting();
+  if (/^off$/i.test(setting)) return '';
+  if (setting) return setting;
+  for (const letter of 'GHIJKLMNOPQRSTUVWXYZDEF') {
+    const myDrive = `${letter}:\\My Drive`;
+    if (fs.existsSync(myDrive)) return path.join(myDrive, DRIVE_FOLDER_NAME);
+  }
+  return '';
+}
+
+/** Copies both workbooks into the Drive folder (same file names, so Drive keeps the same files and links). */
+function copyToDrive() {
+  const folder = driveFolder();
+  if (!folder) { console.log('Google Drive copy: skipped (Google Drive for desktop not found; set DRIVE_SYNC_DIR in config\\.env)'); return; }
+  try {
+    fs.mkdirSync(folder, { recursive: true });
+    for (const file of [DT_FILE, TC_FILE]) fs.copyFileSync(file, path.join(folder, path.basename(file)));
+    console.log(`Google Drive copy: ${path.basename(DT_FILE)}, ${path.basename(TC_FILE)} -> ${folder}`);
+  } catch (e) {
+    // A copy open in Excel from the Drive folder is locked; the next update copies again.
+    console.warn(`Google Drive copy failed (${e.code || e.message}); it is retried on the next update: ${folder}`);
+  }
+}
+
 // ---------------------------------------------------------------- main
 (async () => {
   const ledger = loadLedger();
@@ -431,6 +591,7 @@ async function buildDefects(ledger) {
     console.log(`Test cases -> ${TC_FILE}`);
     console.log(`Defects: ${dt.total} (manual fields kept for ${dt.kept}); failures to triage: ${dt.open} -> ${DT_FILE}`);
     for (const c of dt.changes) console.log(`Defect status changed: ${c}`);
+    if (!process.env.QA_DOCS_DIR) copyToDrive();   // not for trial output (QA_DOCS_DIR)
     // Rebuild the framework overview from the new results (npm run excel; the runner calls it separately).
     if (!process.env.SKIP_DOCS) {
       const { execFileSync } = require('child_process');

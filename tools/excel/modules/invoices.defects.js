@@ -19,6 +19,9 @@ module.exports = [
     steps: '1. More > Invoices > New invoice; subject QA-TEST-INV <timestamp>.\n2. Add service "test service" (₹140): Qty 2, Discount % 10, Tax Sales 10%; Add line.\n3. Add service again: Qty 1, Discount amount 6, Tax TDS 2%; Add line.\n4. Read each line and Lines total; Save; read the saved invoice.',
     expected: 'TDS is a deducted tax, as the app shows elsewhere ("Deducted Tax -₹21.98" on INV-300005; TDS 2% subtracted on QT-301006): line 2 = 134 - 2.68 = ₹131.32; Tax 25.20 - 2.68 = ₹22.52; Total ₹408.52.',
     actual: 'Line 2 shows ₹136.68 (134 + 2.68) on the form and on the saved invoice; Lines total ₹413.88; saved INV-300013: Subtotal ₹386, Tax ₹27.88 (25.20 + 2.68), Total and amount ₹413.88, ₹5.36 too much. Line 1 (Sales 10%, 10% off) is right: ₹277.20. Same with the product line: 90 + 1.80 = ₹91.80 instead of ₹88.20.',
+    images: [
+      { file: "docs/defect-evidence/web/MINV-D02-web-inv300013.jpg", caption: "Web: INV-300013, line 2 \"(+) Tax (2%)\" ₹2.68, Grand Total ₹413.88 (the web also adds the line TDS)" },
+    ],
     issueType: 'Bug', severity: 'High', priority: 'P2 - High', status: 'Open',
     tests: ['MINV-020', 'MINV-021', 'MINV-022'], guardTest: 'MINV-022',
     evidence: 'Form: by hand 2026-11-16 11:40 (reports/explore-campaign/l2b.xml), runs 20261116-122306, -122530 (product) and -123358 (service) of MINV-021. Saved: INV-300013, run 20261116-123643 (MINV-020), runs -124006 and -124218 (MINV-022).',
@@ -31,6 +34,9 @@ module.exports = [
     steps: '1. More > Invoices > New invoice.\n2. Add service "test service": Qty 2, Discount % 10, Sales 10%; Add line.\n3. Add service: Qty 1, Discount amount 6, TDS 2%; Add line.\n4. Read Lines total; Discard.\n5. Web: New invoice with the same two lines (not saved); read the Summary.',
     expected: 'The same total as the web for the same lines: Items ₹386, (+) Tax ₹27.88, (-) Deducted taxes ₹7.72 (2% of the order), Grand Total ₹406.16.',
     actual: 'Phone: lines ₹277.20 and ₹136.68 (same as the web) but Lines total ₹413.88 with no deduction, ₹7.72 more than the web. Saved from the phone (INV-300013) it keeps ₹413.88 and the web shows "(-) Deducted Taxes ₹0.00" on it.',
+    images: [
+      { file: "docs/defect-evidence/web/MINV-D03-web-new-invoice-summary.png", caption: "Web: New invoice, same two lines (not saved): Deducted ₹7.72, Grand Total ₹406.16" },
+    ],
     issueType: 'Bug', severity: 'High', priority: 'P2 - High', status: 'Open',
     tests: ['MINV-023'], guardTest: 'MINV-023',
     evidence: 'Web New invoice Summary (not saved), 2026-11-18; runs 20261118-151221 and 20261118-162517-single-MINV-023.',

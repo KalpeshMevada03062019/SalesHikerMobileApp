@@ -8,6 +8,10 @@ module.exports = [
     steps: '1. More > Purchase Orders.\n2. Open any purchase order (e.g. PO-0005).\n3. Scroll to the totals: read Grand total, Paid and Balance.\n4. Web: Purchase Orders > PO-0005 > Overview.',
     expected: 'Balance = Grand total - Paid, as on the web: PO-0005 ₹2,242.69, PO-0004 ₹625.76, PO-0003 ₹172.50, PO-0001 ₹2,240, PO-0002 ₹345 (Paid ₹0 on all).',
     actual: 'Balance ₹0 on all five orders while Paid is ₹0. The web shows Balance ₹2,242.69 (PO-0005), ₹625.76 (PO-0004), ₹2,240.00 (PO-0001).',
+    images: [
+      { file: "docs/defect-evidence/phone/MPUR-po0005-balance-no-stock.png", caption: "Phone (exploration 2026-11-18): PO-0005 Grand total ₹2,242.69, Paid ₹0, Balance ₹0" },
+      { file: "docs/defect-evidence/web/MPUR-D01-web-po0005-balance.jpg", caption: "Web: PO-0005 Overview, Paid ₹0.00, Balance ₹2,242.69" },
+    ],
     issueType: 'Bug', severity: 'High', priority: 'P2 - High', status: 'Open',
     tests: ['MPUR-008'], guardTest: 'MPUR-008',
     evidence: 'By hand 2026-11-18 (reports/explore-campaign/po06.png); run 20261118-124142-single-MPUR-008; web Overview of PO-0005, PO-0004, PO-0001.',
@@ -20,6 +24,10 @@ module.exports = [
     steps: '1. More > Purchase Orders.\n2. Open PO-0005 (Partially Received).\n3. Read the item, then scroll below the totals.\n4. More actions: read Delete.\n5. Web: PO-0005 > Receipts.',
     expected: 'With "Received 4 of 10" and status Partially Received, the receipt is listed (as for PO-0002, also partially received: "Applied, GRN-0002") and no "No stock received yet." text.',
     actual: 'Mobile: "Received 4 of 10", Delete disabled with "Reverse the receipts, then delete it.", but no RECEIPTS section and "No stock received yet. Use Receive stock to add the goods to a warehouse." Web: the same, Receipts 0, "This PO has no received stock yet." while the item shows "Received: 4 of 10".',
+    images: [
+      { file: "docs/defect-evidence/phone/MPUR-po0005-balance-no-stock.png", caption: "Phone (exploration): PO-0005 \"Received 4 of 10\" but \"No stock received yet.\"" },
+      { file: "docs/defect-evidence/web/MPUR-D02-web-po0005-receipts.jpg", caption: "Web: PO-0005 Receipts 0, \"This PO has no received stock yet.\"" },
+    ],
     issueType: 'Bug', severity: 'Medium', priority: 'P3 - Medium', status: 'Open',
     tests: ['MPUR-009'], guardTest: 'MPUR-009',
     evidence: 'By hand 2026-11-18 (reports/explore-campaign/po06.png, po07.xml); run 20261118-124321-single-MPUR-009; web PO-0005 Receipts tab.',
@@ -32,6 +40,10 @@ module.exports = [
     steps: '1. More > Purchase Orders > New purchase order.\n2. Add product QA-TEST Gadget R3, Qty 3, Tax Sales 10% > Add line.\n3. Add product QA-TEST Gadget R3, Qty 2, Tax TDS 2% > Add line.\n4. Read the lines and Lines total. (Discarded, never saved.)',
     expected: 'TDS 2% line: 200.24 - 4.00 = ₹196.24; Lines total 330.40 + 196.24 = ₹526.64. TDS is a deducted tax: saved orders show it under "(-) Deducted taxes" and subtract it.',
     actual: 'TDS 2% line ₹204.24 (200.24 + 4.00); Lines total ₹534.64. The Sales 10% line is right (₹330.40). Web, same lines in Individual tax mode: (+) Tax ₹34.04 (30.04 + 4.00, so the line TDS is added there too), then a separate order-level "(-) Deducted taxes" ₹10.01 (2% of the whole order), Grand Total ₹524.63. The mobile form shows neither that deduction nor a grand total.',
+    images: [
+      { file: "docs/defect-evidence/phone/MPUR-new-po-tds-line.png", caption: "Phone (exploration): New PO, TDS 2% line ₹204.24, Lines total ₹534.64" },
+      { file: "docs/defect-evidence/web/MPUR-D03-web-new-po-summary.png", caption: "Web: same lines (not saved), Tax ₹34.04, Deducted ₹10.01, Grand Total ₹524.63" },
+    ],
     issueType: 'Bug', severity: 'High', priority: 'P2 - High', status: 'Open',
     tests: ['MPUR-015'], guardTest: 'MPUR-015',
     evidence: 'By hand 2026-11-18 (reports/explore-campaign/po19.png); runs 20261118-125245 and 20261118-125922-single-MPUR-015; web New PO form (not saved), Summary screenshot.',
@@ -44,6 +56,10 @@ module.exports = [
     steps: '1. More > Purchase Orders.\n2. Open PO-0005, PO-0004 and PO-0001: read Order date.\n3. Web: Purchase Orders list / Overview: read Order Date.',
     expected: 'The same order date as the web: PO-0005 12 Oct 2026, PO-0004 9 Oct 2026, PO-0001 27 Aug 2026.',
     actual: 'The phone shows 11 Oct 2026, 8 Oct 2026 and 26 Aug 2026 (one day earlier). PO-0003 and PO-0002 (10 Sep 2026) match the web. Looks like a UTC / local-time conversion of the stored date.',
+    images: [
+      { file: "docs/defect-evidence/phone/MPUR-po0005-order-date.png", caption: "Phone (exploration): PO-0005 Order date 11 Oct 2026" },
+      { file: "docs/defect-evidence/web/MPUR-D04-web-po0005-order-date.jpg", caption: "Web: PO-0005 Order Date 10/12/2026" },
+    ],
     issueType: 'Bug', severity: 'Medium', priority: 'P3 - Medium', status: 'Open',
     tests: ['MPUR-006'], guardTest: 'MPUR-006',
     evidence: 'By hand 2026-11-18 (reports/explore-campaign/po05.xml, po-0004-a.xml, po-0001-a.xml); web Overview of PO-0005, PO-0004, PO-0001; runs 20261118-132128 and 20261118-132257-single-MPUR-006.',
