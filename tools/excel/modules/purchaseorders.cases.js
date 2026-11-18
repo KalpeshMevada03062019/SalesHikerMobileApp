@@ -1,0 +1,58 @@
+// Mobile Purchase Order test cases (More > INVENTORY > Purchase Orders), SalesHiker Android 1.0.0. Expected results
+// come from the live app on the Realme RMX3997 (2026-11-18): 5 purchase orders; reference PO-0005 (QA-TEST-R9
+// Supplier, 10 x ₹100.12, received 4 of 10). Read only: Save, Receive, Edit and the menu actions are never chosen;
+// the new-order form is filled and discarded.
+
+const PRE = 'Registered beta test account (config\\.env).\nApp restarted signed in; More > Purchase Orders open.';
+const tc = (fields) => ({ req: 'REQ-MPUR-01', input: 'Test account from config\\.env. Purchase order PO-0005.', pre: PRE, ...fields });
+
+module.exports = [
+  tc({ ts: 'TS-MPUR-01', scenario: 'Purchase order list', id: 'MPUR-001', title: 'Purchase Orders opens with the count, search, status chips and the orders',
+    steps: '1. More > Purchase Orders.', type: 'Smoke', design: 'Positive',
+    expected: '"Purchase orders" with the count, New purchase order (not tapped), "Search PO number or supplier", chip All selected; rows "supplier, ₹amount, PO-n, date, status".', observed: '5 purchase orders.' }),
+  tc({ ts: 'TS-MPUR-01', scenario: 'Purchase order list', id: 'MPUR-002', title: 'Status counts add up to all purchase orders',
+    steps: '1. Tap Draft, Ordered, Partially Received, Received, Cancelled; read each count.', type: 'Functional', design: 'Equivalence Partitioning',
+    expected: 'The status counts add up to the All count.', observed: 'Partially Received 2, Received 3 (exploration).' }),
+  tc({ ts: 'TS-MPUR-01', scenario: 'Purchase order list', id: 'MPUR-003', title: 'Each status filter shows only purchase orders with that status',
+    steps: '1. Tap each status chip.', type: 'Functional', design: 'Equivalence Partitioning',
+    expected: 'Only that chip selected; rows only of that status, as many as the count; an empty status shows "No purchase orders found".', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPUR-01', scenario: 'Purchase order list', id: 'MPUR-004', title: 'Search finds a purchase order by number or supplier in any letter case',
+    steps: '1. Search po-0005.\n2. Search QA-TEST-R9.', input: 'po-0005; QA-TEST-R9', type: 'Functional', design: 'Equivalence Partitioning',
+    expected: 'po-0005 finds only PO-0005 (QA-TEST-R9 Supplier); QA-TEST-R9 finds only that supplier, count = rows.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPUR-01', scenario: 'Purchase order list', id: 'MPUR-005', title: 'An unknown word finds no purchase orders and Clear filters restores the list',
+    steps: '1. Search qa_no_such_po_zz.\n2. Tap Clear filters.', input: 'qa_no_such_po_zz', type: 'Functional', design: 'Negative',
+    expected: 'Count 0, "No purchase orders found", "Try another search or status."; Clear filters empties the search, selects All and restores the count.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPUR-02', scenario: 'Purchase order detail', id: 'MPUR-006', title: 'The purchase order detail shows its number, status, amount, supplier, warehouse and order date',
+    steps: '1. Open PO-0005; read.\n2. Back.', type: 'Functional', design: 'Validation',
+    expected: 'PO-0005, Partially Received, ₹2,242.69, QA-TEST-R9 Supplier as on the list; Vendor, Warehouse QA-TEST-R9 Warehouse, Order date 11 Oct 2026; ITEMS 1: QA-TEST Gadget R3 10 x ₹100.12, Received 4 of 10; Back returns to the list.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPUR-03', scenario: 'Calculation', id: 'MPUR-007', title: 'Every purchase order adds up from its lines and taxes to the grand total on the list',
+    steps: '1. Open each purchase order; read lines and totals; Back.', type: 'Functional', design: 'Validation',
+    expected: 'Each line = qty x unit cost; Items total = sum of lines; Grand total = Pre-tax total + (+) Tax - (-) Deducted taxes = the list amount.', observed: 'PO-0005 tax ₹1,261.51 on ₹1,001.20 (126%) still adds up; the others 27% (exploration).' }),
+  tc({ ts: 'TS-MPUR-03', scenario: 'Calculation', id: 'MPUR-008', title: 'The balance of every purchase order is its grand total minus the amount paid',
+    steps: '1. Open each purchase order; read Grand total, Paid, Balance; Back.', type: 'Functional', design: 'Validation',
+    expected: 'Balance = Grand total - Paid.', observed: 'Every order: Paid ₹0 and Balance ₹0 (exploration).', defect: 'MPUR-D01' }),
+  tc({ ts: 'TS-MPUR-04', scenario: 'Receiving', id: 'MPUR-009', title: 'Received quantities match the status and the receipts of every purchase order',
+    steps: '1. Open each purchase order; read "Received n of m", the status, RECEIPTS; Back.', type: 'Functional', design: 'Validation',
+    expected: 'All received = Received, some = Partially Received; an order with received goods lists its receipt and does not say "No stock received yet."', observed: 'PO-0005: Received 4 of 10 but "No stock received yet." and no receipt (exploration).', defect: 'MPUR-D02' }),
+  tc({ ts: 'TS-MPUR-05', scenario: 'Purchase order actions', id: 'MPUR-010', title: 'The actions menu offers edit, receive, PDF, task, notes and delete and explains the disabled ones',
+    steps: '1. Open PO-0005.\n2. More actions; read; Close.', type: 'Functional', design: 'Validation',
+    expected: '"A received order cannot be edited." above Edit (disabled) and Receive stock (enabled); "Purchase order actions": Edit (disabled, same reason), Receive stock, View PDF, Save PDF, Add task, Notes, Delete (disabled, "Reverse the receipts, then delete it."). Nothing chosen.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPUR-04', scenario: 'Receiving', id: 'MPUR-011', title: 'Receive stock offers the outstanding quantity of each line and cancels without receiving',
+    steps: '1. Open PO-0005.\n2. Receive stock; read.\n3. Cancel.', type: 'Functional', design: 'Validation',
+    expected: '"PO-0005. Enter the quantity received ..."; Warehouse QA-TEST-R9 Warehouse; QA-TEST Gadget R3 quantity 6; "Ordered 10 · received 4 · outstanding 6"; Receive (not tapped); Cancel closes without a dialog; still Received 4 of 10.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPUR-06', scenario: 'New purchase order', id: 'MPUR-012', title: 'The new purchase order form shows its defaults and closes unchanged without asking',
+    steps: '1. New purchase order; read.\n2. Cancel.', type: 'Functional', design: 'Validation',
+    expected: 'Choose a supplier, No price book, Choose a warehouse, Draft selected, Order date today, Expected delivery No date, Add product, Paid 0, empty terms and notes, Save (not tapped); Cancel closes without a dialog; count unchanged.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPUR-06', scenario: 'New purchase order', id: 'MPUR-013', title: 'A new line takes the product cost and offers the taxes',
+    steps: '1. New purchase order > Add product; search QA-TEST-SKU-R3; choose it.\n2. Read the line; open Tax; Close.\n3. Close the line; Cancel.', input: 'QA-TEST-SKU-R3', type: 'Functional', design: 'Validation',
+    expected: 'Product QA-TEST Gadget R3, Name, Qty 1, Unit cost 100.12, Tax No tax; taxes No tax, VAT 4.5%, Sales 10%, Service 12.5%, TDS 2%; closing adds no line.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPUR-03', scenario: 'Calculation', id: 'MPUR-014', title: 'A line with an added tax totals quantity times cost plus the tax',
+    steps: '1. New purchase order; add QA-TEST Gadget R3, Qty 3, Sales 10%.\n2. Read the line and Lines total.\n3. Discard.', input: 'Qty 3, Sales 10%', type: 'Functional', design: 'Validation',
+    expected: '"3 x ₹100.12, Sales 10%" ₹330.40 (300.36 + 30.04); Lines total ₹330.40.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPUR-03', scenario: 'Calculation', id: 'MPUR-015', title: 'A line with a deducted tax subtracts the tax from the line and the lines total',
+    steps: '1. New purchase order; add Qty 3 Sales 10% and Qty 2 TDS 2%.\n2. Read the lines and Lines total.\n3. Discard.', input: 'Qty 2, TDS 2%', type: 'Functional', design: 'Validation',
+    expected: 'TDS line ₹196.24 (200.24 - 4.00), as the saved orders subtract "(-) Deducted taxes"; Lines total ₹526.64.', observed: 'TDS line ₹204.24, Lines total ₹534.64 (exploration).', defect: 'MPUR-D03' }),
+  tc({ ts: 'TS-MPUR-06', scenario: 'New purchase order', id: 'MPUR-016', title: 'A changed new purchase order asks before discarding, keeps the lines on Cancel and saves nothing on Discard',
+    steps: '1. New purchase order; add a line.\n2. Cancel > Cancel.\n3. Cancel > Discard.', type: 'Functional', design: 'Validation',
+    expected: '"Discard this order?" / "This order is not saved yet."; Cancel keeps the line; Discard returns with the count unchanged.', observed: 'As expected (exploration).' }),
+];

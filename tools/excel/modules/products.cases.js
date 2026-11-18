@@ -1,0 +1,51 @@
+// Mobile Product test cases (More > INVENTORY > Products), SalesHiker Android 1.0.0. Expected results come from the
+// live app on the Realme RMX3997 (2026-11-17): 3,332 products; QA reference QA-TEST Gadget R3 (PRD-6040, SKU
+// QA-TEST-SKU-R3). Read only: Save, Scan barcode, Adjust stock, every menu action and status are never chosen.
+
+const PRE = 'Registered beta test account (config\\.env).\nApp restarted signed in; More > Products open.';
+const tc = (fields) => ({ req: 'REQ-MPRD-01', input: 'Test account from config\\.env. QA product QA-TEST Gadget R3.', pre: PRE, ...fields });
+
+module.exports = [
+  tc({ ts: 'TS-MPRD-01', scenario: 'Product list', id: 'MPRD-001', title: 'Products opens with the count, search, barcode scan, filters and products',
+    steps: '1. More > Products.', type: 'Smoke', design: 'Positive',
+    expected: '"N products", Scan barcode and New product (not tapped), "Search name, SKU or barcode", chips All (selected) / Active / Inactive / Category; rows with name and ₹ price, then SKU or category and stock or "Inactive".',
+    observed: '3,332 products.' }),
+  tc({ ts: 'TS-MPRD-01', scenario: 'Product list', id: 'MPRD-002', title: 'Active and Inactive counts add up to all products and each shows only its status',
+    steps: '1. Read All.\n2. Tap Active, then Inactive.', type: 'Functional', design: 'Equivalence Partitioning',
+    expected: 'Active + Inactive = All; Active lists products with stock, Inactive only products marked "Inactive".', observed: 'See the run.' }),
+  tc({ ts: 'TS-MPRD-01', scenario: 'Product list', id: 'MPRD-003', title: 'The category filter narrows the list to that category and Clear restores all products',
+    steps: '1. Tap Category; choose BEVERAGES.\n2. Tap Clear BEVERAGES.', input: 'Category BEVERAGES', type: 'Functional', design: 'Equivalence Partitioning',
+    expected: 'The chip shows BEVERAGES with Clear BEVERAGES; fewer products, none showing another category; Clear restores the full count.', observed: '96 products in BEVERAGES (exploration).' }),
+  tc({ ts: 'TS-MPRD-01', scenario: 'Product list', id: 'MPRD-004', title: 'Search finds products by name and SKU in any letter case',
+    steps: '1. Search qa-test-sku-r3.\n2. Search QA-TEST GADGET R3.', input: 'qa-test-sku-r3 / QA-TEST GADGET R3', type: 'Functional', design: 'Equivalence Partitioning',
+    expected: 'QA-TEST Gadget R3 found both ways; every result contains the words in its name or SKU.', observed: '2 products for the SKU (exploration).' }),
+  tc({ ts: 'TS-MPRD-01', scenario: 'Product list', id: 'MPRD-005', title: 'An unknown word finds no products and Clear filters restores the list',
+    steps: '1. Search qa_no_such_product_zz.\n2. Tap Clear filters.', input: 'Search: qa_no_such_product_zz', type: 'Functional', design: 'Negative',
+    expected: '"0 products", "No products found", "Try another search or filter." and Clear filters; Clear filters empties the search and restores the count.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPRD-02', scenario: 'Product detail', id: 'MPRD-006', title: 'The product detail shows its name, SKU, status, price and stock figures as on the list',
+    steps: '1. Search and open QA-TEST Gadget R3.\n2. Tap Back.', type: 'Functional', design: 'Validation',
+    expected: 'Name, SKU and price as on the list; "Status: Active. Change status"; On hand = list stock; Available = On hand - Reserved; "Stock is at or below the reorder level (5)." at 5 on hand; Back returns to the list.',
+    observed: 'On hand 5, Reserved 0, Available 5, Committed 0 (exploration).' }),
+  tc({ ts: 'TS-MPRD-02', scenario: 'Product detail', id: 'MPRD-007', title: 'The summary tab lists number, SKU, prices, tax, stock, vendor and owner',
+    steps: '1. Open QA-TEST Gadget R3.\n2. Read SUMMARY.', type: 'Functional', design: 'Validation',
+    expected: 'PRD-6040, QA-TEST-SKU-R3, Unit price ₹100.12, Cost price ₹200, Tax rate 18%, Qty in stock 5, Vendor QA-TEST-R9 Supplier, Assigned to set.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPRD-02', scenario: 'Product detail', id: 'MPRD-008', title: 'The stock tab lists each warehouse and they add up to the stock on hand',
+    steps: '1. Open QA-TEST Gadget R3.\n2. Tap Stock.', type: 'Functional', design: 'Validation',
+    expected: 'STOCK BY WAREHOUSE: Central Warehouse 10 = 5, QA-TEST-R9 Warehouse = 0; tab "Stock, 2"; sum = On hand; Adjust stock (not tapped).', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPRD-02', scenario: 'Product detail', id: 'MPRD-009', title: 'Variants, details and related tabs show their content and the purchase orders of the product',
+    steps: '1. Open QA-TEST Gadget R3.\n2. Tap Variants, Details and Related in turn.', type: 'Functional', design: 'Validation',
+    expected: 'Variants 0 with "This product has no variants."; Details with SALES AND PURCHASING and a Commission rate %; Related lists purchase orders "PO-n, ₹amount, Qty n, date, status".', observed: 'PO-0005 and PO-0004 (exploration).' }),
+  tc({ ts: 'TS-MPRD-02', scenario: 'Product detail', id: 'MPRD-010', title: 'The activity tab lists stock movements that add up to the stock by warehouse',
+    steps: '1. Open QA-TEST Gadget R3.\n2. Tap Activity; scroll through STOCK MOVEMENTS.', type: 'Functional', design: 'Validation',
+    expected: 'As many movements as the STOCK MOVEMENTS count, each "warehouse, ±qty, reference, date, direction"; their net per warehouse = the stock by warehouse.', observed: '8 movements (exploration).' }),
+  tc({ ts: 'TS-MPRD-03', scenario: 'Product actions', id: 'MPRD-011', title: 'The actions menu offers its actions and blocks Delete while the product has stock',
+    steps: '1. Open QA-TEST Gadget R3.\n2. More actions; read it; tap Close.', type: 'Functional', design: 'Validation',
+    expected: '"Product actions": Edit, Mark inactive, Adjust stock, View PDF, Save PDF enabled; Delete disabled with "It has stock in a warehouse. Mark it inactive instead." Nothing is chosen.', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPRD-03', scenario: 'Product actions', id: 'MPRD-012', title: 'The status picker lists Active and Inactive with the current one selected and closes without a change',
+    steps: '1. Open QA-TEST Gadget R3.\n2. Tap the status button; read it; Close.', type: 'Functional', design: 'Positive',
+    expected: 'Active (selected) and Inactive; after Close still "Status: Active".', observed: 'As expected (exploration).' }),
+  tc({ ts: 'TS-MPRD-04', scenario: 'New product', id: 'MPRD-013', title: 'The new product form shows its defaults, keeps only digits in the barcode and discards without saving',
+    steps: '1. New product.\n2. Read the defaults and sections; open Category and close it.\n3. Type ab12cd34 in Barcode.\n4. Cancel > Discard.', input: 'Barcode ab12cd34', type: 'Functional', design: 'Validation',
+    expected: 'Empty name, "Digits only", No category, Price / Cost / Opening stock 0, No warehouse, No supplier, Assigned to Me; sections DETAILS, SALES AND PURCHASING, PHYSICAL, PHOTOS; Barcode keeps 1234; "Discard this product?" / "This product is not saved yet."; count unchanged.',
+    observed: 'Barcode 1234 (exploration).' }),
+];

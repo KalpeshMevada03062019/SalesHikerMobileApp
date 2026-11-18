@@ -186,3 +186,126 @@ export const deliveryData = {
   serviceLine: 'test service, 3 x ₹140, ₹420',
   serviceTotal: '₹420',
 };
+
+/** Expenses (More > SALES > Expenses). Beta held none on 2026-11-16; MEXP-020 saves one QA expense
+ *  (EXPENSE_CREATE=1, approved, kept). Form check: 1000 with Sales 10% = 1100; with the amount including the
+ *  tax, 909.09 + 90.91 = 1000; TDS 2% is deducted elsewhere in the app, so 1000 - 20 = 980. */
+export const expenseData = {
+  descriptionPrefix: 'QA-TEST-EXP',
+  reference: 'QA-EXP-001',
+  vendorName: 'QA Test Vendor',
+  category: 'Other',
+  amount: 1000,
+  tax: 'Sales 10%',
+  total: 1100,
+  includedAmount: 909.09,
+  includedTax: 90.91,
+  tdsTotal: 980,
+  noMatch: 'qa_no_such_expense_zz',
+  /** Saved by MEXP-020 on 2026-11-16 (run 20261116-171738), kept as Draft; the detail tests read it. */
+  saved: 'EXP-0008',
+  savedDescription: 'QA-TEST-EXP 20261116-114756',
+  savedDate: '16 Nov 2026',
+  savedTax: '₹100, Sales 10%',
+};
+
+/** Products (More > INVENTORY > Products), read only; 3,332 on beta (2026-11-17). QA reference: QA-TEST Gadget R3. */
+export const productData = {
+  name: 'QA-TEST Gadget R3',
+  sku: 'QA-TEST-SKU-R3',
+  number: 'PRD-6040',
+  price: '₹100.12',
+  costPrice: '₹200',
+  taxRate: '18%',
+  onHand: 5,
+  reorderLevel: 5,
+  vendor: 'QA-TEST-R9 Supplier',
+  warehouses: { 'Central Warehouse 10': 5, 'QA-TEST-R9 Warehouse': 0 } as Record<string, number>,
+  category: 'BEVERAGES',
+  barcodeTyped: 'ab12cd34',
+  barcodeKept: '1234',
+  noMatch: 'qa_no_such_product_zz',
+};
+
+/** Services (More > INVENTORY > Services), read only; beta holds one, "test service" SER-0001 (2026-11-17). It is
+ *  the service on the QA invoice INV-300013 (MINV-020: two lines, Qty 2 and Qty 1). */
+export const serviceData = {
+  name: 'test service',
+  number: 'SER-0001',
+  price: '₹140',
+  usageUnit: 'Days',
+  units: '1',
+  taxRate: '10%',
+  commissionRate: '5%',
+  category: 'Uncategorized',
+  owner: 'Yash',
+  salesStart: '12 Oct 2026',
+  salesEnd: '31 Oct 2026',
+  supportStart: '12 Oct 2026',
+  supportExpiry: '12 Oct 2027',
+  description: 'description of service',
+  invoice: 'INV-300013',
+  invoiceQuantities: ['Qty 1', 'Qty 2'],
+  createdActivity: 'Service "test service" created',
+  otherCategory: 'BEVERAGES',
+  formName: 'QA-TEST-SRV draft',
+  formUnit: 'Days',
+  noMatch: 'qa_no_such_service_zz',
+};
+
+/** Categories (More > INVENTORY > Categories), read only; 24 on beta (2026-11-17). BEVERAGES: Active, no parent,
+ *  sort order 5, no sub-categories, the category of the Products filter tests. */
+export const categoryData = {
+  name: 'BEVERAGES',
+  sortOrder: '5',
+  search: 'bread',
+  searchMatches: ['BREAD AND BAKERY', 'BREAD AND BAKERY, FROZEN'],
+  always: ['BEVERAGES', 'Uncategorized'],
+  formName: 'QA-TEST-CAT draft',
+  noMatch: 'qa_no_such_category_zz',
+  /** Rows read for the sort-order check (MCAT-012). */
+  sortRows: 6,
+};
+
+/** Price books (More > INVENTORY > Price Books), read only; 5 on beta (2026-11-17), all Active, none used by a
+ *  customer. Reference: "SalesHiker Pricebook 1", USD, one price. */
+export const priceBookData = {
+  name: 'SalesHiker Pricebook 1',
+  currency: 'USD',
+  currencyOption: 'USD, US Dollar',
+  vendor: 'SalesHiker Vendor',
+  notes: 'SalesHiker Pricebook 1',
+  priceProduct: 'KRI KRI',                                  // start of the product name (it holds curly quotes)
+  unitPrice: '188.16',
+  cost: '20',
+  priceRow: /^KRI KRI, .+, \$188[.]16, Cost \$20$/,
+  search: 'PRICEBOOK',
+  searchMatches: ['SalesHiker Pricebook 2', 'SalesHiker Pricebook 1'],
+  defaultCurrency: 'Currency: INR, Indian Rupee',
+  pickerProduct: 'QA-TEST-SKU-R3',
+  pickerOption: 'QA-TEST Gadget R3, QA-TEST-SKU-R3, ₹100.12',
+  pickerVendor: 'QA-TEST-R9 Supplier',
+  formName: 'QA-TEST-PB draft',
+  noMatch: 'qa_no_such_book_zz',
+};
+
+/** Purchase orders (More > INVENTORY > Purchase Orders), read only; the new-order form is filled and discarded.
+ *  PO-0005: QA-TEST-R9 Supplier / Warehouse, 10 x ₹100.12, received 4 of 10, Partially Received, ₹2,242.69.
+ *  Form lines (never saved): 3 x 100.12 + Sales 10% = 330.40; 2 x 100.12 - TDS 2% (a deducted tax) = 196.24. */
+export const purchaseOrderData = {
+  number: 'PO-0005',
+  supplier: 'QA-TEST-R9 Supplier',
+  supplierSearch: 'qa-test-r9',
+  warehouse: 'QA-TEST-R9 Warehouse',
+  orderDate: '11 Oct 2026',
+  product: 'QA-TEST Gadget R3',
+  productSearch: 'QA-TEST-SKU-R3',
+  unitCost: '100.12',
+  ordered: 10,
+  received: 4,
+  taxes: ['No tax', 'VAT 4.5%', 'Sales 10%', 'Service 12.5%', 'TDS 2%'],
+  addedLine: { qty: '3', tax: 'Sales 10%', total: '₹330.40' },
+  deductedLine: { qty: '2', tax: 'TDS 2%', total: '₹196.24' },
+  linesTotal: '₹526.64',
+  noMatch: 'qa_no_such_po_zz',
+};

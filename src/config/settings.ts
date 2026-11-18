@@ -47,6 +47,10 @@ export const settings = {
   invoice: {
     create: ['1', 'true'].includes(value('INVOICE_CREATE').toLowerCase()),
   },
+  /** Expense create test (MEXP-020): saves one QA-TEST expense on beta, only when EXPENSE_CREATE is 1 or true. */
+  expense: {
+    create: ['1', 'true'].includes(value('EXPENSE_CREATE').toLowerCase()),
+  },
   /** Reuse the UiAutomator2 server on the device (phones that block adb installs behind a prompt). */
   skipServerInstall: value('SKIP_SERVER_INSTALL') === '1',
   /** Folder for this run's reports. Set by the PowerShell runners; generated otherwise. */
