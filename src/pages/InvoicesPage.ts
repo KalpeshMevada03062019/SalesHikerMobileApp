@@ -159,12 +159,14 @@ const newInvoiceSelectors = {
   // A line on the form: content-desc "<name>, <detail>, <total>"; texts name, total, detail.
   lines: '//android.widget.Button[contains(@content-desc, " x ₹")]',
   linesTotal: '//android.widget.TextView[@text="Lines total"]/following-sibling::android.widget.TextView[1]',
-  discardTitle: by.text('Discard this invoice?'),
+  discardTitle: by.textStartsWith('Discard this '),              // "Discard this invoice?" / "Discard this order?"
   discard: by.a11y('Discard'),
 };
 
+/** The New invoice form; the New sales order form has the same ORDER / LINE ITEMS layout and line sheet. */
 class NewInvoicePage extends BasePage {
-  protected readonly marker = by.text('New invoice');
+  protected readonly marker: string;
+  constructor(readonly title = 'New invoice') { super(); this.marker = by.text(title); }
   readonly selectors = newInvoiceSelectors;
 
   private async field(selector: string, value: string): Promise<void> {
@@ -193,9 +195,19 @@ class NewInvoicePage extends BasePage {
   async addLine(line: NewLine): Promise<void> {
     const add = line.kind === 'service' ? this.selectors.addService : this.selectors.addProduct;
     await this.scrollTo(add);
-    await this.tap(add);
+    // Wait for the picker: a line already on the form starts with the same name, and tapping it opens "Edit line".
+    // A tap while the form is still settling (keyboard closing) can be lost; opening the picker changes nothing, so retry it.
+    for (let attempt = 1; ; attempt++) {
+      await this.scrollTo(add);
+      await this.tap(add);
+      if (await $(by.descStartsWith('Search ')).waitForDisplayed({ timeout: 8_000 }).then(() => true, () => false)) break;
+      if (attempt === 3) throw new Error('Product / service picker not shown after 3 taps');
+    }
     if (line.search) await this.field(this.selectors.productSearch, line.search);
-    await this.tap(this.selectors.product(line.product), 60_000);
+    await $(this.selectors.product(line.product)).waitForDisplayed({ timeout: 60_000, timeoutMsg: `"${line.product}" not offered` });
+    // The picker sheet comes after the form in the hierarchy: its row is the last match.
+    const matches = await $$(by.descStartsWith(line.product));
+    await matches[matches.length - 1]!.click();
     await this.waitForVisible(this.selectors.lineSheet, 10_000, 'New line');
     // Tax first: once a number is typed the keyboard covers the Tax field.
     if (line.tax) {
@@ -238,9 +250,10 @@ class NewInvoicePage extends BasePage {
   /** Cancel > Discard: leaves the form without saving. */
   async discard(): Promise<void> {
     await this.tap(this.selectors.cancel);
-    await this.waitForVisible(this.selectors.discardTitle, 10_000, 'Discard this invoice?');
+    await this.waitForVisible(this.selectors.discardTitle, 10_000, 'Discard dialog');
     await this.tap(this.selectors.discard);
   }
 }
 
-export const newInvoicePage = new NewInvoicePage();
+export const newInvoicePage = new NewInvoicePage('New invoice');
+export const newSalesOrderPage = new NewInvoicePage('New sales order');

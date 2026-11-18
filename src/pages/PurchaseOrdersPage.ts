@@ -242,7 +242,7 @@ class NewPurchaseOrderPage extends BasePage {
     const field = $(s.pickerSearch);
     await field.click();
     await field.setValue(search);
-    await this.hideKeyboard();
+    // No hideKeyboard here: its BACK closes the whole picker sheet (run 20261118-124903). The option sits above the keyboard.
     await $(s.option(start)).waitForDisplayed({ timeout: SCROLL_TIMEOUT, timeoutMsg: `"${start}" not offered` });
     const label = await this.desc(s.option(start));
     await this.tap(s.option(start));
@@ -276,7 +276,9 @@ class NewPurchaseOrderPage extends BasePage {
     const el = $(this.selectors.input('Qty'));
     await el.click();
     await el.setValue(qty);
-    await this.hideKeyboard();
+    // The keyboard's Done closes it; hideKeyboard (BACK) would close the whole New line sheet (run 20261118-125114).
+    await driver.execute('mobile: performEditorAction', { action: 'done' });
+    await driver.pause(500);
   }
 
   /** Adds a line to the unsaved form: product, quantity and tax, then Add line. */

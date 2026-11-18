@@ -9,6 +9,9 @@ import { checkpoint } from '../../../src/utils/evidence.js';
 import { salesOrderData } from '../../../src/data/testData.js';
 import { requiresAccount } from '../../helpers/hooks.js';
 import { openSalesOrder, openSalesOrders } from '../../helpers/salesorders.js';
+import { webTotals } from '../../../src/data/testData.js';
+import { newSalesOrderPage } from '../../../src/pages/InvoicesPage.js';
+import { breakdown, differences, fillWebComparisonLines } from '../../helpers/webcompare.js';
 
 const cents = (n: number) => Math.round(n * 100);
 
@@ -131,5 +134,26 @@ describe('Sales orders: filters, search and detail (nothing is changed)', () => 
     expect(options.map((o) => o.label), 'Sales order actions').to.deep.equal([...SALES_ORDER_ACTIONS]);
     expect(options.filter((o) => !o.enabled).map((o) => o.label), 'disabled actions').to.deep.equal([]);
     expect(await salesOrderDetailPage.isDisplayed(5_000), 'detail after closing the menu').to.equal(true);
+  });
+
+  it('MSOR-010 The sales order subtotal, taxes and total match the web app', async function () {
+    const web = webTotals.salesOrder;
+    await openSalesOrder(this, web.number);
+    const phone = breakdown(await salesOrderDetailPage.totals());
+    await checkpoint('MSOR-010 totals');
+    const { number: _n, ...values } = web;
+    expect(differences(web.number, { ...phone }, values), `${web.number} vs web (Overview)`).to.deep.equal([]);
+  });
+
+  it('MSOR-011 The new sales order form gives the same line totals and total as the web form', async () => {
+    await openSalesOrders();
+    await $(salesOrdersPage.selectors.newButton).click();
+    await newSalesOrderPage.waitForDisplayed(15_000);
+    const { lines, total } = await fillWebComparisonLines(newSalesOrderPage, 'MSOR-011');
+    await newSalesOrderPage.discard();
+    await salesOrdersPage.waitForDisplayed(20_000);
+    const web = webTotals.form;
+    expect(lines, 'line totals vs the web form').to.deep.equal([...web.lines]);
+    expect(total, `Lines total vs the web Grand Total (Items ${web.itemsTotal} + Tax ${web.tax} - Deducted ${web.deducted})`).to.equal(web.total);
   });
 });

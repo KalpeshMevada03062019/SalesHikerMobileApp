@@ -8,6 +8,8 @@ import { checkpoint } from '../../../src/utils/evidence.js';
 import { invoiceData } from '../../../src/data/testData.js';
 import { requiresAccount } from '../../helpers/hooks.js';
 import { openInvoice, openInvoices } from '../../helpers/invoices.js';
+import { webTotals } from '../../../src/data/testData.js';
+import { breakdown, differences } from '../../helpers/webcompare.js';
 
 const cents = (n: number) => Math.round(n * 100);
 
@@ -167,5 +169,20 @@ describe('Invoices: filters, search, calculations and payments (nothing is chang
     expect(options.map((o) => o.label), 'Invoice actions').to.deep.equal([...INVOICE_ACTIONS]);
     expect(options.filter((o) => !o.enabled).map((o) => o.label), 'disabled actions').to.deep.equal([]);
     expect(await invoiceDetailPage.isDisplayed(5_000), 'detail after closing the menu').to.equal(true);
+  });
+
+  it('MINV-012 Each reference invoice shows the same subtotal, taxes, total, paid and balance as the web app', async function () {
+    const problems: string[] = [];
+    for (const web of webTotals.invoices) {
+      await openInvoice(this, web.number);
+      const d = invoiceDetailPage;
+      const pay = { total: await d.payment('Total'), paid: await d.payment('Paid'), balance: await d.payment('Balance due') };
+      await d.scrollTo(d.invoice.grandTotal);
+      const phone = { ...breakdown(await d.totals()), ...pay };
+      await checkpoint(`MINV-012 ${web.number}`);
+      const { number: _n, ...values } = web;
+      problems.push(...differences(web.number, phone, values));
+    }
+    expect(problems, 'invoices vs web (Overview)').to.deep.equal([]);
   });
 });

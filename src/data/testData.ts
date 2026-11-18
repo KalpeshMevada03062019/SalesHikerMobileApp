@@ -297,7 +297,7 @@ export const purchaseOrderData = {
   supplier: 'QA-TEST-R9 Supplier',
   supplierSearch: 'qa-test-r9',
   warehouse: 'QA-TEST-R9 Warehouse',
-  orderDate: '11 Oct 2026',
+  orderDate: '12 Oct 2026',                                 // web Order Date 10/12/2026 (the phone shows 11 Oct: MPUR-D04)
   product: 'QA-TEST Gadget R3',
   productSearch: 'QA-TEST-SKU-R3',
   unitCost: '100.12',
@@ -309,3 +309,19 @@ export const purchaseOrderData = {
   linesTotal: '₹526.64',
   noMatch: 'qa_no_such_po_zz',
 };
+
+/** Web reference totals (beta web app, Overview tab / unsaved New forms, read 2026-11-18). The phone must show the same.
+ *  added = the "(+)" tax rows, deducted = "(-) Deducted taxes". */
+export const webTotals = {
+  /** QT-301006 and SO-300004: 2 x ₹96 dumplings, group taxes VAT 4.5% + Sales 10% + Service 12.5%, TDS 2% deducted. */
+  quotation: { number: 'QT-301006', subtotal: 192, added: 51.84, deducted: 3.84, total: 240 },
+  salesOrder: { number: 'SO-300004', subtotal: 192, added: 51.84, deducted: 3.84, total: 240 },
+  invoices: [
+    { number: 'INV-300005', subtotal: 1098.90, added: 0, deducted: 21.98, total: 1076.92, paid: 1076.92, balance: 0 },
+    { number: 'INV-004221', total: 98500.13, paid: 40381, balance: 58119.13 },
+    { number: 'INV-300013', subtotal: 386, added: 27.88, deducted: 0, total: 413.88, paid: 0, balance: 413.88 },
+  ],
+  /** The two lines of newInvoiceData on the web New invoice and New sales order forms (Individual tax mode):
+   *  lines 277.20 and 136.68, Items 386, (+) Tax 27.88, (-) Deducted taxes 7.72 (2% of the order), Grand Total 406.16. */
+  form: { lines: [277.20, 136.68], itemsTotal: 386, tax: 27.88, deducted: 7.72, total: 406.16 },
+} as const;

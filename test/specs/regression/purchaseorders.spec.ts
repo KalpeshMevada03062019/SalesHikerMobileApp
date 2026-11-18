@@ -106,13 +106,14 @@ describe('Purchase orders: list, detail, receiving and the new order form (nothi
     expect(await d.text(d.selectors.title), 'supplier under the amount').to.equal(row.title);
     expect(await d.field('Vendor'), 'Vendor').to.equal(po.supplier);
     expect(await d.field('Warehouse'), 'Warehouse').to.equal(po.warehouse);
-    expect(await d.field('Order date'), 'Order date').to.equal(po.orderDate);
+    const orderDate = await d.field('Order date');
     const lines = await d.lines();
     expect(lines.length, 'lines vs ITEMS count').to.equal(Number(await d.text(d.po.itemCount)));
     expect(lines[0], 'line').to.deep.include({ name: po.product, quantity: po.ordered, cost: money(po.unitCost), received: `Received ${po.received} of ${po.ordered}` });
     await d.goBack();
     await purchaseOrdersPage.waitForDisplayed();
     expect((await purchaseOrdersPage.visibleRows()).map((r) => r.number), 'list after Back').to.include(row.number);
+    expect(orderDate, 'Order date (web: 10/12/2026)').to.equal(po.orderDate);
   });
 
   it('MPUR-007 Every purchase order adds up from its lines and taxes to the grand total on the list', async function () {
@@ -260,8 +261,10 @@ describe('Purchase orders: list, detail, receiving and the new order form (nothi
     const { rows, total } = await f.lineRows();
     await checkpoint('MPUR-015 deducted tax');
     await f.discard();
-    expect(rows[1], 'TDS line (2 x 100.12 = 200.24 - 2% = 196.24)').to.equal(`${po.product}, ${po.deductedLine.qty} x ₹${po.unitCost}, ${po.deductedLine.tax}, ${po.deductedLine.total}`);
-    expect(total, 'Lines total (330.40 + 196.24)').to.equal(po.linesTotal);
+    expect(rows[1]?.startsWith(`${po.product}, ${po.deductedLine.qty} x ₹${po.unitCost}, ${po.deductedLine.tax}, `), `TDS line "${rows[1]}"`).to.equal(true);
+    const tds = rows[1]!.split(', ').pop();
+    expect({ line: tds, total }, 'TDS line 2 x 100.12 = 200.24 - 2% (4.00) and Lines total 330.40 + 196.24')
+      .to.deep.equal({ line: po.deductedLine.total, total: po.linesTotal });
   });
 
   it('MPUR-016 A changed new purchase order asks before discarding, keeps the lines on Cancel and saves nothing on Discard', async () => {

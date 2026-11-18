@@ -42,4 +42,7 @@ module.exports = [
     steps: '1. Open QT-301006.\n2. More actions; read it; tap Close.', type: 'Functional', design: 'Negative',
     expected: '"Quotation actions": Change status, Convert to sales order (disabled: "This quotation already has a sales order."), View PDF, Share link. Nothing is chosen.',
     observed: 'As expected; menu closed.' }),
+  tc({ ts: 'TS-MQTN-05', scenario: 'Web comparison', id: 'MQTN-010', title: 'The quotation subtotal, taxes and total match the web app',
+    steps: '1. Open QT-301006; read the totals.\n2. Web: Quotations > QT-301006 > Overview (read only).', type: 'Functional', design: 'Comparison',
+    expected: 'As on the web: Items ₹192, (+) VAT ₹8.64 + Sales ₹19.20 + Service ₹24.00 = ₹51.84, (-) Deducted ₹3.84, Grand Total ₹240.', observed: 'Matches the web (2026-11-18).' }),
 ];

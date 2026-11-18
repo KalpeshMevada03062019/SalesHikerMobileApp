@@ -12,6 +12,8 @@ import { newInvoiceData } from '../../../src/data/testData.js';
 import { requiresAccount } from '../../helpers/hooks.js';
 import { openInvoice, openInvoices } from '../../helpers/invoices.js';
 import { skipBecause } from '../../helpers/campaigns.js';
+import { webTotals } from '../../../src/data/testData.js';
+import { fillWebComparisonLines } from '../../helpers/webcompare.js';
 
 const cents = (n: number) => Math.round(n * 100);
 const LINES: readonly NewLine[] = newInvoiceData.lines;
@@ -78,6 +80,18 @@ describe('Invoices: create an invoice (form preview; one QA-TEST invoice only wi
     // Read only: the invoice MINV-020 saved on 2026-11-16, so the check repeats without creating another.
     await openInvoice(this, newInvoiceData.saved);
     await checkSavedInvoice('MINV-022', newInvoiceData.savedSubject);
+  });
+
+  it('MINV-023 The new invoice form gives the same line totals and total as the web form', async () => {
+    await openInvoices();
+    await $(invoicesPage.selectors.newButton).click();
+    await newInvoicePage.waitForDisplayed(15_000);
+    const { lines, total } = await fillWebComparisonLines(newInvoicePage, 'MINV-023');
+    await newInvoicePage.discard();
+    await invoicesPage.waitForDisplayed(20_000);
+    const web = webTotals.form;
+    expect(lines, 'line totals vs the web form').to.deep.equal([...web.lines]);
+    expect(total, `Lines total vs the web Grand Total (Items ${web.itemsTotal} + Tax ${web.tax} - Deducted ${web.deducted})`).to.equal(web.total);
   });
 });
 

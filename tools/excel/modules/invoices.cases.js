@@ -69,4 +69,10 @@ module.exports = [
     expected: 'As MINV-020: Draft, the subject, line totals ₹277.20 and ₹131.32, Subtotal ₹386, taxes ₹22.52, Total and amount ₹408.52. Read only, so it repeats without creating invoices.',
     observed: 'Amount and Total ₹413.88, line 2 ₹136.68, Tax ₹27.88 (MINV-D02); everything else as expected.',
     defect: 'MINV-D02' }),
+  tc({ ts: 'TS-MINV-05', scenario: 'Web comparison', id: 'MINV-012', title: 'Each reference invoice shows the same subtotal, taxes, total, paid and balance as the web app',
+    steps: '1. Open INV-300005, INV-004221 and INV-300013; read PAYMENT and the totals.\n2. Web: each invoice > Overview (read only).', type: 'Functional', design: 'Comparison',
+    expected: 'As on the web: INV-300005 Items ₹1,098.90, Deducted ₹21.98, Total ₹1,076.92, Received ₹1,076.92, Balance ₹0; INV-004221 Total ₹98,500.13, Received ₹40,381, Balance ₹58,119.13; INV-300013 Items ₹386, Tax ₹27.88, Total ₹413.88, Balance ₹413.88.', observed: 'Matches the web (2026-11-18).' }),
+  tc({ ts: 'TS-MINV-05', scenario: 'Web comparison', id: 'MINV-023', title: 'The new invoice form gives the same line totals and total as the web form',
+    steps: '1. New invoice; add the two service lines of MINV-020.\n2. Read the lines and Lines total; Discard.\n3. Web: New invoice with the same lines (not saved).', type: 'Functional', design: 'Comparison',
+    input: 'Same two service lines as MINV-020.', expected: 'As on the web form: lines ₹277.20 and ₹136.68; total ₹406.16 (Items 386 + Tax 27.88 - Deducted 7.72).', observed: 'Lines ₹277.20 and ₹136.68 as on the web; phone total ₹413.88 vs web ₹406.16.', defect: 'MINV-D03' }),
 ];

@@ -40,4 +40,10 @@ module.exports = [
     steps: '1. Open SO-300004.\n2. More actions; read it; tap Close.', type: 'Functional', design: 'Positive',
     expected: '"Sales order actions": Change status, Convert to invoice, Create delivery note, Add expense, View PDF, Notes, Add task, Edit, Delete, all enabled. Nothing is chosen.',
     observed: 'All nine offered; menu closed.' }),
+  tc({ ts: 'TS-MSOR-04', scenario: 'Web comparison', id: 'MSOR-010', title: 'The sales order subtotal, taxes and total match the web app',
+    steps: '1. Open SO-300004; read the totals.\n2. Web: Sales Orders > SO-300004 > Overview (read only).', type: 'Functional', design: 'Comparison',
+    expected: 'As on the web: Items ₹192, taxes ₹51.84, (-) Deducted ₹3.84, Grand Total ₹240.', observed: 'Matches the web (2026-11-18).' }),
+  tc({ ts: 'TS-MSOR-04', scenario: 'Web comparison', id: 'MSOR-011', title: 'The new sales order form gives the same line totals and total as the web form',
+    steps: '1. New sales order; add test service 2 x ₹140, 10% off, Sales 10%; and 1 x ₹140, ₹6 off, TDS 2%.\n2. Read the lines and Lines total; Discard.\n3. Web: New sales order with the same lines (not saved).', type: 'Functional', design: 'Comparison',
+    input: 'Same two service lines as MINV-020.', expected: 'As on the web form: lines ₹277.20 and ₹136.68; total ₹406.16 (Items 386 + Tax 27.88 - Deducted 7.72).', observed: 'Lines ₹277.20 and ₹136.68 as on the web; phone total ₹413.88 vs web ₹406.16.', defect: 'MSOR-D01' }),
 ];

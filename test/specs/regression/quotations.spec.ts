@@ -7,6 +7,8 @@ import { checkpoint } from '../../../src/utils/evidence.js';
 import { quotationData } from '../../../src/data/testData.js';
 import { requiresAccount } from '../../helpers/hooks.js';
 import { openQuotation, openQuotations } from '../../helpers/quotations.js';
+import { webTotals } from '../../../src/data/testData.js';
+import { breakdown, differences } from '../../helpers/webcompare.js';
 
 const cents = (n: number) => Math.round(n * 100);
 
@@ -123,5 +125,14 @@ describe('Quotations: filters, search and detail (nothing is changed)', () => {
     expect(convert.enabled, 'Convert to sales order enabled').to.equal(false);
     expect(options.filter((o) => o !== convert && !o.enabled).map((o) => o.label), 'disabled actions').to.deep.equal([]);
     expect(await quotationDetailPage.isDisplayed(5_000), 'detail after closing the menu').to.equal(true);
+  });
+
+  it('MQTN-010 The quotation subtotal, taxes and total match the web app', async function () {
+    const web = webTotals.quotation;
+    await openQuotation(this, web.number);
+    const phone = breakdown(await quotationDetailPage.totals());
+    await checkpoint('MQTN-010 totals');
+    const { number: _n, ...values } = web;
+    expect(differences(web.number, { ...phone }, values), `${web.number} vs web (Overview)`).to.deep.equal([]);
   });
 });
