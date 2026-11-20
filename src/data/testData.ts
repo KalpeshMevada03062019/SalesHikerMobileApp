@@ -325,3 +325,43 @@ export const webTotals = {
    *  lines 277.20 and 136.68, Items 386, (+) Tax 27.88, (-) Deducted taxes 7.72 (2% of the order), Grand Total 406.16. */
   form: { lines: [277.20, 136.68], itemsTotal: 386, tax: 27.88, deducted: 7.72, total: 406.16 },
 } as const;
+
+/** Warehouses (More > INVENTORY > Warehouses), read only; the new-warehouse form is filled and discarded (2026-11-18:
+ *  1,004 warehouses, all Active). */
+export const warehouseData = {
+  full: { name: 'East Warehouse 641', code: 'WH-0641', street: '641 Logistics Park', city: 'Kolkata', state: 'WB', country: 'India',
+    location: 'Kolkata, WB, India', address: '641 Logistics Park, Kolkata, WB, India', owner: 'Assigned to: No owner' },
+  /** Holds stock: 4 products, 2 with stock, 6 units, no low stock; its movements add up to each stock figure. */
+  stocked: 'Central Warehouse 10',
+  /** Used by PO-0005: QA-TEST Gadget R3 received (+4, GRN-0005) and reversed (-4), stock 0; Delete blocked. */
+  qa: { name: 'QA-TEST-R9 Warehouse', owner: /^Yash( |$)/, product: 'QA-TEST Gadget R3', productSearch: 'QA-TEST-SKU-R3', grn: 'GRN-0005', qty: 4 },
+  deleteBlocked: 'This warehouse is used by 1 purchase order. Move or close them first.',
+  search: { name: 'qa-test-r', nameMatches: ['QA-TEST-R12 Warehouse', 'QA-TEST-R9 Warehouse'], code: 'wh-0641', city: 'KOLKATA' },
+  formName: 'QA-TEST-WH draft',
+  noMatch: 'qa_no_such_warehouse_zz',
+};
+
+/** Stock receipts (More > INVENTORY > Stock Receipts), read only; the new-receipt form is filled and discarded
+ *  (2026-11-20: 5 receipts, all Applied; reversed receipts are not listed, on the phone or the web). */
+export const stockReceiptData = {
+  /** Received against PO-0004 (matches the web). */
+  po: { number: 'GRN-0004', amount: '₹500.60', received: 'Received 9 Oct 2026', listDate: '9 Oct', warehouse: 'Central Warehouse 10',
+    purchaseOrder: 'PO-0004', created: '9 Oct 2026', notes: 'Received against PO-0004', line: { name: 'QA-TEST Gadget R3', quantity: 5, cost: 100.12, total: 500.60 } },
+  search: { number: 'grn-0002', match: 'GRN-0002', supplier: 'greek', warehouse: 'East Warehouse 1' },
+  suppliers: ['QA-TEST-R9 Supplier', 'SalesHiker Vendor'],
+  warehouse: 'Central Warehouse 10, WH-0010',
+  product: 'QA-TEST Gadget R3', productSearch: 'QA-TEST-SKU-R3', unitCost: '100.12',
+  line: { qty: '3', row: 'QA-TEST Gadget R3, 3 x ₹100.12, ₹300.36', total: '₹300.36' },
+  deleteBlocked: 'Reverse the stock, then delete it.',
+  noMatch: 'qa_no_such_grn_zz',
+};
+
+/** Notifications (More > WORKSPACE > Notifications, or the bell on the More screen) and Settings > Notifications,
+ *  read only (2026-11-20). The app pushes new chats, assignments and mentions while it is closed. */
+export const notificationData = {
+  mention: 'QA mentioned you in a note',            // opens the chat where the note was written
+  pushIntro: 'New chats, assignments and mentions arrive as push notifications while the app is closed.',
+  webNote: 'Sound and desktop reminders are set per browser, under Settings, Notifications on the web app.',
+  device: 'realme RMX3997, Android 16',
+  appLabel: /saleshiker/i,
+};

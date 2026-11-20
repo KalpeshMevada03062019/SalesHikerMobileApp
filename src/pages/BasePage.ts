@@ -13,6 +13,7 @@ export const by = {
   descClass: (label: string, className: string) =>
     `android=new UiSelector().description(${JSON.stringify(label)}).className(${JSON.stringify(className)})`,
   descStartsWith: (prefix: string) => `android=new UiSelector().descriptionStartsWith(${JSON.stringify(prefix)})`,
+  descMatches: (regex: string) => `android=new UiSelector().descriptionMatches(${JSON.stringify(regex)})`,
   descContains: (part: string) => `android=new UiSelector().descriptionContains(${JSON.stringify(part)})`,
   textStartsWith: (prefix: string) => `android=new UiSelector().textStartsWith(${JSON.stringify(prefix)})`,
   textContains: (part: string) => `android=new UiSelector().textContains(${JSON.stringify(part)})`,

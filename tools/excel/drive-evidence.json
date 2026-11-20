@@ -1,0 +1,677 @@
+{
+  "root": {
+    "folderId": "1GfSdX48bTMBaUkX6pLrrQE0l8zyJGE6k",
+    "url": "https://drive.google.com/drive/folders/1GfSdX48bTMBaUkX6pLrrQE0l8zyJGE6k",
+    "name": "SalesHiker Mobile QA/SalesHiker Mobile Android Defect"
+  },
+  "defects": {
+    "MAIA-D01": {
+      "images": {
+        "reports/explore-aiagents/03-live.png": {
+          "fileId": "1NmkYLDb9m_Mti935PMIPLbj2e4FH-_Tp",
+          "url": "https://drive.google.com/file/d/1NmkYLDb9m_Mti935PMIPLbj2e4FH-_Tp/view",
+          "sha256": "b1a3ade867ebc2af6bebe9a65073937932f5109d87edf92c163544f97b23b5dd",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MBRD-D01": {
+      "images": {
+        "reports/explore-broadcast/91-review.png": {
+          "fileId": "1O2jxyxpcwAtMXH5xgSZajoB29WS7CmQC",
+          "url": "https://drive.google.com/file/d/1O2jxyxpcwAtMXH5xgSZajoB29WS7CmQC/view",
+          "sha256": "a2572ffdc9f125fe28e93aff3c2096a08d5164821845e06de5efd34d35a74e5e",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-122031-full/screenshots/MBRD-012_tags_confirmation.png": {
+          "fileId": "1I9idTp0mzJiwXDYkmc7K_v6_3H9JwKIH",
+          "url": "https://drive.google.com/file/d/1I9idTp0mzJiwXDYkmc7K_v6_3H9JwKIH/view",
+          "sha256": "e564f57f03fb7ece5f46c587fe64346e13fe94868647c59a7da1541e1daaced6",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-122031-full/failures/MBRD-012_Review_shows_how_many_contacts_a_Tags_audience_reaches_before_sending/screenshot.png": {
+          "fileId": "1Y1rcmSfel8rklwJfB__ijxPqZ56ryzJ1",
+          "url": "https://drive.google.com/file/d/1Y1rcmSfel8rklwJfB__ijxPqZ56ryzJ1/view",
+          "sha256": "2665fb6af62c43eb910746a2bdfceb1862480bc226a042d56e005992da9194cb",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MBRD-D02": {
+      "images": {
+        "reports/explore-broadcast/89c.png": {
+          "fileId": "1ac7EblzLixzKnsf_jRavVDeX2HAvbGDt",
+          "url": "https://drive.google.com/file/d/1ac7EblzLixzKnsf_jRavVDeX2HAvbGDt/view",
+          "sha256": "a7704e10b4d0182171816b57002ec9718c1ca4d27bbe25e24cef206b9f6557bb",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MCAT-D01": {
+      "images": {
+        "reports/explore-campaign/cat-list.png": {
+          "fileId": "1BSg8wKcJEsd4ZWrM7n4LpvmY-fuB7D2a",
+          "url": "https://drive.google.com/file/d/1BSg8wKcJEsd4ZWrM7n4LpvmY-fuB7D2a/view",
+          "sha256": "338104fba14786a9e66e83023255e56981b2c2337d798b7a3cbe4db25123fe04",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261117-162619-full/screenshots/MCAT-012_list.png": {
+          "fileId": "1mla-hpRuPsww4OPPZSQnJlbzJ132avyI",
+          "url": "https://drive.google.com/file/d/1mla-hpRuPsww4OPPZSQnJlbzJ132avyI/view",
+          "sha256": "d128f026be6570ce7fabf10a0232f3a7ba80dc9af9d504e16dd1f8c066a09a10",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261117-162619-full/failures/MCAT-012_The_list_shows_lower_sort_orders_first_as_the_form_says/screenshot.png": {
+          "fileId": "1mla-hpRuPsww4OPPZSQnJlbzJ132avyI",
+          "url": "https://drive.google.com/file/d/1mla-hpRuPsww4OPPZSQnJlbzJ132avyI/view",
+          "sha256": "d128f026be6570ce7fabf10a0232f3a7ba80dc9af9d504e16dd1f8c066a09a10",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MCMP-D01": {
+      "images": {
+        "reports/explore-campaign/14-detail-retarget.png": {
+          "fileId": "1qXgh5s2gKtyA7YBKtg3SQy2wr5VVgUKP",
+          "url": "https://drive.google.com/file/d/1qXgh5s2gKtyA7YBKtg3SQy2wr5VVgUKP/view",
+          "sha256": "b216eb695ba2231c585c7e81f8636fb658b48d68560218da78d3e9af8d82003b",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261030-171502-full/screenshots/MCMP-019_1.png": {
+          "fileId": "1i8MFtfDTDN3Au_poyQ0hjGcHdNSYh_ym",
+          "url": "https://drive.google.com/file/d/1i8MFtfDTDN3Au_poyQ0hjGcHdNSYh_ym/view",
+          "sha256": "7eaccf19d6161b06d78b0346b4ec3ef99d3ef6de790a005b295e57b40d493829",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261030-171502-full/failures/MCMP-019_Recipients_who_replied_are_counted_as_delivered_and_read/screenshot.png": {
+          "fileId": "1i8MFtfDTDN3Au_poyQ0hjGcHdNSYh_ym",
+          "url": "https://drive.google.com/file/d/1i8MFtfDTDN3Au_poyQ0hjGcHdNSYh_ym/view",
+          "sha256": "7eaccf19d6161b06d78b0346b4ec3ef99d3ef6de790a005b295e57b40d493829",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MCMP-D02": {
+      "images": {
+        "reports/explore-campaign/08-search-drip.png": {
+          "fileId": "1EgXfpFt8o-vPiVKs-uQYN_VyYL7wim_D",
+          "url": "https://drive.google.com/file/d/1EgXfpFt8o-vPiVKs-uQYN_VyYL7wim_D/view",
+          "sha256": "21045bf0dba274e2e0392028484a38c41ea93b1f6c70c7353aefa1937d15fbf7",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261030-173959-single-MCMP-012/screenshots/MCMP-012_search_Active.png": {
+          "fileId": "1Ovgot6mEODnMZ8E6zfyK1qPksoyD7BfL",
+          "url": "https://drive.google.com/file/d/1Ovgot6mEODnMZ8E6zfyK1qPksoyD7BfL/view",
+          "sha256": "f21f991cf44402055c059429106fcb769f5fe26df680beaeb372ac4bdf215119",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261030-173959-single-MCMP-012/screenshots/MCMP-012_search_Drip.png": {
+          "fileId": "1V29njlfoBkcoIceBlBylWzeXQ2qm9RI-",
+          "url": "https://drive.google.com/file/d/1V29njlfoBkcoIceBlBylWzeXQ2qm9RI-/view",
+          "sha256": "6ff3ed9eb96cd641d7062d353c3dec6b6be715917638cdfed32945a5022ac589",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MCMP-D03": {
+      "images": {
+        "reports/explore-campaign/12-after-clear-filters.png": {
+          "fileId": "1dBW_JGPHp7K-X4G2smbWIBwQudsErjiS",
+          "url": "https://drive.google.com/file/d/1dBW_JGPHp7K-X4G2smbWIBwQudsErjiS/view",
+          "sha256": "036ace0b79fc4d6e453cdc5283ec060479172feb0f3839aac850dfaad54cdb15",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MEXP-D01": {
+      "images": {
+        "reports/explore-campaign/exc2.png": {
+          "fileId": "1VwurRJdBAxoaJ-ADdJff4oNxhAYVbLrH",
+          "url": "https://drive.google.com/file/d/1VwurRJdBAxoaJ-ADdJff4oNxhAYVbLrH/view",
+          "sha256": "c98fdb0a531ca41f4897d8ceca4caa7777b3a04e8af3643c27ee45dc45dff44e",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261116-181606-full/screenshots/MEXP-013_TDS.png": {
+          "fileId": "1zbiZ9aK4YOLLcVYadfSQFIcBIlZGijna",
+          "url": "https://drive.google.com/file/d/1zbiZ9aK4YOLLcVYadfSQFIcBIlZGijna/view",
+          "sha256": "885e67085d43036235b0fa8bfde5676378db1de10831ca9cada510b7f27ca45c",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261116-181606-full/failures/MEXP-013_TDS_2_on_the_new_expense_form_is_deducted_from_the_total/screenshot.png": {
+          "fileId": "1xOW7F0-M0r8EBOsbH5DvYcuhcESQKWwH",
+          "url": "https://drive.google.com/file/d/1xOW7F0-M0r8EBOsbH5DvYcuhcESQKWwH/view",
+          "sha256": "93a8dccca18aaec609bb871fbcf13e9edd5778dca26ff97f2007ccff3eee551b",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MINB-D01": {
+      "images": {
+        "reports/explore-inbox/70-after-button_template.png": {
+          "fileId": "1LyvqmmGFAZBziz2oFn6pwcIrg22SnSaF",
+          "url": "https://drive.google.com/file/d/1LyvqmmGFAZBziz2oFn6pwcIrg22SnSaF/view",
+          "sha256": "f03c5de2b6ba26f5133220ecdac8132f2cca9acc286c914a4ceafbc3cce03f8b",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-151134-single-MINB-016/screenshots/MINB-016_after_send.png": {
+          "fileId": "1UnIaF_ssdfzDdwrJRs33uYUI3NEDQD_l",
+          "url": "https://drive.google.com/file/d/1UnIaF_ssdfzDdwrJRs33uYUI3NEDQD_l/view",
+          "sha256": "c1ac40a9d7ed04393c1c14b8ef295c1d708b95d150cd84c0d3810b6c5084c756",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-151134-single-MINB-016/screenshots/MINB-016_ready.png": {
+          "fileId": "1i7g0Kxml5d-8YlNKe0lsLPfIEtRqVoqn",
+          "url": "https://drive.google.com/file/d/1i7g0Kxml5d-8YlNKe0lsLPfIEtRqVoqn/view",
+          "sha256": "aa5cb5f76cb3133f0ee0075a01b9ff7ccc78e732b1c8f4e718722b52d307ea04",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MINB-D02": {
+      "images": {
+        "reports/explore-inbox/70-after-location_template.png": {
+          "fileId": "1vbg1wARROPDf7WhV0yeZ3zuh0CwUudBE",
+          "url": "https://drive.google.com/file/d/1vbg1wARROPDf7WhV0yeZ3zuh0CwUudBE/view",
+          "sha256": "68db32e7412344de5890f91cf9ed676586f4138e7b8276f2f31f392edb7bf15b",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-145931-full/screenshots/MINB-017_after_send.png": {
+          "fileId": "1xqCMnV8k8-nTKi4VP5gZ0u4bQ0lISK8S",
+          "url": "https://drive.google.com/file/d/1xqCMnV8k8-nTKi4VP5gZ0u4bQ0lISK8S/view",
+          "sha256": "388e4266bf0c3611d65871346a56da61096b516ae57fa729da1999dae4741449",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-145931-full/screenshots/MINB-017_ready.png": {
+          "fileId": "1Ocdlff9BhjGG5S4GLLVExVIV1t-vDuHd",
+          "url": "https://drive.google.com/file/d/1Ocdlff9BhjGG5S4GLLVExVIV1t-vDuHd/view",
+          "sha256": "b14c2f8e05b502e41e6f51909573b497969a659d31ef491a23c3af1f754259c8",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MINB-D03": {
+      "images": {
+        "reports/explore-inbox/70-after-onetap_otp.png": {
+          "fileId": "1IesjK1Ii55o_LiJlJ0z_VuZjGIYncERo",
+          "url": "https://drive.google.com/file/d/1IesjK1Ii55o_LiJlJ0z_VuZjGIYncERo/view",
+          "sha256": "c5b966433e4266a9109cd560db5f8e6312a087718510424c1b005726f0059fe3",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-145931-full/screenshots/MINB-018_after_send.png": {
+          "fileId": "1FDKz4FCxDQR8ZjZIysEQsId3OmaXM0Lz",
+          "url": "https://drive.google.com/file/d/1FDKz4FCxDQR8ZjZIysEQsId3OmaXM0Lz/view",
+          "sha256": "0baf98bba494ae91796a245c50eb0829a0cb6855d243e122356f2b48fd6f9abf",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-145931-full/screenshots/MINB-018_ready.png": {
+          "fileId": "1PLRTHYB_Wh9mXi4DXq3b-tXyU3r3OGjm",
+          "url": "https://drive.google.com/file/d/1PLRTHYB_Wh9mXi4DXq3b-tXyU3r3OGjm/view",
+          "sha256": "017d9c688becaf66456ec6c4f515d2f47eec875a933ab72b4468328fdf1d12ff",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MINB-D04": {
+      "images": {
+        "reports/explore-inbox/33.png": {
+          "fileId": "1KBGmAu7T37-Tjfrs9RrZT2hzZWw5ROR8",
+          "url": "https://drive.google.com/file/d/1KBGmAu7T37-Tjfrs9RrZT2hzZWw5ROR8/view",
+          "sha256": "aaa664dc36dd2a3e56baa164d21694cd9786c4e9db6c26fd0853bb0b16124888",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MINV-D01": {
+      "images": {
+        "reports/explore-campaign/inv3.png": {
+          "fileId": "1RIu6Q1Lz9_dhyzsnZXBDF9xnjleGNQ0o",
+          "url": "https://drive.google.com/file/d/1RIu6Q1Lz9_dhyzsnZXBDF9xnjleGNQ0o/view",
+          "sha256": "3a4525299b81b0405603bfc7687f19319fe3db9bc5890ef2e15cedc17a0771c7",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261118-162955-full/screenshots/MINV-009_payment.png": {
+          "fileId": "1PzUs_4kUx02Lg2eYHh2jLZy02ebty19x",
+          "url": "https://drive.google.com/file/d/1PzUs_4kUx02Lg2eYHh2jLZy02ebty19x/view",
+          "sha256": "e8dd9edd607f65e82cd73ad5bfcf7046683bdc698559f1b917c23ae2b68b8522",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261118-162955-full/failures/MINV-009_A_partially_paid_invoice_shows_paid_balance_and_progress_that_agree_wit/screenshot.png": {
+          "fileId": "1PzUs_4kUx02Lg2eYHh2jLZy02ebty19x",
+          "url": "https://drive.google.com/file/d/1PzUs_4kUx02Lg2eYHh2jLZy02ebty19x/view",
+          "sha256": "e8dd9edd607f65e82cd73ad5bfcf7046683bdc698559f1b917c23ae2b68b8522",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MINV-D02": {
+      "images": {
+        "reports/explore-campaign/l2b.png": {
+          "fileId": "1kg_oFPDE7J8EjjrLubfMM5TZqlZ4dEFC",
+          "url": "https://drive.google.com/file/d/1kg_oFPDE7J8EjjrLubfMM5TZqlZ4dEFC/view",
+          "sha256": "ce42174fc16c6659b87e6b6481750f6196ddb7790749ddd791508218a88835d8",
+          "uploaded": "2026-11-20"
+        },
+        "docs/defect-evidence/web/MINV-D02-web-inv300013.jpg": {
+          "fileId": "1XSF80YJar_IfGPTb-S-BmWhBcEOEjv63",
+          "url": "https://drive.google.com/file/d/1XSF80YJar_IfGPTb-S-BmWhBcEOEjv63/view",
+          "sha256": "33e54e19d707e4726162c91dacacdb1c6fdea5edfc7404cb8c782fecb5cec13d",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261118-162955-full/screenshots/MINV-022_saved.png": {
+          "fileId": "1gmTS8rVAuKNgTj7NGG8xBL5UIhqFi2DG",
+          "url": "https://drive.google.com/file/d/1gmTS8rVAuKNgTj7NGG8xBL5UIhqFi2DG/view",
+          "sha256": "061ab02a9af2119f06e29c66a794c55b9fef542a1b6b0d951329a2ca81c41956",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261118-162955-full/screenshots/MINV-022_totals.png": {
+          "fileId": "1gmTS8rVAuKNgTj7NGG8xBL5UIhqFi2DG",
+          "url": "https://drive.google.com/file/d/1gmTS8rVAuKNgTj7NGG8xBL5UIhqFi2DG/view",
+          "sha256": "061ab02a9af2119f06e29c66a794c55b9fef542a1b6b0d951329a2ca81c41956",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261116-123643-single-MINV-020/screenshots/MINV-020_before_save.png": {
+          "fileId": "1SEwSN7_KW9Ovf_gqizoPPQVrJQgIpP8c",
+          "url": "https://drive.google.com/file/d/1SEwSN7_KW9Ovf_gqizoPPQVrJQgIpP8c/view",
+          "sha256": "3d98c1d85a53428d898f990efef7b7c517d9a8e2843968783320816aecce230c",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261118-162955-full/screenshots/MINV-021_form.png": {
+          "fileId": "1jAWERwHdXwe8mi40luqsJkeBQ_ykRWYg",
+          "url": "https://drive.google.com/file/d/1jAWERwHdXwe8mi40luqsJkeBQ_ykRWYg/view",
+          "sha256": "e3fcc90eb217d35d498403f56c5bfece54b4a0a6d3d1819fc06aa101603d1a45",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MINV-D03": {
+      "images": {
+        "reports/20261118-162955-full/screenshots/MINV-023_form.png": {
+          "fileId": "1xeyf7HOsrf7IhUrIUmuMiciC2cNF-Gyj",
+          "url": "https://drive.google.com/file/d/1xeyf7HOsrf7IhUrIUmuMiciC2cNF-Gyj/view",
+          "sha256": "335eee63c9b06867f1dbf3731229470090847d69a60709c058b92d63c663fcd8",
+          "uploaded": "2026-11-20"
+        },
+        "docs/defect-evidence/web/MINV-D03-web-new-invoice-summary.png": {
+          "fileId": "1bnjgigEz6HCSMfevTKNTsbtELY3kXjza",
+          "url": "https://drive.google.com/file/d/1bnjgigEz6HCSMfevTKNTsbtELY3kXjza/view",
+          "sha256": "a73fbf1f40931b8d50558c107d4495f4e0cabe67d89ed89e644e5540151e1b17",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261118-162955-full/failures/MINV-023_The_new_invoice_form_gives_the_same_line_totals_and_total_as_the_web_fo/screenshot.png": {
+          "fileId": "1p23RGxETFNY3QlwcemSgMe9DVrHWLnie",
+          "url": "https://drive.google.com/file/d/1p23RGxETFNY3QlwcemSgMe9DVrHWLnie/view",
+          "sha256": "df458a04e9a8d929260efe7c5fac7be3d109a037d020020d7eca3e0d18da6532",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MLED-D01": {
+      "images": {
+        "reports/explore-leads/converted.png": {
+          "fileId": "1_hcMftMvPwIM4gavNcJYiPeTD2e5XRgf",
+          "url": "https://drive.google.com/file/d/1_hcMftMvPwIM4gavNcJYiPeTD2e5XRgf/view",
+          "sha256": "e23ae9e15d5bfaaed3e8b4b1cd5706e10d10adbe1fad9eeb472c998dab8cf410",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261104-125703-single-MLED-004/screenshots/MLED-004_converted.png": {
+          "fileId": "1ITuMU-qBBiMu9yFd7n4X7Jabo-y-3IPU",
+          "url": "https://drive.google.com/file/d/1ITuMU-qBBiMu9yFd7n4X7Jabo-y-3IPU/view",
+          "sha256": "a55a01ffaad10bf738642b1f21ed63f86a23a19d5bdae2df1ac4b355f2f7c78e",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261104-125703-single-MLED-004/failures/MLED-004_Converted_shows_only_converted_leads/screenshot.png": {
+          "fileId": "1ITuMU-qBBiMu9yFd7n4X7Jabo-y-3IPU",
+          "url": "https://drive.google.com/file/d/1ITuMU-qBBiMu9yFd7n4X7Jabo-y-3IPU/view",
+          "sha256": "a55a01ffaad10bf738642b1f21ed63f86a23a19d5bdae2df1ac4b355f2f7c78e",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MLGN-D01": {
+      "images": {
+        "reports/20261102-173406-full/screenshots/MLGN-012_after_10_s.png": {
+          "fileId": "14-dmEzVGqZ-XFeVRWg0aKsfDFY2rfFi6",
+          "url": "https://drive.google.com/file/d/14-dmEzVGqZ-XFeVRWg0aKsfDFY2rfFi6/view",
+          "sha256": "b2b3a49f758ddc79b01a7f143244e1d6a5a27b5b7b5da3759420abf97e6141dd",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-173406-full/failures/MLGN-012_Malformed_email_is_not_sent_to_the_server/screenshot.png": {
+          "fileId": "14-dmEzVGqZ-XFeVRWg0aKsfDFY2rfFi6",
+          "url": "https://drive.google.com/file/d/14-dmEzVGqZ-XFeVRWg0aKsfDFY2rfFi6/view",
+          "sha256": "b2b3a49f758ddc79b01a7f143244e1d6a5a27b5b7b5da3759420abf97e6141dd",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MLGN-D02": {
+      "images": {
+        "reports/20261102-173406-full/screenshots/MLGN-015_rejected.png": {
+          "fileId": "19Yni6FQjh3U4YgwuCpX10vxO-6KrOHQU",
+          "url": "https://drive.google.com/file/d/19Yni6FQjh3U4YgwuCpX10vxO-6KrOHQU/view",
+          "sha256": "c916b619751b6992012636f9f47701ba9040e0b6e6702fd7ab50dfea156ac4a7",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MLGN-D03": {
+      "images": {
+        "reports/20261029-141149-evidence-verify-script/screen.png": {
+          "fileId": "1--c2C6C6Zs0Mv50rUpPby6sxG3De7Lt9",
+          "url": "https://drive.google.com/file/d/1--c2C6C6Zs0Mv50rUpPby6sxG3De7Lt9/view",
+          "sha256": "5064fc1501e407680d22cfc4c84bc58db2373b9af33e58c120b10df9a658f68b",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MNTF-D01": {
+      "images": {
+        "docs/defect-evidence/phone/MNTF-D01-message-1540-no-push.png": {
+          "fileId": "1bWUKvJltRAw2zrm0Uv68-w1FthM5FEig",
+          "url": "https://drive.google.com/file/d/1bWUKvJltRAw2zrm0Uv68-w1FthM5FEig/view",
+          "sha256": "cb38cdbd8a8f1152b67e82b60396d838812892eb58f9905663e7d35ee55ec042",
+          "uploaded": "2026-11-20"
+        },
+        "docs/defect-evidence/phone/MNTF-D01-app-info-notifications-allow.png": {
+          "fileId": "1mDmFuu5IqwfYHHRo4C7DGIcR0bblsPi8",
+          "url": "https://drive.google.com/file/d/1mDmFuu5IqwfYHHRo4C7DGIcR0bblsPi8/view",
+          "sha256": "dd51773fb2d12b5ad15a8e4942e5b0246a92dc3e223e4d975213f5c12062adbc",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MPIP-D02": {
+      "images": {
+        "reports/explore-pipeline/02-strip-0.png": {
+          "fileId": "1Th29iGLxtDJ0H95ZcJte7fPBMdThe7gV",
+          "url": "https://drive.google.com/file/d/1Th29iGLxtDJ0H95ZcJte7fPBMdThe7gV/view",
+          "sha256": "e321d445c3505e060b1586895175296a89d54a24bf8704ebfe4cd5df5c3a8747",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-162122-full/failures/MPIP-002_Stage_names_match_the_web_pipeline_shortened_at_most_/screenshot.png": {
+          "fileId": "11N46u8cNIu7_I8UCS3uWA71NXERVXm32",
+          "url": "https://drive.google.com/file/d/11N46u8cNIu7_I8UCS3uWA71NXERVXm32/view",
+          "sha256": "5699c5bee58f35c6e7937bf02634e44f0d59cb1323ef0286b1911694b5945a41",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MPIP-D03": {
+      "images": {
+        "reports/explore-pipeline/12-Lost.png": {
+          "fileId": "1pejWc4X7OBwbNHyio77rh7tyEsPbwEor",
+          "url": "https://drive.google.com/file/d/1pejWc4X7OBwbNHyio77rh7tyEsPbwEor/view",
+          "sha256": "b8981491ac6647c6123bc0d57ff72140c24833087f1f3d8b40b5890f3fc45d77",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-162122-full/screenshots/MPIP-004_lost.png": {
+          "fileId": "1XHUQbse2KTMrbZEF5ZeIAs4oTYnEpN09",
+          "url": "https://drive.google.com/file/d/1XHUQbse2KTMrbZEF5ZeIAs4oTYnEpN09/view",
+          "sha256": "84289f0a6c8b93836c9603c5d5a3a5dbeba78e80526f79553a2ebc0824003d0d",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261102-162122-full/failures/MPIP-004_Lost_deals_do_not_show_a_full_progress_bar/screenshot.png": {
+          "fileId": "1XHUQbse2KTMrbZEF5ZeIAs4oTYnEpN09",
+          "url": "https://drive.google.com/file/d/1XHUQbse2KTMrbZEF5ZeIAs4oTYnEpN09/view",
+          "sha256": "84289f0a6c8b93836c9603c5d5a3a5dbeba78e80526f79553a2ebc0824003d0d",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MPIP-D04": {
+      "images": {
+        "reports/20261102-162122-full/screenshots/MPIP-020_moved.png": {
+          "fileId": "1NP_jXma8_Iniu6hcRebPOrfmjpwwZ-Sz",
+          "url": "https://drive.google.com/file/d/1NP_jXma8_Iniu6hcRebPOrfmjpwwZ-Sz/view",
+          "sha256": "75dc3aa4dadbb2870ad8edaa35b14574fda78162b7c1e442c18dc596ad99cc14",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MPUR-D01": {
+      "images": {
+        "docs/defect-evidence/phone/MPUR-po0005-balance-no-stock.png": {
+          "fileId": "1sU6e05LQSZNjH9lvq5KAPzvwPoFpC0gI",
+          "url": "https://drive.google.com/file/d/1sU6e05LQSZNjH9lvq5KAPzvwPoFpC0gI/view",
+          "sha256": "09fc349297588c9a06698601e4f4408131f25d528f1048c7ea4dccb3ab2c0326",
+          "uploaded": "2026-11-20"
+        },
+        "reports/explore-campaign/po06.png": {
+          "fileId": "1sU6e05LQSZNjH9lvq5KAPzvwPoFpC0gI",
+          "url": "https://drive.google.com/file/d/1sU6e05LQSZNjH9lvq5KAPzvwPoFpC0gI/view",
+          "sha256": "09fc349297588c9a06698601e4f4408131f25d528f1048c7ea4dccb3ab2c0326",
+          "uploaded": "2026-11-20"
+        },
+        "docs/defect-evidence/web/MPUR-D01-web-po0005-balance.jpg": {
+          "fileId": "1ySAHyfcfFV0a9d9IbaIhwiGit190OeF6",
+          "url": "https://drive.google.com/file/d/1ySAHyfcfFV0a9d9IbaIhwiGit190OeF6/view",
+          "sha256": "31d3470836952ceb734cc861eb5e9a7d04f3a34f238420e101b662f20f4eef82",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261120-135252-full/screenshots/MPUR-008_last_order.png": {
+          "fileId": "1ufrHJWX-L3nOAyK63wksdfSq0N1iiYW9",
+          "url": "https://drive.google.com/file/d/1ufrHJWX-L3nOAyK63wksdfSq0N1iiYW9/view",
+          "sha256": "fc174ddea9a77d0b97e80c0b61808f2fcff91b65c62115ec16bf727378ce785f",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261120-135252-full/failures/MPUR-008_The_balance_of_every_purchase_order_is_its_grand_total_minus_the_amount/screenshot.png": {
+          "fileId": "1ufrHJWX-L3nOAyK63wksdfSq0N1iiYW9",
+          "url": "https://drive.google.com/file/d/1ufrHJWX-L3nOAyK63wksdfSq0N1iiYW9/view",
+          "sha256": "fc174ddea9a77d0b97e80c0b61808f2fcff91b65c62115ec16bf727378ce785f",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MPUR-D02": {
+      "images": {
+        "docs/defect-evidence/phone/MPUR-po0005-balance-no-stock.png": {
+          "fileId": "1tfJCWnDZMhYXLex3HjO3fNdIqzbyYfbG",
+          "url": "https://drive.google.com/file/d/1tfJCWnDZMhYXLex3HjO3fNdIqzbyYfbG/view",
+          "sha256": "09fc349297588c9a06698601e4f4408131f25d528f1048c7ea4dccb3ab2c0326",
+          "uploaded": "2026-11-20"
+        },
+        "reports/explore-campaign/po06.png": {
+          "fileId": "1tfJCWnDZMhYXLex3HjO3fNdIqzbyYfbG",
+          "url": "https://drive.google.com/file/d/1tfJCWnDZMhYXLex3HjO3fNdIqzbyYfbG/view",
+          "sha256": "09fc349297588c9a06698601e4f4408131f25d528f1048c7ea4dccb3ab2c0326",
+          "uploaded": "2026-11-20"
+        },
+        "docs/defect-evidence/web/MPUR-D02-web-po0005-receipts.jpg": {
+          "fileId": "1KWHwSPOpPPLJNrgufME062n1-PA5UzNs",
+          "url": "https://drive.google.com/file/d/1KWHwSPOpPPLJNrgufME062n1-PA5UzNs/view",
+          "sha256": "31868248eb4de1a06667a30c2bdfd73995762ad26414b66b8634ae6405cb02d8",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261120-135252-full/screenshots/MPUR-009_last_order.png": {
+          "fileId": "11suDQgv-r70uC8QrAQBt4NUjkmpvbmcP",
+          "url": "https://drive.google.com/file/d/11suDQgv-r70uC8QrAQBt4NUjkmpvbmcP/view",
+          "sha256": "4e22d74783e5155321ba8bafb8d3f15a98dfce61665ea1d70b998e366e1dfb78",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261120-135252-full/failures/MPUR-009_Received_quantities_match_the_status_and_the_receipts_of_every_purchase/screenshot.png": {
+          "fileId": "11suDQgv-r70uC8QrAQBt4NUjkmpvbmcP",
+          "url": "https://drive.google.com/file/d/11suDQgv-r70uC8QrAQBt4NUjkmpvbmcP/view",
+          "sha256": "4e22d74783e5155321ba8bafb8d3f15a98dfce61665ea1d70b998e366e1dfb78",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MPUR-D03": {
+      "images": {
+        "docs/defect-evidence/phone/MPUR-new-po-tds-line.png": {
+          "fileId": "1Mhv_XGAZ9Vth7ghVrqOvjAnKk875svdh",
+          "url": "https://drive.google.com/file/d/1Mhv_XGAZ9Vth7ghVrqOvjAnKk875svdh/view",
+          "sha256": "2ac8d64c0cb8f0501db9319d24cbdf91af60aa5a272889507b8ef2fe9ea16241",
+          "uploaded": "2026-11-20"
+        },
+        "reports/explore-campaign/po19.png": {
+          "fileId": "1Mhv_XGAZ9Vth7ghVrqOvjAnKk875svdh",
+          "url": "https://drive.google.com/file/d/1Mhv_XGAZ9Vth7ghVrqOvjAnKk875svdh/view",
+          "sha256": "2ac8d64c0cb8f0501db9319d24cbdf91af60aa5a272889507b8ef2fe9ea16241",
+          "uploaded": "2026-11-20"
+        },
+        "docs/defect-evidence/web/MPUR-D03-web-new-po-summary.png": {
+          "fileId": "1WX2vxPtmplJMc_I4ZstFkDpYOMZ5rXS8",
+          "url": "https://drive.google.com/file/d/1WX2vxPtmplJMc_I4ZstFkDpYOMZ5rXS8/view",
+          "sha256": "364a246908df26cae53d011206b42ff68b6f4bac51559a7eb89d4f64760d65b5",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261120-135252-full/screenshots/MPUR-015_deducted_tax.png": {
+          "fileId": "1SUY4cFJVYI3EKmCX0FqGK78HnCB1rGF5",
+          "url": "https://drive.google.com/file/d/1SUY4cFJVYI3EKmCX0FqGK78HnCB1rGF5/view",
+          "sha256": "7193d2fa4d56421f2f3a2b5f16aec4b4b26d7b87facd262643137c28acc75ea7",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261120-135252-full/failures/MPUR-015_A_line_with_a_deducted_tax_subtracts_the_tax_from_the_line_and_the_line/screenshot.png": {
+          "fileId": "1G-qZ9KTeKlBRSIjk2ZGo71wsiIsJQo-w",
+          "url": "https://drive.google.com/file/d/1G-qZ9KTeKlBRSIjk2ZGo71wsiIsJQo-w/view",
+          "sha256": "6a1b8e67b95cecd187d71a8037a72bdabad55d60c1371cc7b52b67eeed6cd240",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MPUR-D04": {
+      "images": {
+        "docs/defect-evidence/phone/MPUR-po0005-order-date.png": {
+          "fileId": "1Gbmpq5qtEBq3L4R8v0V1m-iLNMMiXY_4",
+          "url": "https://drive.google.com/file/d/1Gbmpq5qtEBq3L4R8v0V1m-iLNMMiXY_4/view",
+          "sha256": "0281f42772b415e3b8796a1cf1cc72e48561401eb2007bed8ed67aa8b9319696",
+          "uploaded": "2026-11-20"
+        },
+        "reports/explore-campaign/po05.png": {
+          "fileId": "1Gbmpq5qtEBq3L4R8v0V1m-iLNMMiXY_4",
+          "url": "https://drive.google.com/file/d/1Gbmpq5qtEBq3L4R8v0V1m-iLNMMiXY_4/view",
+          "sha256": "0281f42772b415e3b8796a1cf1cc72e48561401eb2007bed8ed67aa8b9319696",
+          "uploaded": "2026-11-20"
+        },
+        "docs/defect-evidence/web/MPUR-D04-web-po0005-order-date.jpg": {
+          "fileId": "17Q7JkieMt3bUr3Ibc9R1MQpO3TaJ0CD7",
+          "url": "https://drive.google.com/file/d/17Q7JkieMt3bUr3Ibc9R1MQpO3TaJ0CD7/view",
+          "sha256": "5b0fe46bb16d275b6e6004bb2d3ff1eb99d966012cf15d0d5e74ce2de6f18089",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261120-135252-full/screenshots/MPUR-006_detail.png": {
+          "fileId": "1uafPf8uQrI3R-Dhn0ZC2SgqXusP7hXHk",
+          "url": "https://drive.google.com/file/d/1uafPf8uQrI3R-Dhn0ZC2SgqXusP7hXHk/view",
+          "sha256": "71b42e7584a65d1db2ccf78e55a802d84124fd29386aa7b0a60864df7abaa48c",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261120-135252-full/failures/MPUR-006_The_purchase_order_detail_shows_its_number_status_amount_supplier_wareh/screenshot.png": {
+          "fileId": "16qraXxWOsWv0pYJL-3rJEwPSrxTd4ttK",
+          "url": "https://drive.google.com/file/d/16qraXxWOsWv0pYJL-3rJEwPSrxTd4ttK/view",
+          "sha256": "1575082ee9cb1f1e640537e2414bfb88bf757569525b88b70fc80ddde591eb4a",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MQTN-D01": {
+      "images": {
+        "reports/explore-quotations/c.png": {
+          "fileId": "1sxwM58IR42t2oAhz6r6Th8nYyT-XH8MS",
+          "url": "https://drive.google.com/file/d/1sxwM58IR42t2oAhz6r6Th8nYyT-XH8MS/view",
+          "sha256": "5acf3100ee03a43560c402c777850d578a1a5aae61fa8b75677a983b6bff8103",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261118-162955-full/screenshots/MQTN-002_last_status.png": {
+          "fileId": "121xBVaIEgSya5Jn_q8Y2m0u9SMQL125W",
+          "url": "https://drive.google.com/file/d/121xBVaIEgSya5Jn_q8Y2m0u9SMQL125W/view",
+          "sha256": "ef5f9d052ea0436b55d7dbef0c414a7d3be8bee7de5c20c5000fafa24c7cb5ae",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261118-162955-full/failures/MQTN-002_Status_counts_add_up_to_all_quotations/screenshot.png": {
+          "fileId": "121xBVaIEgSya5Jn_q8Y2m0u9SMQL125W",
+          "url": "https://drive.google.com/file/d/121xBVaIEgSya5Jn_q8Y2m0u9SMQL125W/view",
+          "sha256": "ef5f9d052ea0436b55d7dbef0c414a7d3be8bee7de5c20c5000fafa24c7cb5ae",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MSOR-D01": {
+      "images": {
+        "reports/20261118-162955-full/screenshots/MSOR-011_form.png": {
+          "fileId": "1pzzZpOaEvfyH_iqqKGP6MaQQv7hoPIhW",
+          "url": "https://drive.google.com/file/d/1pzzZpOaEvfyH_iqqKGP6MaQQv7hoPIhW/view",
+          "sha256": "1b98ba471cf41e090371ebb2697f6297656cdeb03cdd1d25010138c2fdf519ce",
+          "uploaded": "2026-11-20"
+        },
+        "docs/defect-evidence/web/MSOR-D01-web-new-sales-order.jpg": {
+          "fileId": "1mh_pdUl71WgvFCfUSpA_oDzN3XFKPSgy",
+          "url": "https://drive.google.com/file/d/1mh_pdUl71WgvFCfUSpA_oDzN3XFKPSgy/view",
+          "sha256": "ae8babdd266c955cc0842d84b7d86dbe85f6fd516e46e7658b5592ed94ebe8eb",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261118-162955-full/failures/MSOR-011_The_new_sales_order_form_gives_the_same_line_totals_and_total_as_the_we/screenshot.png": {
+          "fileId": "1_0mtCLsU8u6ITsf5vKFQMHvIciQiycK5",
+          "url": "https://drive.google.com/file/d/1_0mtCLsU8u6ITsf5vKFQMHvIciQiycK5/view",
+          "sha256": "39970afd74f6aaef22950d530e7d6b12a1c480ea7f99e05994ec2bcc34d282d3",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MTKT-D01": {
+      "images": {
+        "reports/explore-tickets/01-list.png": {
+          "fileId": "1sZwQCyVQkvDGFWnnzANLG3vuvmYcaLJq",
+          "url": "https://drive.google.com/file/d/1sZwQCyVQkvDGFWnnzANLG3vuvmYcaLJq/view",
+          "sha256": "23c12bca2fd0f37eb0ffd67aa1b9cd9cd6993e1b3aa7f99999898ce829079b07",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261105-120411-full/screenshots/MTKT-006_status_badge.png": {
+          "fileId": "1l1lVAdUrFZY8APavMuUcD8BCbQrkvsFt",
+          "url": "https://drive.google.com/file/d/1l1lVAdUrFZY8APavMuUcD8BCbQrkvsFt/view",
+          "sha256": "c39d17add79a4120906eaea20ba7e98b3a61a1e15c3870cd3ea5d7efcdb9aafe",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261105-120411-full/failures/MTKT-006_The_ticket_list_shows_a_readable_status_badge/screenshot.png": {
+          "fileId": "1l1lVAdUrFZY8APavMuUcD8BCbQrkvsFt",
+          "url": "https://drive.google.com/file/d/1l1lVAdUrFZY8APavMuUcD8BCbQrkvsFt/view",
+          "sha256": "c39d17add79a4120906eaea20ba7e98b3a61a1e15c3870cd3ea5d7efcdb9aafe",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MTPL-D01": {
+      "images": {
+        "reports/explore-templates/15-Header.png": {
+          "fileId": "1WE8fCq9_0l90C7T8ogMPdiLNKWqxW3mk",
+          "url": "https://drive.google.com/file/d/1WE8fCq9_0l90C7T8ogMPdiLNKWqxW3mk/view",
+          "sha256": "8bc474b5e5b9e26248904cdd3afe83a9f1163bccf8e06968c5e573d121cc9599",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261103-104944-full/screenshots/MTPL-013_header_types.png": {
+          "fileId": "1F3NwY_RLXuN31H55CkKr7cjIo9BUTEAd",
+          "url": "https://drive.google.com/file/d/1F3NwY_RLXuN31H55CkKr7cjIo9BUTEAd/view",
+          "sha256": "9760d151f4a349d8d895817c5e4502db3dc83a2816126b711d351857b4c28574",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261103-104944-full/failures/MTPL-013_Header_offers_the_same_types_as_the_web_including_Location/screenshot.png": {
+          "fileId": "1F3NwY_RLXuN31H55CkKr7cjIo9BUTEAd",
+          "url": "https://drive.google.com/file/d/1F3NwY_RLXuN31H55CkKr7cjIo9BUTEAd/view",
+          "sha256": "9760d151f4a349d8d895817c5e4502db3dc83a2816126b711d351857b4c28574",
+          "uploaded": "2026-11-20"
+        }
+      }
+    },
+    "MTSK-D01": {
+      "images": {
+        "reports/explore-tasks/13-detail.png": {
+          "fileId": "1i003rBNNxMJ4CY6waO8GkzVGM4YJmr3c",
+          "url": "https://drive.google.com/file/d/1i003rBNNxMJ4CY6waO8GkzVGM4YJmr3c/view",
+          "sha256": "38849e42c81b4bbfc44733b25ab0056e2913aaafb97b703b9a6266a7a3d65f4a",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261104-162826-full/screenshots/MTSK-012_status_badge.png": {
+          "fileId": "1_9mDBGcM9ZFsgMX5WPv80Cyxb-01VQmO",
+          "url": "https://drive.google.com/file/d/1_9mDBGcM9ZFsgMX5WPv80Cyxb-01VQmO/view",
+          "sha256": "905f6d4b753f144c85044ed0c8099e57c9f8223bab58b3936c6981fbd38c6335",
+          "uploaded": "2026-11-20"
+        },
+        "reports/20261104-162826-full/failures/MTSK-012_The_task_form_shows_a_readable_status_badge/screenshot.png": {
+          "fileId": "1_9mDBGcM9ZFsgMX5WPv80Cyxb-01VQmO",
+          "url": "https://drive.google.com/file/d/1_9mDBGcM9ZFsgMX5WPv80Cyxb-01VQmO/view",
+          "sha256": "905f6d4b753f144c85044ed0c8099e57c9f8223bab58b3936c6981fbd38c6335",
+          "uploaded": "2026-11-20"
+        }
+      }
+    }
+  }
+}

@@ -51,6 +51,12 @@ export const settings = {
   expense: {
     create: ['1', 'true'].includes(value('EXPENSE_CREATE').toLowerCase()),
   },
+  /** Incoming push test (MNTF-007): waits for a SalesHiker push only when NOTIFY_WAIT is 1 or true; someone sends a
+   *  WhatsApp message to the workspace number during the wait. NOTIFY_WAIT_MINUTES (default 10) bounds the wait. */
+  notify: {
+    wait: ['1', 'true'].includes(value('NOTIFY_WAIT').toLowerCase()),
+    minutes: Number(value('NOTIFY_WAIT_MINUTES')) || 10,
+  },
   /** Reuse the UiAutomator2 server on the device (phones that block adb installs behind a prompt). */
   skipServerInstall: value('SKIP_SERVER_INSTALL') === '1',
   /** Folder for this run's reports. Set by the PowerShell runners; generated otherwise. */

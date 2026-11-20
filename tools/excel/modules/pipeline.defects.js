@@ -32,6 +32,9 @@ module.exports = [
     steps: '1. Mobile: move DL-100005 to another stage.\n2. Web: reload the deal page at once, then again after 30-60 s.',
     expected: 'The web shows the new stage on the next reload.',
     actual: 'The first reloads still show the old stage; the new one appears after up to about a minute. The phone keeps the change after an app restart.',
+    images: [
+      { file: 'reports/20261102-162122-full/screenshots/MPIP-020_moved.png', caption: 'Phone, automated run: MPIP-020, DL-100005 moved to Needs Analysis on the phone (the web showed the old stage for up to about a minute)' },
+    ],
     issueType: 'Observation', severity: 'Low', priority: 'P4 - Low', status: 'Needs Decision',
     tests: ['MPIP-020'],
     evidence: 'Live comparison 2026-11-02 (web deal page reloads before and after the mobile change)',

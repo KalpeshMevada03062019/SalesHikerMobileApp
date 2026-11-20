@@ -53,4 +53,10 @@ module.exports = [
     cases: require('./pricebooks.cases'), defects: require('./pricebooks.defects') },
   { sheet: 'Purchase orders', label: 'Purchase orders (Inventory)', role: 'Signed-in workspace user (mobile app)',
     cases: require('./purchaseorders.cases'), defects: require('./purchaseorders.defects') },
+  { sheet: 'Warehouses', label: 'Warehouses (Inventory)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./warehouses.cases'), defects: require('./warehouses.defects') },
+  { sheet: 'Stock receipts', label: 'Stock receipts (Inventory)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./stockreceipts.cases'), defects: require('./stockreceipts.defects') },
+  { sheet: 'Notifications', label: 'Notifications (push and in-app)', role: 'Signed-in workspace user (mobile app)',
+    cases: require('./notifications.cases'), defects: require('./notifications.defects') },
 ];

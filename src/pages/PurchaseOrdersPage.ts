@@ -38,7 +38,8 @@ export async function screenTexts(): Promise<string[]> {
   const src = await driver.getPageSource();
   const out: string[] = [];
   const unescape = (t: string) => t.replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-  for (const m of src.matchAll(/<android\.widget\.TextView\b[^>]*?\stext="([^"]*)"/g)) out.push(unescape(m[1]!));
+  // A value holding double quotes is written in single quotes (text='"Zastolnye" Dumplings ...').
+  for (const m of src.matchAll(/<android\.widget\.TextView\b[^>]*?\stext=(?:"([^"]*)"|'([^']*)')/g)) out.push(unescape(m[1] ?? m[2]!));
   return out;
 }
 

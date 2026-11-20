@@ -14,6 +14,7 @@
     "report:monocart": "node tools/monocart/build-report.mjs",
     "reports": "node tools/allure/build-report.mjs && node tools/html/build-report.mjs && node tools/monocart/build-report.mjs",
     "excel": "node tools/excel/update-workbooks.js",
+    "evidence:drive": "node tools/excel/evidence-drive.mjs",
     "docs:framework": "node tools/docs/framework-overview.mjs",
     "docs:framework:check": "node tools/docs/framework-overview.mjs --check",
     "docs:watch": "node tools/docs/framework-overview.mjs --watch"

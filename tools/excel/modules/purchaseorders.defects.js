@@ -31,7 +31,7 @@ module.exports = [
     issueType: 'Bug', severity: 'Medium', priority: 'P3 - Medium', status: 'Open',
     tests: ['MPUR-009'], guardTest: 'MPUR-009',
     evidence: 'By hand 2026-11-18 (reports/explore-campaign/po06.png, po07.xml); run 20261118-124321-single-MPUR-009; web PO-0005 Receipts tab.',
-    qaComment: 'Reproduced by hand, in run 20261118-124321 and on the web: a backend / data issue shared by both apps (the received quantity has no receipt behind it), not a mobile display bug. Only PO-0005 is affected.',
+    qaComment: 'Reproduced by hand, in run 20261118-124321 and on the web: a backend / data issue shared by both apps, not a mobile display bug. Only PO-0005 is affected. Cause seen 2026-11-18 in Warehouses > QA-TEST-R9 Warehouse > Movements: GRN-0005 received +4 QA-TEST Gadget R3 on 12 Oct and the same receipt was reversed (-4, "Stock receipt reversed"), so stock is 0, but the reversal did not reset the PO received quantity (still 4 of 10, Partially Received).',
   },
   {
     id: 'MPUR-D03',

@@ -313,12 +313,9 @@ function autoStatus(ledger, d, current, changes) {
   return next;
 }
 
-// ---------------------------------------------------------------- defect screenshots (embedded in the workbook)
-// Each defect gets its own `images` (web / exploration screenshots with captions, kept in docs/defect-evidence) and
-// the screenshots of the latest failing run of its tests. They are shrunk to JPEG once (docs/defect-evidence/cache)
-// and embedded, so the tracker shows them wherever the file is opened or sent.
-const EVIDENCE_CACHE = path.join(DOCS, 'defect-evidence', 'cache');
-const MANIFEST = path.join(EVIDENCE_CACHE, 'manifest.json');
+// ---------------------------------------------------------------- defect screenshots
+// Each defect gets its own `images` (web / exploration screenshots with captions, kept in docs/defect-evidence), the
+// exploration screenshots named in its evidence text and the screenshots of the latest failing run of its tests.
 const MAX_RUN_SHOTS = { guard: 2, other: 1 };
 
 function defectImages(ledger, d) {
@@ -340,35 +337,61 @@ function defectImages(ledger, d) {
       out.push({ src: path.join(ROOT, e), caption: `Phone, automated run: ${t} (${what}), run ${last.run}` });
     }
   }
-  return out.slice(0, 4);
+  return out;
 }
 
-/** Shrinks the images not cached yet (one PowerShell call) and sets im.cache / im.dims; missing sources are dropped. */
-function prepareImages(all) {
-  const manifest = fs.existsSync(MANIFEST) ? JSON.parse(fs.readFileSync(MANIFEST, 'utf8')) : {};
-  const todo = new Map();
-  for (const im of all) {
-    im.key = rel(im.src).replace(/[\\/:]+/g, '__').replace(/\.(png|jpe?g)$/i, '') + '.jpg';
-    im.cache = path.join(EVIDENCE_CACHE, im.key);
-    if (!(manifest[im.key] && fs.existsSync(im.cache)) && fs.existsSync(im.src)) todo.set(im.key, { src: im.src, dst: im.cache });
+// ---------------------------------------------------------------- defect evidence on Google Drive
+// Only defect evidence is stored: every screenshot of a logged defect (listed in EVIDENCE_INDEX with its SHA-256;
+// identical copies once) is uploaded as an image into one Google Drive folder, "SalesHiker Mobile QA/SalesHiker Mobile
+// Android Defect" (tools/excel/evidence-drive.mjs lists what to upload and records the links in DRIVE_LINKS). Column N
+// (Screenshot/Video) links the defect's screenshots; nothing is embedded and no local path is shown. A screenshot that is
+// new or changed since its upload counts as not uploaded.
+const EVIDENCE_INDEX = path.join(DOCS, 'defect-evidence', 'evidence-index.json');
+const DRIVE_LINKS = path.join(__dirname, 'drive-evidence.json');
+
+const sha256 = (file) => require('crypto').createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+
+function writeEvidenceIndex(shots) {
+  const out = [];
+  for (const mod of modules) for (const d of mod.defects) {
+    const images = (shots.get(d.id) || []).filter((im) => fs.existsSync(im.src));
+    out.push({ id: d.id, module: mod.label, title: d.title, severity: d.severity,
+      images: images.map((im) => ({ file: rel(im.src), caption: im.caption, sha256: sha256(im.src) })) });
   }
-  if (todo.size) {
-    fs.mkdirSync(EVIDENCE_CACHE, { recursive: true });
-    const list = path.join(EVIDENCE_CACHE, 'todo.json');
-    fs.writeFileSync(list, JSON.stringify([...todo.values()]));
-    const { execFileSync } = require('child_process');
-    try {
-      const res = JSON.parse(execFileSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(__dirname, 'shrink-images.ps1'), '-ListFile', list], { encoding: 'utf8' }).trim() || '{}');
-      for (const [dst, dims] of Object.entries(res)) manifest[path.basename(dst)] = dims;
-      fs.writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2));
-    } catch (e) { console.warn('Screenshots not shrunk: ' + String(e.message).split('\n')[0]); }
-    fs.rmSync(list, { force: true });
-  }
-  for (const im of all) { im.dims = manifest[im.key]; im.ok = !!im.dims && fs.existsSync(im.cache); }
+  fs.mkdirSync(path.dirname(EVIDENCE_INDEX), { recursive: true });
+  fs.writeFileSync(EVIDENCE_INDEX, JSON.stringify(out, null, 2) + '\n');
+  return new Map(out.map((e) => [e.id, e]));
 }
 
-/** Size that fits the image in a box, keeping its proportions (pixels). */
-const fit = ([w, h], boxW, boxH) => { const s = Math.min(boxW / w, boxH / h); return { width: Math.round(w * s), height: Math.round(h * s) }; };
+const driveLinks = () => (fs.existsSync(DRIVE_LINKS) ? JSON.parse(fs.readFileSync(DRIVE_LINKS, 'utf8')).defects || {} : {});
+
+/** The Drive link of one screenshot, when the uploaded copy is the current file. */
+function driveImage(links, id, im) {
+  const up = links[id] && links[id].images && links[id].images[im.file];
+  return up && up.sha256 === im.sha256 ? up.url : null;
+}
+
+/** The defect's screenshots not on Drive yet (new, or changed since their upload); identical copies count once. */
+const drivePending = (links, entry) => {
+  if (!entry) return [];
+  const seen = new Set();
+  return entry.images.filter((im) => !driveImage(links, entry.id, im) && !seen.has(im.sha256) && seen.add(im.sha256));
+};
+
+/**
+ * Column N (Screenshot/Video). All screenshots sit in one Drive folder, named "<DEFECT-ID> - <n> - <file>": a defect with
+ * one screenshot links that file; with several, a Drive search for the ID in the file names, which lists them all.
+ */
+function driveCell(links, entry, fallback) {
+  if (!entry || !entry.images.length) return fallback;
+  const total = new Set(entry.images.map((im) => im.sha256)).size;
+  const pending = drivePending(links, entry).length;
+  if (pending === total) return 'Screenshots not on Google Drive yet (run npm run evidence:drive)';
+  const done = total - pending;
+  const urls = [...new Set(entry.images.map((im) => driveImage(links, entry.id, im)).filter(Boolean))];
+  const hyperlink = urls.length === 1 ? urls[0] : `https://drive.google.com/drive/search?q=${encodeURIComponent(`title:"${entry.id}"`)}`;
+  return { text: `${done} screenshot${done === 1 ? '' : 's'} on Google Drive (click to open)${pending ? `; ${pending} not uploaded yet` : ''}`, hyperlink };
+}
 
 async function buildDefects(ledger) {
   const manual = await readManual();
@@ -380,23 +403,12 @@ async function buildDefects(ledger) {
   const sheets = [];
   const today = new Date();
 
-  // Screenshots per defect, and where each defect's block starts on the Screenshots sheet (title, captions, images).
+  // Screenshots per defect (kept on Google Drive, not embedded in the workbook).
   const shots = new Map();
-  for (const mod of modules) for (const d of mod.defects) shots.set(d.id, defectImages(ledger, d));
-  prepareImages([...shots.values()].flat());
-  const imageIds = new Map();
-  const imageId = (im) => {
-    if (!imageIds.has(im.key)) imageIds.set(im.key, wb.addImage({ filename: im.cache, extension: 'jpeg' }));
-    return imageIds.get(im.key);
-  };
-  const shotRow = new Map();
-  let nextShotRow = 3;
-  for (const mod of modules) for (const d of mod.defects) {
-    const ok = shots.get(d.id).filter((im) => im.ok);
-    shots.set(d.id, ok);
-    if (ok.length) { shotRow.set(d.id, nextShotRow); nextShotRow += 4; }
-  }
-  const defectRow = new Map();   // defect ID -> { sheet, row } for the link back
+  for (const mod of modules) for (const d of mod.defects) shots.set(d.id, defectImages(ledger, d).filter((im) => fs.existsSync(im.src)));
+  const evidenceIndex = writeEvidenceIndex(shots);
+  const links = driveLinks();
+  const pendingUploads = [...evidenceIndex.values()].flatMap((e) => drivePending(links, e).map(() => e.id));
 
   for (const mod of modules) {
     const ws = wb.addWorksheet(mod.sheet, { views: [{ state: 'frozen', xSplit: 4, ySplit: 1, topLeftCell: 'E2' }] });
@@ -407,11 +419,8 @@ async function buildDefects(ledger) {
     mod.defects.forEach((d, i) => {
       const keep = manual.defects.get(d.id) || {};
       const status = autoStatus(ledger, d, keep.status || d.status, changes);
-      const images = shots.get(d.id);
-      const runShots = (d.tests || []).flatMap((t) => (ledger.tests[t] && ledger.tests[t].last && ledger.tests[t].last.evidence) || []);
-      const evidence = images.length
-        ? { text: `${images.length} screenshot${images.length === 1 ? '' : 's'} (embedded): open the Screenshots sheet`, hyperlink: `#'Screenshots'!A${shotRow.get(d.id)}` }
-        : runShots.length ? link(runShots[0], runShots.map((s) => 'Screenshot: ' + path.basename(s)).slice(0, 3).join('\n')) : (d.evidence || '');
+      // Evidence is a link to the defect's Google Drive folder (all its screenshots); no images in the cell, no local paths.
+      const evidence = driveCell(links, evidenceIndex.get(d.id), d.evidence || '');
       let qa = d.qaComment;
       const guard = d.guardTest && ledger.tests[d.guardTest];
       if (guard && guard.last) {
@@ -426,15 +435,6 @@ async function buildDefects(ledger) {
       row.getCell(8).numFmt = 'dd-mmm-yyyy';
       row.getCell(21).numFmt = 'dd-mmm-yyyy';
       if (typeof evidence === 'object') row.getCell(14).font = LINK_FONT;
-      defectRow.set(d.id, { sheet: mod.sheet, row: row.number });
-      if (images.length) {
-        // Two thumbnails under the link in column N (36 characters, about 257 px wide); the rest on the Screenshots sheet.
-        const ROW_PX = 230;
-        row.height = ROW_PX * 0.75;
-        images.slice(0, 2).forEach((im, k) => {
-          ws.addImage(imageId(im), { tl: { col: 13.03 + k * 0.5, row: row.number - 1 + 40 / ROW_PX }, ext: fit(im.dims, 120, ROW_PX - 48), editAs: 'oneCell' });
-        });
-      }
       if (SEVERITY_FILL[d.severity]) row.getCell(10).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: SEVERITY_FILL[d.severity] } };
       tally[status] = (tally[status] || 0) + 1;
       tally.severity[d.severity] = (tally.severity[d.severity] || 0) + 1;
@@ -470,37 +470,6 @@ async function buildDefects(ledger) {
   listValidation(triage, 'G', 2, Math.max(triage.rowCount, 2) + 20, TRIAGE);
   if (!open) triage.addRow(['No failed test without a linked defect.']);
 
-  // ---- Screenshots: per defect its title (link back to the row), a caption per image, and the images, large.
-  const SHOT_COLS = 4, COL_CHARS = 64, IMG_W = 440, IMG_H = 560;
-  const ss = wb.addWorksheet('Screenshots', { views: [{ state: 'frozen', ySplit: 1 }] });
-  ss.columns = Array.from({ length: SHOT_COLS }, () => ({ width: COL_CHARS }));
-  ss.getCell('A1').value = 'Screenshots of each defect: web app (read only) and phone (exploration or the latest failing automated run). Click a title to go back to the defect.';
-  ss.getCell('A1').font = { name: 'Arial', size: 10, italic: true };
-  for (const mod of modules) for (const d of mod.defects) {
-    const r = shotRow.get(d.id);
-    if (!r) continue;
-    const images = shots.get(d.id);
-    const back = defectRow.get(d.id);
-    ss.mergeCells(r, 1, r, SHOT_COLS);
-    const title = ss.getCell(r, 1);
-    title.value = { text: `${d.id} - ${d.title}  (${mod.label}, ${d.severity})`, hyperlink: `#'${back.sheet}'!D${back.row}` };
-    title.font = { name: 'Arial', size: 11, bold: true, underline: true, color: { argb: 'FF0563C1' } };
-    title.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDDEBF7' } };
-    ss.getRow(r).height = 22;
-    const captions = ss.getRow(r + 1);
-    captions.height = 30;
-    const pics = ss.getRow(r + 2);
-    pics.height = (IMG_H + 10) * 0.75;
-    images.slice(0, SHOT_COLS).forEach((im, col) => {
-      const cap = captions.getCell(col + 1);
-      cap.value = im.caption;
-      cap.font = { name: 'Arial', size: 9, bold: true };
-      cap.alignment = { vertical: 'top', wrapText: true };
-      ss.addImage(imageId(im), { tl: { col: col + 0.02, row: r + 1 + 0.01 }, ext: fit(im.dims, IMG_W, IMG_H), editAs: 'oneCell' });
-    });
-  }
-  if (!shotRow.size) ss.getCell('A3').value = 'No screenshots yet.';
-
   // ---- Summary (same columns and formulas as the web tracker)
   summary.columns = [48, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12].map((w) => ({ width: w }));
   summary.addRow(['Module', 'Total', ...STATUSES, 'Critical', 'High', 'Medium', 'Low']);
@@ -528,7 +497,7 @@ async function buildDefects(ledger) {
   note.font = { name: 'Arial', size: 9, italic: true };
 
   await wb.xlsx.writeFile(DT_FILE);
-  return { total: sheets.reduce((a, s) => a + s.total, 0), kept: manual.defects.size, changes, open };
+  return { total: sheets.reduce((a, s) => a + s.total, 0), kept: manual.defects.size, changes, open, pendingUploads };
 }
 
 // ---------------------------------------------------------------- Google Drive copy (Google Drive for desktop)
@@ -541,7 +510,7 @@ function driveSetting() {
   for (const name of ['.env.example', '.env']) {
     const file = path.join(ROOT, 'config', name);
     if (!fs.existsSync(file)) continue;
-    const m = fs.readFileSync(file, 'utf8').match(/^\s*DRIVE_SYNC_DIR\s*=\s*(.*)$/m);
+    const m = fs.readFileSync(file, 'utf8').match(/^[ \t]*DRIVE_SYNC_DIR[ \t]*=[ \t]*(.*)$/m); // [ \t], not \s: an empty value must not read the next line
     if (m) value = m[1].trim().replace(/^["']|["']$/g, '');
   }
   return value;
@@ -591,6 +560,9 @@ function copyToDrive() {
     console.log(`Test cases -> ${TC_FILE}`);
     console.log(`Defects: ${dt.total} (manual fields kept for ${dt.kept}); failures to triage: ${dt.open} -> ${DT_FILE}`);
     for (const c of dt.changes) console.log(`Defect status changed: ${c}`);
+    console.log(dt.pendingUploads.length
+      ? `Drive evidence: ${dt.pendingUploads.length} screenshot(s) to upload (npm run evidence:drive lists them): ${[...new Set(dt.pendingUploads)].join(', ')}`
+      : 'Drive evidence: every defect screenshot is on Google Drive');
     if (!process.env.QA_DOCS_DIR) copyToDrive();   // not for trial output (QA_DOCS_DIR)
     // Rebuild the framework overview from the new results (npm run excel; the runner calls it separately).
     if (!process.env.SKIP_DOCS) {

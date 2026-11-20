@@ -23,6 +23,9 @@ module.exports = [
     steps: '1. Launch the app (signed out).\n2. Email: 250 x "a" + "@example.com"\n3. Password: Secret123\n4. Tap "Sign in".',
     expected: 'The app rejects an address whose part before "@" exceeds 64 characters (RFC 5321) before sending it, or caps the field length.',
     actual: 'The full value is accepted and sent; the server replies "Email or password is wrong.". No crash, and the generic message is acceptable, but invalid input still reaches the backend.',
+    images: [
+      { file: 'reports/20261102-173406-full/screenshots/MLGN-015_rejected.png', caption: 'Phone, automated run: MLGN-015, 262-character email accepted and sent; the server answers "Email or password is wrong."' },
+    ],
     issueType: 'Observation', severity: 'Low', priority: 'P4 - Low', status: 'Needs Decision',
     tests: ['MLGN-015'],
     qaComment: 'Automated test: MLGN-015 passes (it checks that the app copes safely). Product to decide whether a client-side limit is wanted.',
@@ -34,6 +37,9 @@ module.exports = [
     steps: '1. Open the sign-in screen.\n2. Inspect the view hierarchy (Appium page source, or adb shell uiautomator dump).',
     expected: 'Inputs, buttons and links expose stable ids (React Native testID), e.g. login-email, login-password, login-submit.',
     actual: 'No app resource-ids exist. Automation has to use accessibility labels, which change with copy or localisation.',
+    images: [
+      { file: 'reports/20261029-141149-evidence-verify-script/screen.png', caption: 'Phone: the sign-in screen whose hierarchy dump (hierarchy.csv, same run) has no com.saleshiker.app:id/* except action_bar_root' },
+    ],
     issueType: 'Enhancement', severity: 'Low', priority: 'P4 - Low', status: 'Open',
     evidence: 'Hierarchy dump: reports/*-evidence-*/hierarchy.csv (no com.saleshiker.app:id/* except action_bar_root)',
     qaComment: 'Not a functional defect. Once ids are added, only the selectors in src/pages/*.ts need updating.',
